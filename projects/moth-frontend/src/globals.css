@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	html {
+		font-size: 16px;
+	}
+
+	body {
+		font-family: 'Manrope', sans-serif;
+		@apply min-h-screen bg-white text-neutral-900;
+	}
+}
+
+@layer utilities {
+	.padding {
+		@apply p-[25px] lg:p-[100px];
+	}
+}
