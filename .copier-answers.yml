@@ -1,0 +1,9 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 2.0.6
+_src_path: gh:algorandfoundation/algokit-fullstack-template
+author_email: amousavig@icloud.com
+author_name: Ali Mousavi
+contract_name: HelloWorld
+preset_name: starter
+project_name: moth
+
