@@ -8,9 +8,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
 	return (
 		<>
-			<header className="container flex items-center">
+			<header className="padding py-[15px] flex items-center border-b mb-4">
 				<Logo className="h-6" />
-				header
 			</header>
 			<main>{children}</main>
 			<footer>footer</footer>
