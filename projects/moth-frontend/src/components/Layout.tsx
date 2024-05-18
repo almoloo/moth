@@ -41,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 						size="sm"
 						variant="link"
 					>
-						About Us
+						<Link to="/about">About Us</Link>
 					</Button>
 					<Button
 						size="sm"
