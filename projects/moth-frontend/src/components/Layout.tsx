@@ -1,17 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Logo from './Logo';
 import { Button } from './ui/button';
 import { Link } from 'react-router-dom';
 import { BracesIcon, GithubIcon } from 'lucide-react';
+import { useWallet } from '@txnlab/use-wallet';
+import ConnectWallet from '../components/ConnectWallet';
+import Transact from '../components/Transact';
+import AppCalls from '../components/AppCalls';
 
 interface LayoutProps {
 	children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+	const [openWalletModal, setOpenWalletModal] = useState<boolean>(false);
+	const [openDemoModal, setOpenDemoModal] = useState<boolean>(false);
+	const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false);
+	const { activeAddress } = useWallet();
+
+	const toggleWalletModal = () => {
+		setOpenWalletModal(!openWalletModal);
+	};
+
+	const toggleDemoModal = () => {
+		setOpenDemoModal(!openDemoModal);
+	};
+
+	const toggleAppCallsModal = () => {
+		setAppCallsDemoModal(!appCallsDemoModal);
+	};
+
 	return (
 		<>
-			<header className="padding py-[15px] lg:py-[15px] flex items-center border-b">
+			<header className="px-[25px] py-[15px] lg:px-[100px] flex items-center border-b sticky top-0 bg-white">
 				<Link to="/">
 					<Logo className="h-6 text-neutral-700" />
 				</Link>
@@ -25,13 +46,32 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 					<Button
 						size="sm"
 						variant="default"
+						onClick={toggleWalletModal}
 					>
 						Connect Button
 					</Button>
+					{/* {activeAddress && (
+						<button
+							data-test-id="transactions-demo"
+							className="btn m-2"
+							onClick={toggleDemoModal}
+						>
+							Transactions Demo
+						</button>
+					)} */}
+					{/* {activeAddress && (
+						<button
+							data-test-id="appcalls-demo"
+							className="btn m-2"
+							onClick={toggleAppCallsModal}
+						>
+							Contract Interactions Demo
+						</button>
+					)} */}
 				</nav>
 			</header>
-			<main>{children}</main>
-			<footer className="padding border-t">
+			<main className="layout-container">{children}</main>
+			<footer className="px-[25px] py-[15px] lg:p-[100px]">
 				<div className="flex items-center justify-between border-b pb-[30px]">
 					<Link to="/">
 						<Logo className="text-neutral-400 h-6" />
@@ -56,6 +96,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 					</p>
 				</div>
 			</footer>
+			<ConnectWallet
+				openModal={openWalletModal}
+				closeModal={toggleWalletModal}
+			/>
+			<Transact
+				openModal={openDemoModal}
+				setModalState={setOpenDemoModal}
+			/>
+			<AppCalls
+				openModal={appCallsDemoModal}
+				setModalState={setAppCallsDemoModal}
+			/>
 		</>
 	);
 };

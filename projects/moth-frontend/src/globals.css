@@ -9,12 +9,20 @@
 
 	body {
 		font-family: 'Manrope', sans-serif;
-		@apply min-h-screen bg-white text-neutral-900;
+		@apply min-h-screen flex flex-col bg-white text-neutral-900;
+	}
+
+	#root {
+		@apply min-h-screen flex flex-col grow;
+	}
+
+	.layout-container {
+		@apply flex flex-col grow;
 	}
 }
 
 @layer utilities {
 	.padding {
-		@apply p-[25px] lg:p-[100px];
+		@apply p-[50px] lg:p-[100px];
 	}
 }
