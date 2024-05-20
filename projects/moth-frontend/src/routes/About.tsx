@@ -55,8 +55,8 @@ const About: React.FC<AboutProps> = () => {
 				<div>
 					<h3 className="font-bold text-lg mb-3">Our Features</h3>
 					<ul className="list-disc list-outside flex flex-col gap-3 ml-5 leading-relaxed">
-						{featuresList.map((feature) => (
-							<li>
+						{featuresList.map((feature, index) => (
+							<li key={index}>
 								<strong>{feature.title}: </strong>
 								<p className="inline">{feature.description}</p>
 							</li>
