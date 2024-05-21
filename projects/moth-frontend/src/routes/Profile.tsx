@@ -41,6 +41,11 @@ const Profile: React.FC<ProfileProps> = () => {
 		loyaltyPercentage: 5,
 	});
 
+	const [selectedAvatar, setSelectedAvatar] = React.useState<any>();
+	const changeAvatarHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSelectedAvatar(e.target.files?.[0]);
+	}
+
 	useEffect(() => {
 		const getProfileData = async () => {
 			if (!activeAddress) return;
@@ -137,17 +142,7 @@ const Profile: React.FC<ProfileProps> = () => {
 												<Input
 													type="file"
 													className="cursor-pointer"
-													onChange={(e) => {
-														// const file = e.target.files?.[0];
-														// if (!file) return;
-														// const reader = new FileReader();
-														// reader.onload = (e) => {
-														// 	const result = e.target?.result;
-														// 	if (typeof result !== 'string') return;
-														// 	form.setValue('logo', result);
-														// };
-														// reader.readAsDataURL(file);
-													}}
+													onChange={changeAvatarHandler}
 												/>
 											</FormControl>
 											<input
