@@ -1,5 +1,5 @@
 import PageHeader from '@/components/PageHeader';
-import { SaveIcon, SquareUserRoundIcon } from 'lucide-react';
+import { Loader, SaveIcon, SquareUserRoundIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { fetchProfile } from '@/utils/data';
 import { toast } from 'sonner';
+import { saveProfile } from '@/utils/actions';
 
 const formSchema = z.object({
 	address: z.string().length(58),
@@ -30,6 +31,7 @@ interface ProfileProps {}
 const Profile: React.FC<ProfileProps> = () => {
 	const { activeAddress } = useWallet();
 	const [loadingFormData, setLoadingFormData] = React.useState<boolean>(true);
+	const [loadingSubmit, setLoadingSubmit] = React.useState<boolean>(false);
 	const [retreivedProfile, setRetreivedProfile] = React.useState<z.infer<typeof formSchema>>({
 		address: '',
 		logo: '',
@@ -44,7 +46,7 @@ const Profile: React.FC<ProfileProps> = () => {
 	const [selectedAvatar, setSelectedAvatar] = React.useState<any>();
 	const changeAvatarHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedAvatar(e.target.files?.[0]);
-	}
+	};
 
 	useEffect(() => {
 		const getProfileData = async () => {
@@ -90,8 +92,44 @@ const Profile: React.FC<ProfileProps> = () => {
 		resolver: zodResolver(formSchema),
 	});
 
-	const submitHandler = (values: z.infer<typeof formSchema>) => {
-		console.log(values);
+	const submitHandler = async (values: z.infer<typeof formSchema>) => {
+		setLoadingSubmit(true);
+		try {
+			// UPLOAD AVATAR TO IPFS IF SELECTED
+			if (selectedAvatar) {
+				// UPLOAD TO IPFS
+				const formData = new FormData();
+				formData.append('file', selectedAvatar);
+				const metadata = JSON.stringify({
+					name: `${Date.now()}-${values.address}`,
+				});
+				formData.append('pinataMetadata', metadata);
+				const options = JSON.stringify({
+					cidVersion: 0,
+				});
+				formData.append('pinataOptions', options);
+
+				const res = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+					method: 'POST',
+					headers: {
+						Authorization: `Bearer ${import.meta.env.VITE_PINATA_ACCESS_TOKEN}`,
+					},
+					body: formData,
+				});
+
+				const resData = await res.json();
+				// SET values.logo TO IPFS HASH
+				values.logo = resData.IpfsHash;
+			}
+			// SAVE PROFILE DATA
+			const savedProfile = await saveProfile(values);
+			toast.success('Profile data saved successfully!');
+		} catch (error) {
+			console.error(error);
+			toast.error('Failed to save profile data, please try again.');
+		} finally {
+			setLoadingSubmit(false);
+		}
 	};
 
 	return activeAddress ? (
@@ -143,6 +181,7 @@ const Profile: React.FC<ProfileProps> = () => {
 													type="file"
 													className="cursor-pointer"
 													onChange={changeAvatarHandler}
+													disabled={loadingSubmit}
 												/>
 											</FormControl>
 											<input
@@ -169,6 +208,7 @@ const Profile: React.FC<ProfileProps> = () => {
 											<FormControl>
 												<Input
 													placeholder="e.g. My Awesome Shop"
+													disabled={loadingSubmit}
 													{...field}
 												/>
 											</FormControl>
@@ -192,6 +232,7 @@ const Profile: React.FC<ProfileProps> = () => {
 												<Input
 													placeholder="e.g. https://awesome.shop"
 													type="url"
+													disabled={loadingSubmit}
 													{...field}
 												/>
 											</FormControl>
@@ -215,6 +256,7 @@ const Profile: React.FC<ProfileProps> = () => {
 												<Textarea
 													placeholder="A short description about your website..."
 													rows={5}
+													disabled={loadingSubmit}
 													{...field}
 												/>
 											</FormControl>
@@ -239,6 +281,7 @@ const Profile: React.FC<ProfileProps> = () => {
 													<Switch
 														checked={field.value}
 														onCheckedChange={field.onChange}
+														disabled={loadingSubmit}
 													/>
 												</FormControl>
 												<FormLabel className="font-semibold cursor-pointer">
@@ -264,6 +307,7 @@ const Profile: React.FC<ProfileProps> = () => {
 													<Switch
 														checked={field.value}
 														onCheckedChange={field.onChange}
+														disabled={loadingSubmit}
 													/>
 												</FormControl>
 												<FormLabel className="font-semibold cursor-pointer">
@@ -293,6 +337,7 @@ const Profile: React.FC<ProfileProps> = () => {
 													min={0}
 													max={100}
 													placeholder="e.g. 5"
+													disabled={loadingSubmit}
 													{...field}
 												/>
 											</FormControl>
@@ -310,8 +355,15 @@ const Profile: React.FC<ProfileProps> = () => {
 										Once you submit, your payment profile will be created and you’ll be able to accept Algo payments on
 										your website. You can always edit these details by connecting your wallet to Moth.
 									</p>
-									<Button variant="default">
-										<SaveIcon className="h-4 w-4 mr-2" />
+									<Button
+										variant="default"
+										disabled={loadingSubmit}
+									>
+										{loadingSubmit ? (
+											<Loader className="h-4 w-4 mr-2 animate-spin" />
+										) : (
+											<SaveIcon className="h-4 w-4 mr-2" />
+										)}
 										Save Profile
 									</Button>
 								</div>
