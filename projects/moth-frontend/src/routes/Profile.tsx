@@ -32,7 +32,7 @@ const Profile: React.FC<ProfileProps> = () => {
 	const { activeAddress } = useWallet();
 	const [loadingFormData, setLoadingFormData] = React.useState<boolean>(true);
 	const [loadingSubmit, setLoadingSubmit] = React.useState<boolean>(false);
-	const [retreivedProfile, setRetreivedProfile] = React.useState<z.infer<typeof formSchema>>({
+	const sampleProfile = {
 		address: '',
 		logo: '',
 		title: '',
@@ -41,7 +41,9 @@ const Profile: React.FC<ProfileProps> = () => {
 		loyaltyEnabled: true,
 		loyaltyMultiplierEnabled: false,
 		loyaltyPercentage: 5,
-	});
+	};
+	const [retreivedProfile, setRetreivedProfile] = React.useState<z.infer<typeof formSchema>>(sampleProfile);
+	const [demoProfile, setDemoProfile] = React.useState<z.infer<typeof formSchema>>(sampleProfile);
 
 	const [selectedAvatar, setSelectedAvatar] = React.useState<any>();
 	const changeAvatarHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +78,7 @@ const Profile: React.FC<ProfileProps> = () => {
 
 	useEffect(() => {
 		// UPDATE FORM DEFAULT VALUES
-		form.reset({
+		const profileData = {
 			address: retreivedProfile.address,
 			logo: retreivedProfile.logo,
 			title: retreivedProfile.title,
@@ -85,7 +87,10 @@ const Profile: React.FC<ProfileProps> = () => {
 			loyaltyEnabled: retreivedProfile.loyaltyEnabled,
 			loyaltyMultiplierEnabled: retreivedProfile.loyaltyMultiplierEnabled,
 			loyaltyPercentage: retreivedProfile.loyaltyPercentage,
-		});
+		};
+
+		form.reset(profileData);
+		setDemoProfile(profileData);
 	}, [retreivedProfile]);
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -123,6 +128,8 @@ const Profile: React.FC<ProfileProps> = () => {
 			}
 			// SAVE PROFILE DATA
 			const savedProfile = await saveProfile(values);
+			setRetreivedProfile(savedProfile);
+			setDemoProfile(savedProfile);
 			toast.success('Profile data saved successfully!');
 		} catch (error) {
 			console.error(error);
@@ -371,7 +378,29 @@ const Profile: React.FC<ProfileProps> = () => {
 						</Form>
 					)}
 				</section>
-				<section className="order-1 lg:order-2 lg:col-span-1">hi</section>
+				<section className="order-1 lg:order-2 lg:col-span-1">
+					{loadingFormData ? (
+						<div>Loading...</div>
+					) : (
+						<div className="border bg-slate-50 rounded p-10 flex flex-col items-center text-center">
+							<img
+								src={`${import.meta.env.VITE_PINATA_GATEWAY_URL}/ipfs/${demoProfile.logo}?pinataGatewayToken=${
+									import.meta.env.VITE_PINATA_GATEWAY_KEY
+								}`}
+								alt={demoProfile.title}
+								className="rounded-full w-24 h-24"
+							/>
+							<h2 className="text-lg font-bold mt-5">{demoProfile.title}</h2>
+							<a
+								href={demoProfile.url}
+								className="text-rose-500 underline"
+							>
+								{demoProfile.url.replace('https://', '').replace('http://', '').replace('www.', '')}
+							</a>
+							<p className="text-neutral-600 text-sm leading-relaxed mt-5">"{demoProfile.description}"</p>
+						</div>
+					)}
+				</section>
 			</div>
 		</>
 	) : (
