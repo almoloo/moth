@@ -12,21 +12,26 @@ let appClient: MothClient;
 
 const defultPercentage: number = 5;
 const siteFee: number = 1;
+let algod: algosdk.Algodv2;
 
 describe('HelloWorld', () => {
   let sender: algosdk.Account;
+  let creator: algosdk.Account;
 
   beforeEach(fixture.beforeEach);
 
   beforeAll(async () => {
     await fixture.beforeEach();
-    const { testAccount, kmd, algod } = fixture.context;
+    const { testAccount, kmd } = fixture.context;
     const { algorand } = fixture;
+
+    algod = algorand.client.algod;
+    creator = testAccount;
 
     sender = await getOrCreateKmdWalletAccount(
       {
         name: 'tealscript-dao-sender',
-        fundWith: algos(100),
+        fundWith: algos(10000),
       },
       algod,
       kmd
@@ -42,28 +47,68 @@ describe('HelloWorld', () => {
     );
 
     await appClient.create.createApplication({ defultPercentage, siteFee });
+  });
+  test('get Site Fee', async () => {
+    const getSiteFee = await appClient.getSiteFee({});
 
-    test('get Site Fee', async () => {
-      const getSiteFee = await appClient.getSiteFee({});
+    expect(getSiteFee.return?.valueOf()).toEqual(BigInt(siteFee));
+  });
 
-      expect(getSiteFee.return?.valueOf()).toEqual(BigInt(siteFee));
+  test('getmbr', async () => {
+    const { appAddress } = await appClient.appClient.getAppReference();
+
+    const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      from: sender.addr,
+      to: appAddress,
+      amount: 100000,
+      suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
 
-    test('getmbr', async () => {
-      const { appAddress } = await appClient.appClient.getAppReference();
+    const proposalFromMethod = await appClient.getMbr(
+      { boxMBRPayment },
+      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
+    );
+    expect(proposalFromMethod.return?.valueOf()).toBe(BigInt(34_900));
+  });
 
-      const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        from: sender.addr,
-        to: appAddress,
-        amount: 100000,
-        suggestedParams: await algokit.getTransactionParams(undefined, algod),
-      });
+  test('edit profile', async () => {
+    const { appAddress } = await appClient.appClient.getAppReference();
 
-      const proposalFromMethod = await appClient.getMbr(
-        { boxMBRPayment },
-        { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
-      );
-      expect(proposalFromMethod.return?.valueOf()).toBe(BigInt(24_900));
+    const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      from: sender.addr,
+      to: appAddress,
+      amount: 138500,
+      suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
+
+    const newProfile = await appClient.editProfile(
+      {
+        boxMBRPayment,
+        title: 'shop',
+        logo: 'logo id',
+        description: 'a site to sell',
+        url: 'site url',
+        loyaltyEnabled: true,
+        loyaltyPercentage: 5,
+      },
+      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
+    );
+
+    expect(newProfile.return?.valueOf()).toStrictEqual([
+      'shop',
+      'logo id',
+      'a site to sell',
+      'site url',
+      true,
+      BigInt(5),
+    ]);
+  });
+
+  test('get profile', async () => {
+    const profile = await appClient.getProfile({
+      address: sender.addr,
+    });
+
+    expect(profile.return?.valueOf()).toStrictEqual(['shop', 'logo id', 'a site to sell', 'site url', true, BigInt(5)]);
   });
 });

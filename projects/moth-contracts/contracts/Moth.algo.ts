@@ -15,7 +15,7 @@ export class Moth extends Contract {
   // in uAlgo
   siteFee = GlobalStateKey<uint64>();
 
-  profiles = BoxMap<Account, profile>();
+  profiles = BoxMap<Address, profile>();
 
   createApplication(defultPercentage: uint64, siteFee: uint64): void {
     this.defultPercentage.value = defultPercentage;
@@ -23,7 +23,7 @@ export class Moth extends Contract {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getMBR(boxMBRPayment: PayTxn): number {
+  getMBR(boxMBRPayment: PayTxn): uint64 {
     const preAppMBR = this.app.address.minBalance;
     this.profiles(this.txn.sender).value = {
       title: 'string',
@@ -57,10 +57,10 @@ export class Moth extends Contract {
       loyaltyPercentage: loyaltyPercentage,
     };
 
-    verifyTxn(boxMBRPayment, {
-      receiver: this.app.address,
-      amount: this.app.address.minBalance - preAppMBR,
-    });
+    // verifyTxn(boxMBRPayment, {
+    //   receiver: this.app.address,
+    //   amount: this.app.address.minBalance - preAppMBR,
+    // });
 
     return this.profiles(this.txn.sender).value;
   }
@@ -70,6 +70,7 @@ export class Moth extends Contract {
   }
 
   getProfile(address: Address): profile {
+    assert(this.profiles(address).exists);
     const values = this.profiles(address).value;
 
     return values;

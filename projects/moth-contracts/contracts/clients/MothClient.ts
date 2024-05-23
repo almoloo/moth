@@ -34,7 +34,22 @@ export const APP_SPEC: AppSpec = {
         "no_op": "CREATE"
       }
     },
+    "getMBR(pay)uint64": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
     "GetSiteFee()uint64": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "getProfile(address)(string,string,string,string,bool,uint64)": {
       "call_config": {
         "no_op": "CALL"
       }
@@ -77,7 +92,7 @@ export const APP_SPEC: AppSpec = {
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjkyLjAKLy8gaHR0cHM6Ly9naXRodWIuY29tL2FsZ29yYW5kZm91bmRhdGlvbi9URUFMU2NyaXB0CgovLyBUaGlzIGNvbnRyYWN0IGlzIGNvbXBsaWFudCB3aXRoIGFuZC9vciBpbXBsZW1lbnRzIHRoZSBmb2xsb3dpbmcgQVJDczogWyBBUkM0IF0KCi8vIFRoZSBmb2xsb3dpbmcgdGVuIGxpbmVzIG9mIFRFQUwgaGFuZGxlIGluaXRpYWwgcHJvZ3JhbSBmbG93Ci8vIFRoaXMgcGF0dGVybiBpcyB1c2VkIHRvIG1ha2UgaXQgZWFzeSBmb3IgYW55b25lIHRvIHBhcnNlIHRoZSBzdGFydCBvZiB0aGUgcHJvZ3JhbSBhbmQgZGV0ZXJtaW5lIGlmIGEgc3BlY2lmaWMgYWN0aW9uIGlzIGFsbG93ZWQKLy8gSGVyZSwgYWN0aW9uIHJlZmVycyB0byB0aGUgT25Db21wbGV0ZSBpbiBjb21iaW5hdGlvbiB3aXRoIHdoZXRoZXIgdGhlIGFwcCBpcyBiZWluZyBjcmVhdGVkIG9yIGNhbGxlZAovLyBFdmVyeSBwb3NzaWJsZSBhY3Rpb24gZm9yIHRoaXMgY29udHJhY3QgaXMgcmVwcmVzZW50ZWQgaW4gdGhlIHN3aXRjaCBzdGF0ZW1lbnQKLy8gSWYgdGhlIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIGNvbnRyYWN0LCBpdHMgcmVzcGVjdGl2ZSBicmFuY2ggd2lsbCBiZSAiKk5PVF9JTVBMRU1FTlRFRCIgd2hpY2gganVzdCBjb250YWlucyAiZXJyIgp0eG4gQXBwbGljYXRpb25JRAohCmludCA2CioKdHhuIE9uQ29tcGxldGlvbgorCnN3aXRjaCAqY2FsbF9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJLy8gVGhlIHJlcXVlc3RlZCBhY3Rpb24gaXMgbm90IGltcGxlbWVudGVkIGluIHRoaXMgY29udHJhY3QuIEFyZSB5b3UgdXNpbmcgdGhlIGNvcnJlY3QgT25Db21wbGV0ZT8gRGlkIHlvdSBzZXQgeW91ciBhcHAgSUQ/CgllcnIKCi8vIGNyZWF0ZUFwcGxpY2F0aW9uKHVpbnQ2NCx1aW50NjQpdm9pZAoqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uOgoJLy8gc2l0ZUZlZTogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAyCglidG9pCgoJLy8gZGVmdWx0UGVyY2VudGFnZTogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglidG9pCgoJLy8gZXhlY3V0ZSBjcmVhdGVBcHBsaWNhdGlvbih1aW50NjQsdWludDY0KXZvaWQKCWNhbGxzdWIgY3JlYXRlQXBwbGljYXRpb24KCWludCAxCglyZXR1cm4KCi8vIGNyZWF0ZUFwcGxpY2F0aW9uKGRlZnVsdFBlcmNlbnRhZ2U6IHVpbnQ2NCwgc2l0ZUZlZTogdWludDY0KTogdm9pZApjcmVhdGVBcHBsaWNhdGlvbjoKCXByb3RvIDIgMAoKCS8vIGNvbnRyYWN0cy9Nb3RoLmFsZ28udHM6MTgKCS8vIHRoaXMuZGVmdWx0UGVyY2VudGFnZS52YWx1ZSA9IGRlZnVsdFBlcmNlbnRhZ2UKCWJ5dGUgMHg2NDY1NjY3NTZjNzQ1MDY1NzI2MzY1NmU3NDYxNjc2NSAvLyAiZGVmdWx0UGVyY2VudGFnZSIKCWZyYW1lX2RpZyAtMSAvLyBkZWZ1bHRQZXJjZW50YWdlOiB1aW50NjQKCWFwcF9nbG9iYWxfcHV0CgoJLy8gY29udHJhY3RzL01vdGguYWxnby50czoxOQoJLy8gdGhpcy5zaXRlRmVlLnZhbHVlID0gc2l0ZUZlZQoJYnl0ZSAweDczNjk3NDY1NDY2NTY1IC8vICJzaXRlRmVlIgoJZnJhbWVfZGlnIC0yIC8vIHNpdGVGZWU6IHVpbnQ2NAoJYXBwX2dsb2JhbF9wdXQKCXJldHN1YgoKLy8gR2V0U2l0ZUZlZSgpdWludDY0CiphYmlfcm91dGVfR2V0U2l0ZUZlZToKCS8vIFRoZSBBQkkgcmV0dXJuIHByZWZpeAoJYnl0ZSAweDE1MWY3Yzc1CgoJLy8gZXhlY3V0ZSBHZXRTaXRlRmVlKCl1aW50NjQKCWNhbGxzdWIgR2V0U2l0ZUZlZQoJaXRvYgoJY29uY2F0Cglsb2cKCWludCAxCglyZXR1cm4KCi8vIEdldFNpdGVGZWUoKTogdWludDY0CkdldFNpdGVGZWU6Cglwcm90byAwIDEKCgkvLyBjb250cmFjdHMvTW90aC5hbGdvLnRzOjIzCgkvLyByZXR1cm4gdGhpcy5zaXRlRmVlLnZhbHVlOwoJYnl0ZSAweDczNjk3NDY1NDY2NTY1IC8vICJzaXRlRmVlIgoJYXBwX2dsb2JhbF9nZXQKCXJldHN1YgoKKmNyZWF0ZV9Ob09wOgoJbWV0aG9kICJjcmVhdGVBcHBsaWNhdGlvbih1aW50NjQsdWludDY0KXZvaWQiCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAwCgltYXRjaCAqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uCgoJLy8gdGhpcyBjb250cmFjdCBkb2VzIG5vdCBpbXBsZW1lbnQgdGhlIGdpdmVuIEFCSSBtZXRob2QgZm9yIGNyZWF0ZSBOb09wCgllcnIKCipjYWxsX05vT3A6CgltZXRob2QgIkdldFNpdGVGZWUoKXVpbnQ2NCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfR2V0U2l0ZUZlZQoKCS8vIHRoaXMgY29udHJhY3QgZG9lcyBub3QgaW1wbGVtZW50IHRoZSBnaXZlbiBBQkkgbWV0aG9kIGZvciBjYWxsIE5vT3AKCWVycg==",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjkyLjAKLy8gaHR0cHM6Ly9naXRodWIuY29tL2FsZ29yYW5kZm91bmRhdGlvbi9URUFMU2NyaXB0CgovLyBUaGlzIGNvbnRyYWN0IGlzIGNvbXBsaWFudCB3aXRoIGFuZC9vciBpbXBsZW1lbnRzIHRoZSBmb2xsb3dpbmcgQVJDczogWyBBUkM0IF0KCi8vIFRoZSBmb2xsb3dpbmcgdGVuIGxpbmVzIG9mIFRFQUwgaGFuZGxlIGluaXRpYWwgcHJvZ3JhbSBmbG93Ci8vIFRoaXMgcGF0dGVybiBpcyB1c2VkIHRvIG1ha2UgaXQgZWFzeSBmb3IgYW55b25lIHRvIHBhcnNlIHRoZSBzdGFydCBvZiB0aGUgcHJvZ3JhbSBhbmQgZGV0ZXJtaW5lIGlmIGEgc3BlY2lmaWMgYWN0aW9uIGlzIGFsbG93ZWQKLy8gSGVyZSwgYWN0aW9uIHJlZmVycyB0byB0aGUgT25Db21wbGV0ZSBpbiBjb21iaW5hdGlvbiB3aXRoIHdoZXRoZXIgdGhlIGFwcCBpcyBiZWluZyBjcmVhdGVkIG9yIGNhbGxlZAovLyBFdmVyeSBwb3NzaWJsZSBhY3Rpb24gZm9yIHRoaXMgY29udHJhY3QgaXMgcmVwcmVzZW50ZWQgaW4gdGhlIHN3aXRjaCBzdGF0ZW1lbnQKLy8gSWYgdGhlIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIGNvbnRyYWN0LCBpdHMgcmVzcGVjdGl2ZSBicmFuY2ggd2lsbCBiZSAiKk5PVF9JTVBMRU1FTlRFRCIgd2hpY2gganVzdCBjb250YWlucyAiZXJyIgp0eG4gQXBwbGljYXRpb25JRAohCmludCA2CioKdHhuIE9uQ29tcGxldGlvbgorCnN3aXRjaCAqY2FsbF9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJLy8gVGhlIHJlcXVlc3RlZCBhY3Rpb24gaXMgbm90IGltcGxlbWVudGVkIGluIHRoaXMgY29udHJhY3QuIEFyZSB5b3UgdXNpbmcgdGhlIGNvcnJlY3QgT25Db21wbGV0ZT8gRGlkIHlvdSBzZXQgeW91ciBhcHAgSUQ/CgllcnIKCi8vIGNyZWF0ZUFwcGxpY2F0aW9uKHVpbnQ2NCx1aW50NjQpdm9pZAoqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uOgoJLy8gc2l0ZUZlZTogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAyCglidG9pCgoJLy8gZGVmdWx0UGVyY2VudGFnZTogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglidG9pCgoJLy8gZXhlY3V0ZSBjcmVhdGVBcHBsaWNhdGlvbih1aW50NjQsdWludDY0KXZvaWQKCWNhbGxzdWIgY3JlYXRlQXBwbGljYXRpb24KCWludCAxCglyZXR1cm4KCi8vIGNyZWF0ZUFwcGxpY2F0aW9uKGRlZnVsdFBlcmNlbnRhZ2U6IHVpbnQ2NCwgc2l0ZUZlZTogdWludDY0KTogdm9pZApjcmVhdGVBcHBsaWNhdGlvbjoKCXByb3RvIDIgMAoKCS8vIGNvbnRyYWN0cy9Nb3RoLmFsZ28udHM6MjEKCS8vIHRoaXMuZGVmdWx0UGVyY2VudGFnZS52YWx1ZSA9IGRlZnVsdFBlcmNlbnRhZ2UKCWJ5dGUgMHg2NDY1NjY3NTZjNzQ1MDY1NzI2MzY1NmU3NDYxNjc2NSAvLyAiZGVmdWx0UGVyY2VudGFnZSIKCWZyYW1lX2RpZyAtMSAvLyBkZWZ1bHRQZXJjZW50YWdlOiB1aW50NjQKCWFwcF9nbG9iYWxfcHV0CgoJLy8gY29udHJhY3RzL01vdGguYWxnby50czoyMgoJLy8gdGhpcy5zaXRlRmVlLnZhbHVlID0gc2l0ZUZlZQoJYnl0ZSAweDczNjk3NDY1NDY2NTY1IC8vICJzaXRlRmVlIgoJZnJhbWVfZGlnIC0yIC8vIHNpdGVGZWU6IHVpbnQ2NAoJYXBwX2dsb2JhbF9wdXQKCXJldHN1YgoKLy8gZ2V0TUJSKHBheSl1aW50NjQKKmFiaV9yb3V0ZV9nZXRNQlI6CgkvLyBUaGUgQUJJIHJldHVybiBwcmVmaXgKCWJ5dGUgMHgxNTFmN2M3NQoKCS8vIGJveE1CUlBheW1lbnQ6IHBheQoJdHhuIEdyb3VwSW5kZXgKCWludCAxCgktCglkdXAKCWd0eG5zIFR5cGVFbnVtCglpbnQgcGF5Cgk9PQoKCS8vIGFyZ3VtZW50IDAgKGJveE1CUlBheW1lbnQpIGZvciBnZXRNQlIgbXVzdCBiZSBhIHBheSB0cmFuc2FjdGlvbgoJYXNzZXJ0CgoJLy8gZXhlY3V0ZSBnZXRNQlIocGF5KXVpbnQ2NAoJY2FsbHN1YiBnZXRNQlIKCWl0b2IKCWNvbmNhdAoJbG9nCglpbnQgMQoJcmV0dXJuCgovLyBnZXRNQlIoYm94TUJSUGF5bWVudDogUGF5VHhuKTogdWludDY0CmdldE1CUjoKCXByb3RvIDEgMQoKCS8vIFB1c2ggZW1wdHkgYnl0ZXMgYWZ0ZXIgdGhlIGZyYW1lIHBvaW50ZXIgdG8gcmVzZXJ2ZSBzcGFjZSBmb3IgbG9jYWwgdmFyaWFibGVzCglieXRlIDB4CglkdXAKCgkvLyBjb250cmFjdHMvTW90aC5hbGdvLnRzOjI3CgkvLyBwcmVBcHBNQlIgPSB0aGlzLmFwcC5hZGRyZXNzLm1pbkJhbGFuY2UKCWdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCglhY2N0X3BhcmFtc19nZXQgQWNjdE1pbkJhbGFuY2UKCXBvcAoJZnJhbWVfYnVyeSAwIC8vIHByZUFwcE1CUjogdWludDY0CgoJLy8gY29udHJhY3RzL01vdGguYWxnby50czoyOAoJLy8gdGhpcy5wcm9maWxlcyh0aGlzLnR4bi5zZW5kZXIpLnZhbHVlID0gewoJLy8gICAgICAgdGl0bGU6ICdzdHJpbmcnLAoJLy8gICAgICAgbG9nbzogJ3N0cmluZycsCgkvLyAgICAgICBkZXNjcmlwdGlvbjogJ3N0cmluZycsCgkvLyAgICAgICB1cmw6ICdzdHJpbmcnLAoJLy8gICAgICAgbG95YWx0eUVuYWJsZWQ6IHRydWUsCgkvLyAgICAgICBsb3lhbHR5UGVyY2VudGFnZTogMTAsCgkvLyAgICAgfQoJdHhuIFNlbmRlcgoJZHVwCglib3hfZGVsCglwb3AKCWJ5dGUgMHggLy8gaW5pdGlhbCBoZWFkCglieXRlIDB4IC8vIGluaXRpYWwgdGFpbAoJYnl0ZSAweDAwMTEgLy8gaW5pdGlhbCBoZWFkIG9mZnNldAoJYnl0ZSAweDAwMDY3Mzc0NzI2OTZlNjcKCWNhbGxzdWIgKnByb2Nlc3NfZHluYW1pY190dXBsZV9lbGVtZW50CglieXRlIDB4MDAwNjczNzQ3MjY5NmU2NwoJY2FsbHN1YiAqcHJvY2Vzc19keW5hbWljX3R1cGxlX2VsZW1lbnQKCWJ5dGUgMHgwMDA2NzM3NDcyNjk2ZTY3CgljYWxsc3ViICpwcm9jZXNzX2R5bmFtaWNfdHVwbGVfZWxlbWVudAoJYnl0ZSAweDAwMDY3Mzc0NzI2OTZlNjcKCWNhbGxzdWIgKnByb2Nlc3NfZHluYW1pY190dXBsZV9lbGVtZW50CglieXRlIDB4MDAKCWludCAwCglpbnQgMQoJc2V0Yml0CgljYWxsc3ViICpwcm9jZXNzX3N0YXRpY190dXBsZV9lbGVtZW50CglieXRlIDB4MDAwMDAwMDAwMDAwMDAwYQoJY2FsbHN1YiAqcHJvY2Vzc19zdGF0aWNfdHVwbGVfZWxlbWVudAoJcG9wIC8vIHBvcCBoZWFkIG9mZnNldAoJY29uY2F0IC8vIGNvbmNhdCBoZWFkIGFuZCB0YWlsCglib3hfcHV0CgoJLy8gY29udHJhY3RzL01vdGguYWxnby50czozNgoJLy8gTWJyID0gdGhpcy5hcHAuYWRkcmVzcy5taW5CYWxhbmNlIC0gcHJlQXBwTUJSCglnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwoJYWNjdF9wYXJhbXNfZ2V0IEFjY3RNaW5CYWxhbmNlCglwb3AKCWZyYW1lX2RpZyAwIC8vIHByZUFwcE1CUjogdWludDY0CgktCglmcmFtZV9idXJ5IDEgLy8gTWJyOiB1aW50NjQKCgkvLyBjb250cmFjdHMvTW90aC5hbGdvLnRzOjM3CgkvLyB0aGlzLnByb2ZpbGVzKHRoaXMudHhuLnNlbmRlcikuZGVsZXRlKCkKCXR4biBTZW5kZXIKCWJveF9kZWwKCgkvLyBjb250cmFjdHMvTW90aC5hbGdvLnRzOjM4CgkvLyByZXR1cm4gTWJyOwoJZnJhbWVfZGlnIDEgLy8gTWJyOiB1aW50NjQKCgkvLyBzZXQgdGhlIHN1YnJvdXRpbmUgcmV0dXJuIHZhbHVlCglmcmFtZV9idXJ5IDAKCgkvLyBwb3AgYWxsIGxvY2FsIHZhcmlhYmxlcyBmcm9tIHRoZSBzdGFjawoJcG9wbiAxCglyZXRzdWIKCi8vIEVkaXRQcm9maWxlKHBheSxzdHJpbmcsc3RyaW5nLHN0cmluZyxzdHJpbmcsYm9vbCx1aW50NjQpKHN0cmluZyxzdHJpbmcsc3RyaW5nLHN0cmluZyxib29sLHVpbnQ2NCkKKmFiaV9yb3V0ZV9FZGl0UHJvZmlsZToKCS8vIFRoZSBBQkkgcmV0dXJuIHByZWZpeAoJYnl0ZSAweDE1MWY3Yzc1CgoJLy8gbG95YWx0eVBlcmNlbnRhZ2U6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgNgoJYnRvaQoKCS8vIGxveWFsdHlFbmFibGVkOiBib29sCgl0eG5hIEFwcGxpY2F0aW9uQXJncyA1CglkdXAKCWxlbgoJaW50IDEKCT09CgoJLy8gYXJndW1lbnQgMSAobG95YWx0eUVuYWJsZWQpIGZvciBFZGl0UHJvZmlsZSBtdXN0IGJlIGEgYm9vbAoJYXNzZXJ0CglpbnQgMAoJZ2V0Yml0CgoJLy8gdXJsOiBzdHJpbmcKCXR4bmEgQXBwbGljYXRpb25BcmdzIDQKCWV4dHJhY3QgMiAwCgoJLy8gZGVzY3JpcHRpb246IHN0cmluZwoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwoJZXh0cmFjdCAyIDAKCgkvLyBsb2dvOiBzdHJpbmcKCXR4bmEgQXBwbGljYXRpb25BcmdzIDIKCWV4dHJhY3QgMiAwCgoJLy8gdGl0bGU6IHN0cmluZwoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQoJZXh0cmFjdCAyIDAKCgkvLyBib3hNQlJQYXltZW50OiBwYXkKCXR4biBHcm91cEluZGV4CglpbnQgMQoJLQoJZHVwCglndHhucyBUeXBlRW51bQoJaW50IHBheQoJPT0KCgkvLyBhcmd1bWVudCA2IChib3hNQlJQYXltZW50KSBmb3IgRWRpdFByb2ZpbGUgbXVzdCBiZSBhIHBheSB0cmFuc2FjdGlvbgoJYXNzZXJ0CgoJLy8gZXhlY3V0ZSBFZGl0UHJvZmlsZShwYXksc3RyaW5nLHN0cmluZyxzdHJpbmcsc3RyaW5nLGJvb2wsdWludDY0KShzdHJpbmcsc3RyaW5nLHN0cmluZyxzdHJpbmcsYm9vbCx1aW50NjQpCgljYWxsc3ViIEVkaXRQcm9maWxlCgljb25jYXQKCWxvZwoJaW50IDEKCXJldHVybgoKLy8gRWRpdFByb2ZpbGUoYm94TUJSUGF5bWVudDogUGF5VHhuLCB0aXRsZTogc3RyaW5nLCBsb2dvOiBzdHJpbmcsIGRlc2NyaXB0aW9uOiBzdHJpbmcsIHVybDogc3RyaW5nLCBsb3lhbHR5RW5hYmxlZDogYm9vbGVhbiwgbG95YWx0eVBlcmNlbnRhZ2U6IHVpbnQ2NCk6IHByb2ZpbGUKRWRpdFByb2ZpbGU6Cglwcm90byA3IDEKCgkvLyBQdXNoIGVtcHR5IGJ5dGVzIGFmdGVyIHRoZSBmcmFtZSBwb2ludGVyIHRvIHJlc2VydmUgc3BhY2UgZm9yIGxvY2FsIHZhcmlhYmxlcwoJYnl0ZSAweAoKCS8vIGNvbnRyYWN0cy9Nb3RoLmFsZ28udHM6NTAKCS8vIHByZUFwcE1CUiA9IHRoaXMuYXBwLmFkZHJlc3MubWluQmFsYW5jZQoJZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKCWFjY3RfcGFyYW1zX2dldCBBY2N0TWluQmFsYW5jZQoJcG9wCglmcmFtZV9idXJ5IDAgLy8gcHJlQXBwTUJSOiB1aW50NjQKCgkvLyBjb250cmFjdHMvTW90aC5hbGdvLnRzOjUxCgkvLyB0aGlzLnByb2ZpbGVzKHRoaXMudHhuLnNlbmRlcikudmFsdWUgPSB7CgkvLyAgICAgICB0aXRsZTogdGl0bGUsCgkvLyAgICAgICBsb2dvOiBsb2dvLAoJLy8gICAgICAgZGVzY3JpcHRpb246IGRlc2NyaXB0aW9uLAoJLy8gICAgICAgdXJsOiB1cmwsCgkvLyAgICAgICBsb3lhbHR5RW5hYmxlZDogbG95YWx0eUVuYWJsZWQsCgkvLyAgICAgICBsb3lhbHR5UGVyY2VudGFnZTogbG95YWx0eVBlcmNlbnRhZ2UsCgkvLyAgICAgfQoJdHhuIFNlbmRlcgoJZHVwCglib3hfZGVsCglwb3AKCWJ5dGUgMHggLy8gaW5pdGlhbCBoZWFkCglieXRlIDB4IC8vIGluaXRpYWwgdGFpbAoJYnl0ZSAweDAwMTEgLy8gaW5pdGlhbCBoZWFkIG9mZnNldAoJZnJhbWVfZGlnIC0yIC8vIHRpdGxlOiBzdHJpbmcKCWR1cAoJbGVuCglpdG9iCglleHRyYWN0IDYgMgoJc3dhcAoJY29uY2F0CgljYWxsc3ViICpwcm9jZXNzX2R5bmFtaWNfdHVwbGVfZWxlbWVudAoJZnJhbWVfZGlnIC0zIC8vIGxvZ286IHN0cmluZwoJZHVwCglsZW4KCWl0b2IKCWV4dHJhY3QgNiAyCglzd2FwCgljb25jYXQKCWNhbGxzdWIgKnByb2Nlc3NfZHluYW1pY190dXBsZV9lbGVtZW50CglmcmFtZV9kaWcgLTQgLy8gZGVzY3JpcHRpb246IHN0cmluZwoJZHVwCglsZW4KCWl0b2IKCWV4dHJhY3QgNiAyCglzd2FwCgljb25jYXQKCWNhbGxzdWIgKnByb2Nlc3NfZHluYW1pY190dXBsZV9lbGVtZW50CglmcmFtZV9kaWcgLTUgLy8gdXJsOiBzdHJpbmcKCWR1cAoJbGVuCglpdG9iCglleHRyYWN0IDYgMgoJc3dhcAoJY29uY2F0CgljYWxsc3ViICpwcm9jZXNzX2R5bmFtaWNfdHVwbGVfZWxlbWVudAoJYnl0ZSAweDAwCglpbnQgMAoJZnJhbWVfZGlnIC02IC8vIGxveWFsdHlFbmFibGVkOiBib29sZWFuCglzZXRiaXQKCWNhbGxzdWIgKnByb2Nlc3Nfc3RhdGljX3R1cGxlX2VsZW1lbnQKCWZyYW1lX2RpZyAtNyAvLyBsb3lhbHR5UGVyY2VudGFnZTogdWludDY0CglpdG9iCgljYWxsc3ViICpwcm9jZXNzX3N0YXRpY190dXBsZV9lbGVtZW50Cglwb3AgLy8gcG9wIGhlYWQgb2Zmc2V0Cgljb25jYXQgLy8gY29uY2F0IGhlYWQgYW5kIHRhaWwKCWJveF9wdXQKCgkvLyBjb250cmFjdHMvTW90aC5hbGdvLnRzOjY1CgkvLyByZXR1cm4gdGhpcy5wcm9maWxlcyh0aGlzLnR4bi5zZW5kZXIpLnZhbHVlOwoJdHhuIFNlbmRlcgoJYm94X2dldAoKCS8vIGJveCB2YWx1ZSBkb2VzIG5vdCBleGlzdDogdGhpcy5wcm9maWxlcyh0aGlzLnR4bi5zZW5kZXIpLnZhbHVlCglhc3NlcnQKCgkvLyBzZXQgdGhlIHN1YnJvdXRpbmUgcmV0dXJuIHZhbHVlCglmcmFtZV9idXJ5IDAKCXJldHN1YgoKLy8gR2V0U2l0ZUZlZSgpdWludDY0CiphYmlfcm91dGVfR2V0U2l0ZUZlZToKCS8vIFRoZSBBQkkgcmV0dXJuIHByZWZpeAoJYnl0ZSAweDE1MWY3Yzc1CgoJLy8gZXhlY3V0ZSBHZXRTaXRlRmVlKCl1aW50NjQKCWNhbGxzdWIgR2V0U2l0ZUZlZQoJaXRvYgoJY29uY2F0Cglsb2cKCWludCAxCglyZXR1cm4KCi8vIEdldFNpdGVGZWUoKTogdWludDY0CkdldFNpdGVGZWU6Cglwcm90byAwIDEKCgkvLyBjb250cmFjdHMvTW90aC5hbGdvLnRzOjY5CgkvLyByZXR1cm4gdGhpcy5zaXRlRmVlLnZhbHVlOwoJYnl0ZSAweDczNjk3NDY1NDY2NTY1IC8vICJzaXRlRmVlIgoJYXBwX2dsb2JhbF9nZXQKCXJldHN1YgoKLy8gZ2V0UHJvZmlsZShhZGRyZXNzKShzdHJpbmcsc3RyaW5nLHN0cmluZyxzdHJpbmcsYm9vbCx1aW50NjQpCiphYmlfcm91dGVfZ2V0UHJvZmlsZToKCS8vIFRoZSBBQkkgcmV0dXJuIHByZWZpeAoJYnl0ZSAweDE1MWY3Yzc1CgoJLy8gYWRkcmVzczogYWRkcmVzcwoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQoJZHVwCglsZW4KCWludCAzMgoJPT0KCgkvLyBhcmd1bWVudCAwIChhZGRyZXNzKSBmb3IgZ2V0UHJvZmlsZSBtdXN0IGJlIGEgYWRkcmVzcwoJYXNzZXJ0CgoJLy8gZXhlY3V0ZSBnZXRQcm9maWxlKGFkZHJlc3MpKHN0cmluZyxzdHJpbmcsc3RyaW5nLHN0cmluZyxib29sLHVpbnQ2NCkKCWNhbGxzdWIgZ2V0UHJvZmlsZQoJY29uY2F0Cglsb2cKCWludCAxCglyZXR1cm4KCi8vIGdldFByb2ZpbGUoYWRkcmVzczogQWRkcmVzcyk6IHByb2ZpbGUKZ2V0UHJvZmlsZToKCXByb3RvIDEgMQoKCS8vIFB1c2ggZW1wdHkgYnl0ZXMgYWZ0ZXIgdGhlIGZyYW1lIHBvaW50ZXIgdG8gcmVzZXJ2ZSBzcGFjZSBmb3IgbG9jYWwgdmFyaWFibGVzCglieXRlIDB4CgoJLy8gY29udHJhY3RzL01vdGguYWxnby50czo3MwoJLy8gYXNzZXJ0KHRoaXMucHJvZmlsZXMoYWRkcmVzcykuZXhpc3RzKQoJZnJhbWVfZGlnIC0xIC8vIGFkZHJlc3M6IEFkZHJlc3MKCWJveF9sZW4KCXN3YXAKCXBvcAoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL01vdGguYWxnby50czo3NAoJLy8gdmFsdWVzID0gdGhpcy5wcm9maWxlcyhhZGRyZXNzKS52YWx1ZQoJZnJhbWVfZGlnIC0xIC8vIGFkZHJlc3M6IEFkZHJlc3MKCWZyYW1lX2J1cnkgMCAvLyBzdG9yYWdlIGtleS8vdmFsdWVzCgoJLy8gY29udHJhY3RzL01vdGguYWxnby50czo3NgoJLy8gcmV0dXJuIHZhbHVlczsKCWZyYW1lX2RpZyAwIC8vIHN0b3JhZ2Uga2V5Ly92YWx1ZXMKCWJveF9nZXQKCgkvLyBib3ggdmFsdWUgZG9lcyBub3QgZXhpc3Q6IHRoaXMucHJvZmlsZXMoYWRkcmVzcykudmFsdWUKCWFzc2VydAoKCS8vIHNldCB0aGUgc3Vicm91dGluZSByZXR1cm4gdmFsdWUKCWZyYW1lX2J1cnkgMAoJcmV0c3ViCgoqY3JlYXRlX05vT3A6CgltZXRob2QgImNyZWF0ZUFwcGxpY2F0aW9uKHVpbnQ2NCx1aW50NjQpdm9pZCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb24KCgkvLyB0aGlzIGNvbnRyYWN0IGRvZXMgbm90IGltcGxlbWVudCB0aGUgZ2l2ZW4gQUJJIG1ldGhvZCBmb3IgY3JlYXRlIE5vT3AKCWVycgoKKmNhbGxfTm9PcDoKCW1ldGhvZCAiZ2V0TUJSKHBheSl1aW50NjQiCgltZXRob2QgIkVkaXRQcm9maWxlKHBheSxzdHJpbmcsc3RyaW5nLHN0cmluZyxzdHJpbmcsYm9vbCx1aW50NjQpKHN0cmluZyxzdHJpbmcsc3RyaW5nLHN0cmluZyxib29sLHVpbnQ2NCkiCgltZXRob2QgIkdldFNpdGVGZWUoKXVpbnQ2NCIKCW1ldGhvZCAiZ2V0UHJvZmlsZShhZGRyZXNzKShzdHJpbmcsc3RyaW5nLHN0cmluZyxzdHJpbmcsYm9vbCx1aW50NjQpIgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9nZXRNQlIgKmFiaV9yb3V0ZV9FZGl0UHJvZmlsZSAqYWJpX3JvdXRlX0dldFNpdGVGZWUgKmFiaV9yb3V0ZV9nZXRQcm9maWxlCgoJLy8gdGhpcyBjb250cmFjdCBkb2VzIG5vdCBpbXBsZW1lbnQgdGhlIGdpdmVuIEFCSSBtZXRob2QgZm9yIGNhbGwgTm9PcAoJZXJyCgoqcHJvY2Vzc19zdGF0aWNfdHVwbGVfZWxlbWVudDoKCXByb3RvIDQgMwoJZnJhbWVfZGlnIC00IC8vIHR1cGxlIGhlYWQKCWZyYW1lX2RpZyAtMSAvLyBlbGVtZW50Cgljb25jYXQKCWZyYW1lX2RpZyAtMyAvLyB0dXBsZSB0YWlsCglmcmFtZV9kaWcgLTIgLy8gaGVhZCBvZmZzZXQKCXJldHN1YgoKKnByb2Nlc3NfZHluYW1pY190dXBsZV9lbGVtZW50OgoJcHJvdG8gNCAzCglmcmFtZV9kaWcgLTQgLy8gdHVwbGUgaGVhZAoJZnJhbWVfZGlnIC0yIC8vIGhlYWQgb2Zmc2V0Cgljb25jYXQKCWZyYW1lX2J1cnkgLTQgLy8gdHVwbGUgaGVhZAoJZnJhbWVfZGlnIC0xIC8vIGVsZW1lbnQKCWR1cAoJbGVuCglmcmFtZV9kaWcgLTIgLy8gaGVhZCBvZmZzZXQKCWJ0b2kKCSsKCWl0b2IKCWV4dHJhY3QgNiAyCglmcmFtZV9idXJ5IC0yIC8vIGhlYWQgb2Zmc2V0CglmcmFtZV9kaWcgLTMgLy8gdHVwbGUgdGFpbAoJc3dhcAoJY29uY2F0CglmcmFtZV9idXJ5IC0zIC8vIHR1cGxlIHRhaWwKCWZyYW1lX2RpZyAtNCAvLyB0dXBsZSBoZWFkCglmcmFtZV9kaWcgLTMgLy8gdHVwbGUgdGFpbAoJZnJhbWVfZGlnIC0yIC8vIGhlYWQgb2Zmc2V0CglyZXRzdWI=",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDEw"
   },
   "contract": {
@@ -101,10 +116,70 @@ export const APP_SPEC: AppSpec = {
         }
       },
       {
+        "name": "getMBR",
+        "args": [
+          {
+            "name": "boxMBRPayment",
+            "type": "pay"
+          }
+        ],
+        "returns": {
+          "type": "uint64"
+        }
+      },
+      {
+        "name": "EditProfile",
+        "args": [
+          {
+            "name": "boxMBRPayment",
+            "type": "pay"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "logo",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "type": "string"
+          },
+          {
+            "name": "loyaltyEnabled",
+            "type": "bool"
+          },
+          {
+            "name": "loyaltyPercentage",
+            "type": "uint64"
+          }
+        ],
+        "returns": {
+          "type": "(string,string,string,string,bool,uint64)"
+        }
+      },
+      {
         "name": "GetSiteFee",
         "args": [],
         "returns": {
           "type": "uint64"
+        }
+      },
+      {
+        "name": "getProfile",
+        "args": [
+          {
+            "name": "address",
+            "type": "address"
+          }
+        ],
+        "returns": {
+          "type": "(string,string,string,string,bool,uint64)"
         }
       }
     ]
@@ -182,11 +257,38 @@ export type Moth = {
       argsTuple: [defultPercentage: bigint | number, siteFee: bigint | number]
       returns: void
     }>
+    & Record<'getMBR(pay)uint64' | 'getMBR', {
+      argsObj: {
+        boxMBRPayment: TransactionToSign | Transaction | Promise<SendTransactionResult>
+      }
+      argsTuple: [boxMBRPayment: TransactionToSign | Transaction | Promise<SendTransactionResult>]
+      returns: bigint
+    }>
+    & Record<'EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)' | 'EditProfile', {
+      argsObj: {
+        boxMBRPayment: TransactionToSign | Transaction | Promise<SendTransactionResult>
+        title: string
+        logo: string
+        description: string
+        url: string
+        loyaltyEnabled: boolean
+        loyaltyPercentage: bigint | number
+      }
+      argsTuple: [boxMBRPayment: TransactionToSign | Transaction | Promise<SendTransactionResult>, title: string, logo: string, description: string, url: string, loyaltyEnabled: boolean, loyaltyPercentage: bigint | number]
+      returns: [string, string, string, string, boolean, bigint]
+    }>
     & Record<'GetSiteFee()uint64' | 'GetSiteFee', {
       argsObj: {
       }
       argsTuple: []
       returns: bigint
+    }>
+    & Record<'getProfile(address)(string,string,string,string,bool,uint64)' | 'getProfile', {
+      argsObj: {
+        address: string
+      }
+      argsTuple: [address: string]
+      returns: [string, string, string, string, boolean, bigint]
     }>
   /**
    * Defines the shape of the global and local state of the application.
@@ -270,6 +372,34 @@ export abstract class MothCallFactory {
   }
 
   /**
+   * Constructs a no op call for the getMBR(pay)uint64 ABI method
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static getMbr(args: MethodArgs<'getMBR(pay)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'getMBR(pay)uint64' as const,
+      methodArgs: Array.isArray(args) ? args : [args.boxMBRPayment],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64) ABI method
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static editProfile(args: MethodArgs<'EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)' as const,
+      methodArgs: Array.isArray(args) ? args : [args.boxMBRPayment, args.title, args.logo, args.description, args.url, args.loyaltyEnabled, args.loyaltyPercentage],
+      ...params,
+    }
+  }
+  /**
    * Constructs a no op call for the GetSiteFee()uint64 ABI method
    *
    * @param args Any args for the contract call
@@ -280,6 +410,20 @@ export abstract class MothCallFactory {
     return {
       method: 'GetSiteFee()uint64' as const,
       methodArgs: Array.isArray(args) ? args : [],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the getProfile(address)(string,string,string,string,bool,uint64) ABI method
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static getProfile(args: MethodArgs<'getProfile(address)(string,string,string,string,bool,uint64)'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'getProfile(address)(string,string,string,string,bool,uint64)' as const,
+      methodArgs: Array.isArray(args) ? args : [args.address],
       ...params,
     }
   }
@@ -383,6 +527,28 @@ export class MothClient {
   }
 
   /**
+   * Calls the getMBR(pay)uint64 ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public getMbr(args: MethodArgs<'getMBR(pay)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(MothCallFactory.getMbr(args, params))
+  }
+
+  /**
+   * Calls the EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64) ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public editProfile(args: MethodArgs<'EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(MothCallFactory.editProfile(args, params))
+  }
+
+  /**
    * Calls the GetSiteFee()uint64 ABI method.
    *
    * @param args The arguments for the contract call
@@ -391,6 +557,17 @@ export class MothClient {
    */
   public getSiteFee(args: MethodArgs<'GetSiteFee()uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
     return this.call(MothCallFactory.getSiteFee(args, params))
+  }
+
+  /**
+   * Calls the getProfile(address)(string,string,string,string,bool,uint64) ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public getProfile(args: MethodArgs<'getProfile(address)(string,string,string,string,bool,uint64)'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(MothCallFactory.getProfile(args, params))
   }
 
   /**
@@ -458,8 +635,23 @@ export class MothClient {
     let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
+      getMbr(args: MethodArgs<'getMBR(pay)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.getMbr(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      editProfile(args: MethodArgs<'EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.editProfile(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
       getSiteFee(args: MethodArgs<'GetSiteFee()uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
         promiseChain = promiseChain.then(() => client.getSiteFee(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      getProfile(args: MethodArgs<'getProfile(address)(string,string,string,string,bool,uint64)'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.getProfile(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
@@ -497,6 +689,24 @@ export class MothClient {
 }
 export type MothComposer<TReturns extends [...any[]] = []> = {
   /**
+   * Calls the getMBR(pay)uint64 ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  getMbr(args: MethodArgs<'getMBR(pay)uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): MothComposer<[...TReturns, MethodReturn<'getMBR(pay)uint64'>]>
+
+  /**
+   * Calls the EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64) ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  editProfile(args: MethodArgs<'EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): MothComposer<[...TReturns, MethodReturn<'EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)'>]>
+
+  /**
    * Calls the GetSiteFee()uint64 ABI method.
    *
    * @param args The arguments for the contract call
@@ -504,6 +714,15 @@ export type MothComposer<TReturns extends [...any[]] = []> = {
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
   getSiteFee(args: MethodArgs<'GetSiteFee()uint64'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): MothComposer<[...TReturns, MethodReturn<'GetSiteFee()uint64'>]>
+
+  /**
+   * Calls the getProfile(address)(string,string,string,string,bool,uint64) ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  getProfile(args: MethodArgs<'getProfile(address)(string,string,string,string,bool,uint64)'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): MothComposer<[...TReturns, MethodReturn<'getProfile(address)(string,string,string,string,bool,uint64)'>]>
 
   /**
    * Makes a clear_state call to an existing instance of the Moth smart contract.

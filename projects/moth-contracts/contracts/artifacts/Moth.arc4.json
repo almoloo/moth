@@ -19,10 +19,70 @@
       }
     },
     {
+      "name": "getMBR",
+      "args": [
+        {
+          "name": "boxMBRPayment",
+          "type": "pay"
+        }
+      ],
+      "returns": {
+        "type": "uint64"
+      }
+    },
+    {
+      "name": "EditProfile",
+      "args": [
+        {
+          "name": "boxMBRPayment",
+          "type": "pay"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "logo",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "url",
+          "type": "string"
+        },
+        {
+          "name": "loyaltyEnabled",
+          "type": "bool"
+        },
+        {
+          "name": "loyaltyPercentage",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "(string,string,string,string,bool,uint64)"
+      }
+    },
+    {
       "name": "GetSiteFee",
       "args": [],
       "returns": {
         "type": "uint64"
+      }
+    },
+    {
+      "name": "getProfile",
+      "args": [
+        {
+          "name": "address",
+          "type": "address"
+        }
+      ],
+      "returns": {
+        "type": "(string,string,string,string,bool,uint64)"
       }
     }
   ]

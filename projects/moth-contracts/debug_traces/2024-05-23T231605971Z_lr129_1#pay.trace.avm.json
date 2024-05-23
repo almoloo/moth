@@ -1,0 +1,2236 @@
+{
+  "last-round": 129,
+  "txn-groups": [
+    {
+      "txn-results": [
+        {
+          "txn-result": {
+            "pool-error": "",
+            "txn": {
+              "txn": {
+                "amt": 138500,
+                "fee": 1000,
+                "fv": 129,
+                "gen": "dockernet-v1",
+                "gh": "3lIBPOkQ7rK5A6t5VxKKKUrCnkQ+Y56XDWFlkhMgNQg=",
+                "grp": "t9QzON0TtcjEDHFA8OHbcSJDKO6Yw7RURhDRXmpMnc8=",
+                "lv": 1129,
+                "rcv": "143av6J6s7jpCwXyfqpzitep7afBbv639aa0f9Bums4=",
+                "snd": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4=",
+                "type": "pay"
+              }
+            }
+          }
+        },
+        {
+          "txn-result": {
+            "pool-error": "",
+            "txn": {
+              "txn": {
+                "apaa": [
+                  "ubgcsg==",
+                  "AARzaG9w",
+                  "AAdsb2dvIGlk",
+                  "AA5hIHNpdGUgdG8gc2VsbA==",
+                  "AAhzaXRlIHVybA==",
+                  "gA==",
+                  "AAAAAAAAAAU="
+                ],
+                "apbx": [
+                  {
+                    "n": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4="
+                  }
+                ],
+                "apid": 1140,
+                "fee": 1000,
+                "fv": 129,
+                "gen": "dockernet-v1",
+                "gh": "3lIBPOkQ7rK5A6t5VxKKKUrCnkQ+Y56XDWFlkhMgNQg=",
+                "grp": "t9QzON0TtcjEDHFA8OHbcSJDKO6Yw7RURhDRXmpMnc8=",
+                "lv": 1129,
+                "snd": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4=",
+                "type": "appl"
+              }
+            }
+          },
+          "app-budget-consumed": 215,
+          "exec-trace": {
+            "approval-program-hash": "Rb/8haGGRecZYsNQKoOxHUZuIC/7dak6j1uIIGVFvHk=",
+            "approval-program-trace": [
+              {
+                "pc": 1
+              },
+              {
+                "pc": 5
+              },
+              {
+                "pc": 35,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1140
+                  }
+                ]
+              },
+              {
+                "pc": 37,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 38,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 6
+                  }
+                ]
+              },
+              {
+                "pc": 40,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 41,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ]
+              },
+              {
+                "pc": 43,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 44,
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 449,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "BnnJjw=="
+                  }
+                ]
+              },
+              {
+                "pc": 455,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ubgcsg=="
+                  }
+                ]
+              },
+              {
+                "pc": 461,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "EflLkA=="
+                  }
+                ]
+              },
+              {
+                "pc": 467,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "PGWGWA=="
+                  }
+                ]
+              },
+              {
+                "pc": 473,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ubgcsg=="
+                  }
+                ]
+              },
+              {
+                "pc": 476,
+                "stack-pop-count": 5
+              },
+              {
+                "pc": 213,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "FR98dQ=="
+                  }
+                ]
+              },
+              {
+                "pc": 214,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAAAU="
+                  }
+                ]
+              },
+              {
+                "pc": 217,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 5
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 218,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "gA=="
+                  }
+                ]
+              },
+              {
+                "pc": 221,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "gA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "gA=="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 222,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 223,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ]
+              },
+              {
+                "pc": 224,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 225,
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 226,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ]
+              },
+              {
+                "pc": 227,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 228,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  }
+                ]
+              },
+              {
+                "pc": 231,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "c2l0ZSB1cmw="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 234,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ]
+              },
+              {
+                "pc": 237,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "YSBzaXRlIHRvIHNlbGw="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 240,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  }
+                ]
+              },
+              {
+                "pc": 243,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "bG9nbyBpZA=="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 246,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ]
+              },
+              {
+                "pc": 249,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "c2hvcA=="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 252,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ]
+              },
+              {
+                "pc": 254,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ]
+              },
+              {
+                "pc": 255,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 256,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  },
+                  {
+                    "type": 2
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 257,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 259,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ]
+              },
+              {
+                "pc": 260,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 261,
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 262
+              },
+              {
+                "pc": 269
+              },
+              {
+                "pc": 272,
+                "stack-additions": [
+                  {
+                    "type": 1
+                  }
+                ]
+              },
+              {
+                "pc": 273,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "143av6J6s7jpCwXyfqpzitep7afBbv639aa0f9Bums4="
+                  }
+                ]
+              },
+              {
+                "pc": 275,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 100000
+                  },
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 277,
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 278,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 100000
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 280,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4="
+                  }
+                ]
+              },
+              {
+                "pc": 282,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 283,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ],
+                "stack-pop-count": 1,
+                "state-changes": [
+                  {
+                    "app-state-type": "b",
+                    "key": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4=",
+                    "operation": "d"
+                  }
+                ]
+              },
+              {
+                "pc": 284,
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 285,
+                "stack-additions": [
+                  {
+                    "type": 1
+                  }
+                ]
+              },
+              {
+                "pc": 286,
+                "stack-additions": [
+                  {
+                    "type": 1
+                  }
+                ]
+              },
+              {
+                "pc": 287,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  }
+                ]
+              },
+              {
+                "pc": 289,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "c2hvcA=="
+                  }
+                ]
+              },
+              {
+                "pc": 291,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "c2hvcA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "c2hvcA=="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 292,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 4
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 293,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAAAQ="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 294,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAQ="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 297,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAQ="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "c2hvcA=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 298,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 299
+              },
+              {
+                "pc": 500
+              },
+              {
+                "pc": 503,
+                "stack-additions": [
+                  {
+                    "type": 1
+                  }
+                ]
+              },
+              {
+                "pc": 505,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  }
+                ]
+              },
+              {
+                "pc": 507,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 508,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  },
+                  {
+                    "type": 1
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ],
+                "stack-pop-count": 5
+              },
+              {
+                "pc": 510,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ]
+              },
+              {
+                "pc": 512,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 513,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 6
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 514,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  }
+                ]
+              },
+              {
+                "pc": 516,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 17
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 517,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 23
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 518,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAABc="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 519,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABc="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 522,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABc="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ],
+                "stack-pop-count": 4
+              },
+              {
+                "pc": 524,
+                "stack-additions": [
+                  {
+                    "type": 1
+                  }
+                ]
+              },
+              {
+                "pc": 526,
+                "stack-additions": [
+                  {
+                    "type": 1
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 527,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 528,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ABc="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ],
+                "stack-pop-count": 4
+              },
+              {
+                "pc": 530,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  }
+                ]
+              },
+              {
+                "pc": 532,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ]
+              },
+              {
+                "pc": 534,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABc="
+                  }
+                ]
+              },
+              {
+                "pc": 536,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ABc="
+                  }
+                ],
+                "stack-pop-count": 7
+              },
+              {
+                "pc": 302,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "bG9nbyBpZA=="
+                  }
+                ]
+              },
+              {
+                "pc": 304,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "bG9nbyBpZA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "bG9nbyBpZA=="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 305,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 7
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 306,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAAAc="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 307,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAc="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 310,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAc="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "bG9nbyBpZA=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 311,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 312
+              },
+              {
+                "pc": 500
+              },
+              {
+                "pc": 503,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABE="
+                  }
+                ]
+              },
+              {
+                "pc": 505,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABc="
+                  }
+                ]
+              },
+              {
+                "pc": 507,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFw=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 508,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFw=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ABc="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  }
+                ],
+                "stack-pop-count": 5
+              },
+              {
+                "pc": 510,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  }
+                ]
+              },
+              {
+                "pc": 512,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 513,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 9
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 514,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABc="
+                  }
+                ]
+              },
+              {
+                "pc": 516,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 23
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 517,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 32
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 518,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAACA="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 519,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ACA="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 522,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ACA="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  }
+                ],
+                "stack-pop-count": 4
+              },
+              {
+                "pc": 524,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  }
+                ]
+              },
+              {
+                "pc": 526,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9w"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 527,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlk"
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 528,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlk"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ACA="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAdsb2dvIGlk"
+                  }
+                ],
+                "stack-pop-count": 4
+              },
+              {
+                "pc": 530,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFw=="
+                  }
+                ]
+              },
+              {
+                "pc": 532,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlk"
+                  }
+                ]
+              },
+              {
+                "pc": 534,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ACA="
+                  }
+                ]
+              },
+              {
+                "pc": 536,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFw=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlk"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ACA="
+                  }
+                ],
+                "stack-pop-count": 7
+              },
+              {
+                "pc": 315,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "YSBzaXRlIHRvIHNlbGw="
+                  }
+                ]
+              },
+              {
+                "pc": 317,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "YSBzaXRlIHRvIHNlbGw="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "YSBzaXRlIHRvIHNlbGw="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 318,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 14
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 319,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAAA4="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 320,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AA4="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 323,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AA4="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "YSBzaXRlIHRvIHNlbGw="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 324,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 325
+              },
+              {
+                "pc": 500
+              },
+              {
+                "pc": 503,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFw=="
+                  }
+                ]
+              },
+              {
+                "pc": 505,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ACA="
+                  }
+                ]
+              },
+              {
+                "pc": 507,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAg"
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 508,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAg"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlk"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ACA="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ],
+                "stack-pop-count": 5
+              },
+              {
+                "pc": 510,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ]
+              },
+              {
+                "pc": 512,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 513,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 16
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 514,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ACA="
+                  }
+                ]
+              },
+              {
+                "pc": 516,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 32
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 517,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 48
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 518,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAADA="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 519,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADA="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 522,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADA="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ],
+                "stack-pop-count": 4
+              },
+              {
+                "pc": 524,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlk"
+                  }
+                ]
+              },
+              {
+                "pc": 526,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlk"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 527,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 528,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ADA="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ],
+                "stack-pop-count": 4
+              },
+              {
+                "pc": 530,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAg"
+                  }
+                ]
+              },
+              {
+                "pc": 532,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ]
+              },
+              {
+                "pc": 534,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADA="
+                  }
+                ]
+              },
+              {
+                "pc": 536,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAg"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ADA="
+                  }
+                ],
+                "stack-pop-count": 7
+              },
+              {
+                "pc": 328,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "c2l0ZSB1cmw="
+                  }
+                ]
+              },
+              {
+                "pc": 330,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "c2l0ZSB1cmw="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "c2l0ZSB1cmw="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 331,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 8
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 332,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAAAg="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 333,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAg="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 336,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAg="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "c2l0ZSB1cmw="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 337,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 338
+              },
+              {
+                "pc": 500
+              },
+              {
+                "pc": 503,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAg"
+                  }
+                ]
+              },
+              {
+                "pc": 505,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADA="
+                  }
+                ]
+              },
+              {
+                "pc": 507,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADA="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 508,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADA="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ADA="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  }
+                ],
+                "stack-pop-count": 5
+              },
+              {
+                "pc": 510,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  }
+                ]
+              },
+              {
+                "pc": 512,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 513,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 10
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 514,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADA="
+                  }
+                ]
+              },
+              {
+                "pc": 516,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 48
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 517,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 58
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 518,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAADo="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 519,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 522,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  }
+                ],
+                "stack-pop-count": 4
+              },
+              {
+                "pc": 524,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbA=="
+                  }
+                ]
+              },
+              {
+                "pc": 526,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbA=="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 527,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbAAIc2l0ZSB1cmw="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 528,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbAAIc2l0ZSB1cmw="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AAhzaXRlIHVybA=="
+                  }
+                ],
+                "stack-pop-count": 4
+              },
+              {
+                "pc": 530,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADA="
+                  }
+                ]
+              },
+              {
+                "pc": 532,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbAAIc2l0ZSB1cmw="
+                  }
+                ]
+              },
+              {
+                "pc": 534,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  }
+                ]
+              },
+              {
+                "pc": 536,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADA="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbAAIc2l0ZSB1cmw="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  }
+                ],
+                "stack-pop-count": 7
+              },
+              {
+                "pc": 341,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AA=="
+                  }
+                ]
+              },
+              {
+                "pc": 343,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ]
+              },
+              {
+                "pc": 344,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ]
+              },
+              {
+                "pc": 346,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "gA=="
+                  }
+                ],
+                "stack-pop-count": 3
+              },
+              {
+                "pc": 347
+              },
+              {
+                "pc": 487
+              },
+              {
+                "pc": 490,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADA="
+                  }
+                ]
+              },
+              {
+                "pc": 492,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "gA=="
+                  }
+                ]
+              },
+              {
+                "pc": 494,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADCA"
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 495,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbAAIc2l0ZSB1cmw="
+                  }
+                ]
+              },
+              {
+                "pc": 497,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  }
+                ]
+              },
+              {
+                "pc": 499,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADCA"
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbAAIc2l0ZSB1cmw="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  }
+                ],
+                "stack-pop-count": 7
+              },
+              {
+                "pc": 350,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 5
+                  }
+                ]
+              },
+              {
+                "pc": 352,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAAAU="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 353
+              },
+              {
+                "pc": 487
+              },
+              {
+                "pc": 490,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADCA"
+                  }
+                ]
+              },
+              {
+                "pc": 492,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AAAAAAAAAAU="
+                  }
+                ]
+              },
+              {
+                "pc": 494,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADCAAAAAAAAAAAU="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 495,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbAAIc2l0ZSB1cmw="
+                  }
+                ]
+              },
+              {
+                "pc": 497,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  }
+                ]
+              },
+              {
+                "pc": 499,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADCAAAAAAAAAAAU="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "AARzaG9wAAdsb2dvIGlkAA5hIHNpdGUgdG8gc2VsbAAIc2l0ZSB1cmw="
+                  },
+                  {
+                    "type": 1,
+                    "bytes": "ADo="
+                  }
+                ],
+                "stack-pop-count": 7
+              },
+              {
+                "pc": 356,
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 357,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "ABEAFwAgADCAAAAAAAAAAAUABHNob3AAB2xvZ28gaWQADmEgc2l0ZSB0byBzZWxsAAhzaXRlIHVybA=="
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 358,
+                "stack-pop-count": 2,
+                "state-changes": [
+                  {
+                    "app-state-type": "b",
+                    "key": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4=",
+                    "operation": "w",
+                    "new-value": {
+                      "type": 1,
+                      "bytes": "ABEAFwAgADCAAAAAAAAAAAUABHNob3AAB2xvZ28gaWQADmEgc2l0ZSB0byBzZWxsAAhzaXRlIHVybA=="
+                    }
+                  }
+                ]
+              },
+              {
+                "pc": 359,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ]
+              },
+              {
+                "pc": 361,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "143av6J6s7jpCwXyfqpzitep7afBbv639aa0f9Bums4="
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 363,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "143av6J6s7jpCwXyfqpzitep7afBbv639aa0f9Bums4="
+                  }
+                ]
+              },
+              {
+                "pc": 365,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 366,
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 367,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ]
+              },
+              {
+                "pc": 369,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 138500
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 371,
+                "stack-additions": [
+                  {
+                    "type": 1,
+                    "bytes": "143av6J6s7jpCwXyfqpzitep7afBbv639aa0f9Bums4="
+                  }
+                ]
+              },
+              {
+                "pc": 373,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 138500
+                  },
+                  {
+                    "type": 2,
+                    "uint": 1
+                  }
+                ],
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 375,
+                "stack-pop-count": 1
+              },
+              {
+                "pc": 376,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 100000
+                  }
+                ]
+              },
+              {
+                "pc": 378,
+                "stack-additions": [
+                  {
+                    "type": 2,
+                    "uint": 38500
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 379,
+                "stack-additions": [
+                  {
+                    "type": 2
+                  }
+                ],
+                "stack-pop-count": 2
+              },
+              {
+                "pc": 380,
+                "stack-pop-count": 1
+              }
+            ]
+          }
+        }
+      ],
+      "app-budget-added": 700,
+      "app-budget-consumed": 215,
+      "failed-at": [
+        1
+      ],
+      "failure-message": "transaction SMBUFAOHZORGI5W6JJAW4BSEBK4WSORU2H3ODARB3YQVND2SRK4A: logic eval error: assert failed pc=380. Details: app=1140, pc=380, opcodes=-; ==; assert"
+    }
+  ],
+  "version": 2,
+  "eval-overrides": {
+    "allow-empty-signatures": true,
+    "max-log-calls": 2048,
+    "max-log-size": 65536
+  },
+  "exec-trace-config": {
+    "enable": true,
+    "scratch-change": true,
+    "stack-change": true,
+    "state-change": true
+  },
+  "initial-states": {
+    "app-initial-states": [
+      {
+        "id": 1140,
+        "app-boxes": {
+          "kvs": [
+            {
+              "key": "iZ8JTvn9vw87uyEGgaMqoCG0YZdK/r1oKq0pv2H9TX4=",
+              "value": {
+                "type": 0
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
