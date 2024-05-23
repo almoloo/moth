@@ -1,0 +1,29 @@
+{
+  "name": "Moth",
+  "desc": "",
+  "methods": [
+    {
+      "name": "createApplication",
+      "args": [
+        {
+          "name": "defultPercentage",
+          "type": "uint64"
+        },
+        {
+          "name": "siteFee",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetSiteFee",
+      "args": [],
+      "returns": {
+        "type": "uint64"
+      }
+    }
+  ]
+}
