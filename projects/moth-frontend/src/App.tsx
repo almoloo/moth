@@ -12,6 +12,7 @@ import Explore from './routes/Explore';
 import Profile from './routes/Profile';
 import Gateway from './routes/Gateway';
 import Layout from './components/Layout';
+import NoMatch from './components/NoMatch';
 
 let providersArray: ProvidersArray;
 if (import.meta.env.VITE_ALGOD_NETWORK === '') {
@@ -79,8 +80,12 @@ export default function App() {
 							element={addLayout(<Profile />)}
 						/>
 						<Route
-							path="/gateway"
+							path="/gateway/:address"
 							element={<Gateway />}
+						/>
+						<Route
+							path="*"
+							element={addLayout(<NoMatch />)}
 						/>
 					</Routes>
 				</Router>

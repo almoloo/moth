@@ -1,3 +1,8 @@
+import algokit from '@algorandfoundation/algokit-utils';
+import { MothClient } from '@/contracts/Moth';
+import { TransactionSignerAccount } from '@algorandfoundation/algokit-utils/types/account';
+import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
+
 import PageHeader from '@/components/PageHeader';
 import { Loader, SaveIcon, SquareUserRoundIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
@@ -29,7 +34,23 @@ const formSchema = z.object({
 interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
-	const { activeAddress } = useWallet();
+	const { signer, activeAddress } = useWallet();
+	const algodConfig = getAlgodConfigFromViteEnvironment();
+	const algodClient = algokit.getAlgoClient({
+		server: algodConfig.server,
+		port: algodConfig.port,
+		token: algodConfig.token,
+	});
+
+	const appClient = new MothClient(
+		{
+			sender: { signer, addr: activeAddress } as TransactionSignerAccount,
+			resolveBy: 'id',
+			id: 0,
+		},
+		algodClient,
+	);
+
 	const [loadingFormData, setLoadingFormData] = React.useState<boolean>(true);
 	const [loadingSubmit, setLoadingSubmit] = React.useState<boolean>(false);
 	const sampleProfile = {
@@ -54,6 +75,12 @@ const Profile: React.FC<ProfileProps> = () => {
 		const getProfileData = async () => {
 			if (!activeAddress) return;
 			setRetreivedProfile({ ...retreivedProfile, address: activeAddress });
+
+			await appClient.create.createApplication({}).catch((e: Error) => {
+				toast.error(`Error deploying the contract: ${e.message}`);
+				return;
+			});
+
 			try {
 				const profile = await fetchProfile(activeAddress);
 				if (profile === null) throw new Error('Profile not found');

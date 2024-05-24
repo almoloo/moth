@@ -60,7 +60,7 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
 	return (
 		<dialog
 			id="appcalls_modal"
-			className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`}
+			className={`fixed top-0 z-30 modal ${openModal ? 'modal-open' : ''} bg-slate-200`}
 			style={{ display: openModal ? 'block' : 'none' }}
 		>
 			<form

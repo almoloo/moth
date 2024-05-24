@@ -19,6 +19,10 @@
 	.layout-container {
 		@apply flex flex-col grow;
 	}
+
+	.gateway-container {
+		@apply h-screen bg-gradient-to-b from-slate-50 from-50% via-slate-50 to-rose-500 to-50%;
+	}
 }
 
 @layer utilities {
