@@ -31,12 +31,44 @@
       }
     },
     {
-      "name": "EditProfile",
+      "name": "CreateProfile",
       "args": [
         {
           "name": "boxMBRPayment",
           "type": "pay"
         },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "logo",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "url",
+          "type": "string"
+        },
+        {
+          "name": "loyaltyEnabled",
+          "type": "bool"
+        },
+        {
+          "name": "loyaltyPercentage",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "(string,string,string,string,bool,uint64)"
+      }
+    },
+    {
+      "name": "EditProfile",
+      "args": [
         {
           "name": "title",
           "type": "string"

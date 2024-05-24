@@ -48,6 +48,7 @@ describe('HelloWorld', () => {
 
     await appClient.create.createApplication({ defultPercentage, siteFee });
   });
+
   test('get Site Fee', async () => {
     const getSiteFee = await appClient.getSiteFee({});
 
@@ -71,17 +72,17 @@ describe('HelloWorld', () => {
     expect(proposalFromMethod.return?.valueOf()).toBe(BigInt(34_900));
   });
 
-  test('edit profile', async () => {
+  test('create profile', async () => {
     const { appAddress } = await appClient.appClient.getAppReference();
 
     const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
       from: sender.addr,
       to: appAddress,
-      amount: 138500,
+      amount: 134_900,
       suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
 
-    const newProfile = await appClient.editProfile(
+    const newProfile = await appClient.createProfile(
       {
         boxMBRPayment,
         title: 'shop',
@@ -104,11 +105,41 @@ describe('HelloWorld', () => {
     ]);
   });
 
+  test('edit Profile', async () => {
+    const editProfile = await appClient.editProfile(
+      {
+        title: 'new shop',
+        logo: 'logo id',
+        description: 'a site to sell',
+        url: 'site url',
+        loyaltyEnabled: true,
+        loyaltyPercentage: 5,
+      },
+      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
+    );
+
+    expect(editProfile.return?.valueOf()).toStrictEqual([
+      'new shop',
+      'logo id',
+      'a site to sell',
+      'site url',
+      true,
+      BigInt(5),
+    ]);
+  });
+
   test('get profile', async () => {
     const profile = await appClient.getProfile({
       address: sender.addr,
     });
 
-    expect(profile.return?.valueOf()).toStrictEqual(['shop', 'logo id', 'a site to sell', 'site url', true, BigInt(5)]);
+    expect(profile.return?.valueOf()).toStrictEqual([
+      'new shop',
+      'logo id',
+      'a site to sell',
+      'site url',
+      true,
+      BigInt(5),
+    ]);
   });
 });
