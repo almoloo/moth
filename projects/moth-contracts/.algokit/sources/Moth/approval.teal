@@ -154,8 +154,8 @@ getMBR:
 	popn 1
 	retsub
 
-// EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
-*abi_route_EditProfile:
+// CreateProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
+*abi_route_CreateProfile:
 	// The ABI return prefix
 	byte 0x151f7c75
 
@@ -170,7 +170,7 @@ getMBR:
 	int 1
 	==
 
-	// argument 1 (loyaltyEnabled) for EditProfile must be a bool
+	// argument 1 (loyaltyEnabled) for CreateProfile must be a bool
 	assert
 	int 0
 	getbit
@@ -200,18 +200,18 @@ getMBR:
 	int pay
 	==
 
-	// argument 6 (boxMBRPayment) for EditProfile must be a pay transaction
+	// argument 6 (boxMBRPayment) for CreateProfile must be a pay transaction
 	assert
 
-	// execute EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
-	callsub EditProfile
+	// execute CreateProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
+	callsub CreateProfile
 	concat
 	log
 	int 1
 	return
 
-// EditProfile(boxMBRPayment: PayTxn, title: string, logo: string, description: string, url: string, loyaltyEnabled: boolean, loyaltyPercentage: uint64): profile
-EditProfile:
+// CreateProfile(boxMBRPayment: PayTxn, title: string, logo: string, description: string, url: string, loyaltyEnabled: boolean, loyaltyPercentage: uint64): profile
+CreateProfile:
 	proto 7 1
 
 	// Push empty bytes after the frame pointer to reserve space for local variables
@@ -296,6 +296,131 @@ EditProfile:
 	frame_bury 0
 	retsub
 
+// EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
+*abi_route_EditProfile:
+	// The ABI return prefix
+	byte 0x151f7c75
+
+	// loyaltyPercentage: uint64
+	txna ApplicationArgs 6
+	btoi
+
+	// loyaltyEnabled: bool
+	txna ApplicationArgs 5
+	dup
+	len
+	int 1
+	==
+
+	// argument 1 (loyaltyEnabled) for EditProfile must be a bool
+	assert
+	int 0
+	getbit
+
+	// url: string
+	txna ApplicationArgs 4
+	extract 2 0
+
+	// description: string
+	txna ApplicationArgs 3
+	extract 2 0
+
+	// logo: string
+	txna ApplicationArgs 2
+	extract 2 0
+
+	// title: string
+	txna ApplicationArgs 1
+	extract 2 0
+
+	// execute EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
+	callsub EditProfile
+	concat
+	log
+	int 1
+	return
+
+// EditProfile(title: string, logo: string, description: string, url: string, loyaltyEnabled: boolean, loyaltyPercentage: uint64): profile
+EditProfile:
+	proto 6 1
+
+	// contracts/Moth.algo.ts:76
+	// assert(this.profiles(this.txn.sender).exists)
+	txn Sender
+	box_len
+	swap
+	pop
+	assert
+
+	// contracts/Moth.algo.ts:77
+	// this.profiles(this.txn.sender).value = {
+	//       title: title,
+	//       logo: logo,
+	//       description: description,
+	//       url: url,
+	//       loyaltyEnabled: loyaltyEnabled,
+	//       loyaltyPercentage: loyaltyPercentage,
+	//     }
+	txn Sender
+	dup
+	box_del
+	pop
+	byte 0x // initial head
+	byte 0x // initial tail
+	byte 0x0011 // initial head offset
+	frame_dig -1 // title: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	callsub *process_dynamic_tuple_element
+	frame_dig -2 // logo: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	callsub *process_dynamic_tuple_element
+	frame_dig -3 // description: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	callsub *process_dynamic_tuple_element
+	frame_dig -4 // url: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	callsub *process_dynamic_tuple_element
+	byte 0x00
+	int 0
+	frame_dig -5 // loyaltyEnabled: boolean
+	setbit
+	callsub *process_static_tuple_element
+	frame_dig -6 // loyaltyPercentage: uint64
+	itob
+	callsub *process_static_tuple_element
+	pop // pop head offset
+	concat // concat head and tail
+	box_put
+
+	// contracts/Moth.algo.ts:86
+	// return this.profiles(this.txn.sender).value;
+	txn Sender
+	box_get
+
+	// box value does not exist: this.profiles(this.txn.sender).value
+	assert
+	retsub
+
 // GetSiteFee()uint64
 *abi_route_GetSiteFee:
 	// The ABI return prefix
@@ -313,7 +438,7 @@ EditProfile:
 GetSiteFee:
 	proto 0 1
 
-	// contracts/Moth.algo.ts:69
+	// contracts/Moth.algo.ts:90
 	// return this.siteFee.value;
 	byte 0x73697465466565 // "siteFee"
 	app_global_get
@@ -348,7 +473,7 @@ getProfile:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// contracts/Moth.algo.ts:73
+	// contracts/Moth.algo.ts:94
 	// assert(this.profiles(address).exists)
 	frame_dig -1 // address: Address
 	box_len
@@ -356,12 +481,12 @@ getProfile:
 	pop
 	assert
 
-	// contracts/Moth.algo.ts:74
+	// contracts/Moth.algo.ts:95
 	// values = this.profiles(address).value
 	frame_dig -1 // address: Address
 	frame_bury 0 // storage key//values
 
-	// contracts/Moth.algo.ts:76
+	// contracts/Moth.algo.ts:97
 	// return values;
 	frame_dig 0 // storage key//values
 	box_get
@@ -383,11 +508,12 @@ getProfile:
 
 *call_NoOp:
 	method "getMBR(pay)uint64"
-	method "EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
+	method "CreateProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
+	method "EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
 	method "GetSiteFee()uint64"
 	method "getProfile(address)(string,string,string,string,bool,uint64)"
 	txna ApplicationArgs 0
-	match *abi_route_getMBR *abi_route_EditProfile *abi_route_GetSiteFee *abi_route_getProfile
+	match *abi_route_getMBR *abi_route_CreateProfile *abi_route_EditProfile *abi_route_GetSiteFee *abi_route_getProfile
 
 	// this contract does not implement the given ABI method for call NoOp
 	err
