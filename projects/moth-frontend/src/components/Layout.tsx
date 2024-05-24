@@ -7,6 +7,7 @@ import { useWallet } from '@txnlab/use-wallet';
 import ConnectWallet from '../components/ConnectWallet';
 import Transact from '../components/Transact';
 import AppCalls from '../components/AppCalls';
+import { Toaster } from '@/components/ui/sonner';
 
 interface LayoutProps {
 	children: React.ReactNode;
@@ -32,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
 	return (
 		<>
-			<header className="px-[25px] py-[15px] lg:px-[100px] flex items-center border-b sticky top-0 bg-white">
+			<header className="px-[25px] py-[15px] lg:px-[100px] flex items-center border-b sticky top-0 z-10 bg-white">
 				<Link to="/">
 					<Logo className="h-6 text-neutral-700" />
 				</Link>
@@ -40,6 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 					<Button
 						size="sm"
 						variant="link"
+						asChild
 					>
 						<Link to="/about">About Us</Link>
 					</Button>
@@ -59,7 +61,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 							Transactions Demo
 						</button>
 					)} */}
-					{/* {activeAddress && (
+					{activeAddress && (
 						<button
 							data-test-id="appcalls-demo"
 							className="btn m-2"
@@ -67,7 +69,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 						>
 							Contract Interactions Demo
 						</button>
-					)} */}
+					)}
 				</nav>
 			</header>
 			<main className="layout-container">{children}</main>
@@ -76,15 +78,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 					<Link to="/">
 						<Logo className="text-neutral-400 h-6" />
 					</Link>
-					<Link to="https://github.com/almoloo/moth">
-						<Button
-							variant="outline"
-							size="icon"
-							className="rounded-full"
-						>
+					<Button
+						variant="outline"
+						size="icon"
+						className="rounded-full"
+						asChild
+					>
+						<Link to="https://github.com/almoloo/moth">
 							<GithubIcon className="h-4 w-4 text-rose-500" />
-						</Button>
-					</Link>
+						</Link>
+					</Button>
 				</div>
 				<div className="mt-[30px] flex items-center justify-center space-x-1">
 					<BracesIcon className="h-4 w-4 text-rose-300" />
@@ -108,6 +111,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 				openModal={appCallsDemoModal}
 				setModalState={setAppCallsDemoModal}
 			/>
+			<Toaster />
 		</>
 	);
 };

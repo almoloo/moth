@@ -103,8 +103,8 @@ const Home: React.FC<HomeProps> = () => {
 					</Button>
 				</div>
 				<div className="col-span-2 flex flex-col gap-8">
-					{faqList.map((item) => (
-						<div>
+					{faqList.map((item, index) => (
+						<div key={index}>
 							<strong className="block mb-3">{item.question}</strong>
 							<p className="text-neutral-600">{item.answer}</p>
 						</div>
