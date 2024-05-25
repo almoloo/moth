@@ -1,4 +1,4 @@
-import algokit from '@algorandfoundation/algokit-utils';
+import * as algokit from '@algorandfoundation/algokit-utils';
 import { MothClient } from '@/contracts/Moth';
 import { TransactionSignerAccount } from '@algorandfoundation/algokit-utils/types/account';
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { fetchProfile } from '@/utils/data';
 import { toast } from 'sonner';
 import { saveProfile } from '@/utils/actions';
+import algosdk from 'algosdk';
 
 const formSchema = z.object({
 	address: z.string().length(58),
@@ -28,13 +29,17 @@ const formSchema = z.object({
 	url: z.string().url(),
 	loyaltyEnabled: z.boolean(),
 	loyaltyMultiplierEnabled: z.boolean(),
-	loyaltyPercentage: z.number().min(0).max(100),
+	// loyaltyPercentage: z.number().min(0).max(100),
+	loyaltyPercentage: z.string().refine((value) => !isNaN(Number(value)), {
+		message: 'Please enter a valid number',
+	}),
 });
 
+let appClient: any = null;
 interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
-	const { signer, activeAddress } = useWallet();
+	const { signer, activeAddress, activeAccount } = useWallet();
 	const algodConfig = getAlgodConfigFromViteEnvironment();
 	const algodClient = algokit.getAlgoClient({
 		server: algodConfig.server,
@@ -42,15 +47,7 @@ const Profile: React.FC<ProfileProps> = () => {
 		token: algodConfig.token,
 	});
 
-	const appClient = new MothClient(
-		{
-			sender: { signer, addr: activeAddress } as TransactionSignerAccount,
-			resolveBy: 'id',
-			id: 0,
-		},
-		algodClient,
-	);
-
+	const [hasProfile, setHasProfile] = React.useState<boolean>(false);
 	const [loadingFormData, setLoadingFormData] = React.useState<boolean>(true);
 	const [loadingSubmit, setLoadingSubmit] = React.useState<boolean>(false);
 	const sampleProfile = {
@@ -61,7 +58,7 @@ const Profile: React.FC<ProfileProps> = () => {
 		url: '',
 		loyaltyEnabled: true,
 		loyaltyMultiplierEnabled: false,
-		loyaltyPercentage: 5,
+		loyaltyPercentage: '5',
 	};
 	const [retreivedProfile, setRetreivedProfile] = React.useState<z.infer<typeof formSchema>>(sampleProfile);
 	const [demoProfile, setDemoProfile] = React.useState<z.infer<typeof formSchema>>(sampleProfile);
@@ -71,33 +68,52 @@ const Profile: React.FC<ProfileProps> = () => {
 		setSelectedAvatar(e.target.files?.[0]);
 	};
 
+	const convertAlgoProfile = (profile: any) => {
+		return {
+			address: activeAddress!,
+			title: profile.return?.[0] as string,
+			logo: profile.return?.[1] as string,
+			description: profile.return?.[2] as string,
+			url: profile.return?.[3] as string,
+			loyaltyEnabled: profile.return?.[4] as boolean,
+			loyaltyMultiplierEnabled: false,
+			loyaltyPercentage: profile.return?.[5].toString(),
+		};
+	};
+
 	useEffect(() => {
 		const getProfileData = async () => {
 			if (!activeAddress) return;
 			setRetreivedProfile({ ...retreivedProfile, address: activeAddress });
-
-			await appClient.create.createApplication({}).catch((e: Error) => {
-				toast.error(`Error deploying the contract: ${e.message}`);
-				return;
-			});
+			appClient = new MothClient(
+				{
+					sender: { signer, addr: activeAddress } as TransactionSignerAccount,
+					resolveBy: 'id',
+					id: 1037,
+				},
+				algodClient,
+			);
 
 			try {
-				const profile = await fetchProfile(activeAddress);
-				if (profile === null) throw new Error('Profile not found');
-				if (profile === false) throw new Error('Failed to fetch profile data');
-				setRetreivedProfile(profile);
-				setLoadingFormData(false);
+				const profile = await appClient
+					.getProfile(
+						{ address: activeAddress },
+						{
+							sender: { signer, addr: activeAddress! },
+							boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+						},
+					)
+					.catch((e: Error) => {
+						return null;
+					});
+				if (profile) {
+					setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile) });
+					setHasProfile(true);
+				}
 			} catch (error: any) {
 				console.error(error);
-				// CHECK IF PROFILE DOESN`T EXIST
-				if (error.message === 'Profile not found') {
-					setLoadingFormData(false);
-				} else {
-					toast.error('Failed to fetch profile data, trying again...');
-					setTimeout(() => {
-						getProfileData();
-					}, 3000);
-				}
+			} finally {
+				setLoadingFormData(false);
 			}
 		};
 		getProfileData();
@@ -126,6 +142,7 @@ const Profile: React.FC<ProfileProps> = () => {
 
 	const submitHandler = async (values: z.infer<typeof formSchema>) => {
 		setLoadingSubmit(true);
+		const { appAddress, appId } = await appClient.appClient.getAppReference();
 		try {
 			// UPLOAD AVATAR TO IPFS IF SELECTED
 			if (selectedAvatar) {
@@ -153,10 +170,63 @@ const Profile: React.FC<ProfileProps> = () => {
 				// SET values.logo TO IPFS HASH
 				values.logo = resData.IpfsHash;
 			}
+
+			const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+				from: activeAddress!,
+				to: appAddress,
+				amount: 134_900,
+				suggestedParams: await algokit.getTransactionParams(undefined, algodClient),
+			});
+
+			let profile;
+
+			if (hasProfile) {
+				profile = await appClient
+					.editProfile(
+						{
+							description: values.description,
+							logo: values.logo,
+							title: values.title,
+							url: values.url,
+							loyaltyEnabled: values.loyaltyEnabled,
+							loyaltyPercentage: Number(values.loyaltyPercentage),
+						},
+						{
+							sender: { signer, addr: activeAddress! },
+							boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+						},
+					)
+					.catch((e: Error) => {
+						console.error(`Error editing profile data: ${e.message}`);
+						toast.error(`Error editing profile data.`);
+						return null;
+					});
+			} else {
+				profile = await appClient
+					.createProfile(
+						{
+							boxMbrPayment: boxMBRPayment,
+							title: values.title,
+							description: values.description,
+							url: values.url,
+							logo: values.logo,
+							loyaltyEnabled: values.loyaltyEnabled,
+							loyaltyPercentage: Number(values.loyaltyPercentage),
+						},
+						{
+							sender: { signer, addr: activeAddress! },
+							boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+						},
+					)
+					.catch((e: Error) => {
+						console.error(`Error creating profile: ${e.message}`);
+						toast.error(`Error creating profile: ${e.message}`);
+						return null;
+					});
+			}
 			// SAVE PROFILE DATA
-			const savedProfile = await saveProfile(values);
-			setRetreivedProfile(savedProfile);
-			setDemoProfile(savedProfile);
+			setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile) });
+			setDemoProfile({ ...retreivedProfile, ...convertAlgoProfile(profile) });
 			toast.success('Profile data saved successfully!');
 		} catch (error) {
 			console.error(error);

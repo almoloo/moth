@@ -52,7 +52,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 					>
 						Connect Button
 					</Button>
-					{/* {activeAddress && (
+					{activeAddress && (
 						<button
 							data-test-id="transactions-demo"
 							className="btn m-2"
@@ -60,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 						>
 							Transactions Demo
 						</button>
-					)} */}
+					)}
 					{activeAddress && (
 						<button
 							data-test-id="appcalls-demo"
