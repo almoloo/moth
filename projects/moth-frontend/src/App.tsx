@@ -80,7 +80,7 @@ export default function App() {
 							element={addLayout(<Profile />)}
 						/>
 						<Route
-							path="/gateway/:address"
+							path="/gateway/:address/:amount/:returnUrl"
 							element={<Gateway />}
 						/>
 						<Route

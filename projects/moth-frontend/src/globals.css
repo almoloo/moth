@@ -25,6 +25,33 @@
 	}
 }
 
+@layer components {
+	.points-label {
+		@apply cursor-pointer flex items-center border px-3 py-4;
+	}
+
+	.points-label:first-of-type {
+		@apply rounded-t-lg;
+	}
+
+	.points-label:last-of-type {
+		@apply rounded-b-lg border-t-0;
+	}
+
+	.points-radio:checked + .points-label {
+		@apply bg-slate-50;
+	}
+
+	.points-radio-circle {
+		@apply h-5 w-5 rounded-full border relative;
+	}
+
+	.points-radio:checked + .points-label .points-radio-circle::before {
+		content: '';
+		@apply absolute inset-0 m-1 rounded-full bg-slate-300;
+	}
+}
+
 @layer utilities {
 	.padding {
 		@apply p-[50px] lg:p-[100px];

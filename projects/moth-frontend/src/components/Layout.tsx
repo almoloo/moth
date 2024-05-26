@@ -3,21 +3,22 @@ import Logo from './Logo';
 import { Button } from './ui/button';
 import { Link } from 'react-router-dom';
 import { BracesIcon, GithubIcon } from 'lucide-react';
-import { useWallet } from '@txnlab/use-wallet';
 import ConnectWallet from '../components/ConnectWallet';
 import Transact from '../components/Transact';
 import AppCalls from '../components/AppCalls';
 import { Toaster } from '@/components/ui/sonner';
+import ConnectButton from './ConnectButton';
+import { useWallet } from '@txnlab/use-wallet';
 
 interface LayoutProps {
 	children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+	const { activeAddress } = useWallet();
 	const [openWalletModal, setOpenWalletModal] = useState<boolean>(false);
 	const [openDemoModal, setOpenDemoModal] = useState<boolean>(false);
 	const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false);
-	const { activeAddress } = useWallet();
 
 	const toggleWalletModal = () => {
 		setOpenWalletModal(!openWalletModal);
@@ -38,21 +39,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 					<Logo className="h-6 text-neutral-700" />
 				</Link>
 				<nav className="flex space-x-5 ml-auto">
-					<Button
-						size="sm"
-						variant="link"
-						asChild
-					>
-						<Link to="/about">About Us</Link>
-					</Button>
-					<Button
-						size="sm"
-						variant="default"
-						onClick={toggleWalletModal}
-					>
-						Connect Button
-					</Button>
-					{activeAddress && (
+					{!activeAddress && (
+						<Button
+							size="sm"
+							variant="link"
+							asChild
+						>
+							<Link to="/about">About Us</Link>
+						</Button>
+					)}
+					<ConnectButton toggleModal={toggleWalletModal} />
+					{/* {activeAddress && (
 						<button
 							data-test-id="transactions-demo"
 							className="btn m-2"
@@ -60,8 +57,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 						>
 							Transactions Demo
 						</button>
-					)}
-					{activeAddress && (
+					)} */}
+					{/* {activeAddress && (
 						<button
 							data-test-id="appcalls-demo"
 							className="btn m-2"
@@ -69,7 +66,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 						>
 							Contract Interactions Demo
 						</button>
-					)}
+					)} */}
 				</nav>
 			</header>
 			<main className="layout-container">{children}</main>

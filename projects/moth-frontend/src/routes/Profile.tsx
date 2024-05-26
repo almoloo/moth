@@ -16,10 +16,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { fetchProfile } from '@/utils/data';
 import { toast } from 'sonner';
-import { saveProfile } from '@/utils/actions';
 import algosdk from 'algosdk';
+import { convertAlgoProfile } from '@/utils/data';
+import { useLocation } from 'react-router-dom';
 
 const formSchema = z.object({
 	address: z.string().length(58),
@@ -39,6 +39,7 @@ let appClient: any = null;
 interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
+	const location = useLocation();
 	const { signer, activeAddress, activeAccount } = useWallet();
 	const algodConfig = getAlgodConfigFromViteEnvironment();
 	const algodClient = algokit.getAlgoClient({
@@ -50,6 +51,8 @@ const Profile: React.FC<ProfileProps> = () => {
 	const [hasProfile, setHasProfile] = React.useState<boolean>(false);
 	const [loadingFormData, setLoadingFormData] = React.useState<boolean>(true);
 	const [loadingSubmit, setLoadingSubmit] = React.useState<boolean>(false);
+	const [loadedProfile, setLoadedProfile] = React.useState<boolean>(false);
+	const [loadingProfile, setLoadingProfile] = React.useState<boolean>(false);
 	const sampleProfile = {
 		address: '',
 		logo: '',
@@ -68,19 +71,6 @@ const Profile: React.FC<ProfileProps> = () => {
 		setSelectedAvatar(e.target.files?.[0]);
 	};
 
-	const convertAlgoProfile = (profile: any) => {
-		return {
-			address: activeAddress!,
-			title: profile.return?.[0] as string,
-			logo: profile.return?.[1] as string,
-			description: profile.return?.[2] as string,
-			url: profile.return?.[3] as string,
-			loyaltyEnabled: profile.return?.[4] as boolean,
-			loyaltyMultiplierEnabled: false,
-			loyaltyPercentage: profile.return?.[5].toString(),
-		};
-	};
-
 	useEffect(() => {
 		const getProfileData = async () => {
 			if (!activeAddress) return;
@@ -89,26 +79,25 @@ const Profile: React.FC<ProfileProps> = () => {
 				{
 					sender: { signer, addr: activeAddress } as TransactionSignerAccount,
 					resolveBy: 'id',
-					id: 1037,
+					id: Number(import.meta.env.VITE_APP_ID),
 				},
 				algodClient,
 			);
 
 			try {
-				const profile = await appClient
-					.getProfile(
-						{ address: activeAddress },
-						{
-							sender: { signer, addr: activeAddress! },
-							boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
-						},
-					)
-					.catch((e: Error) => {
-						return null;
-					});
+				setLoadingProfile(true);
+				const profile = await appClient.getProfile(
+					{ address: activeAddress },
+					{
+						sender: { signer, addr: activeAddress! },
+						boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+					},
+				);
 				if (profile) {
-					setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile) });
+					setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
 					setHasProfile(true);
+					setLoadedProfile(true);
+					setLoadingProfile(false);
 				}
 			} catch (error: any) {
 				console.error(error);
@@ -116,8 +105,10 @@ const Profile: React.FC<ProfileProps> = () => {
 				setLoadingFormData(false);
 			}
 		};
-		getProfileData();
-	}, [activeAddress]);
+		if (!loadedProfile && !loadingProfile) {
+			getProfileData();
+		}
+	}, [location, activeAddress]);
 
 	useEffect(() => {
 		// UPDATE FORM DEFAULT VALUES
@@ -225,8 +216,8 @@ const Profile: React.FC<ProfileProps> = () => {
 					});
 			}
 			// SAVE PROFILE DATA
-			setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile) });
-			setDemoProfile({ ...retreivedProfile, ...convertAlgoProfile(profile) });
+			setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
+			setDemoProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
 			toast.success('Profile data saved successfully!');
 		} catch (error) {
 			console.error(error);
@@ -243,7 +234,7 @@ const Profile: React.FC<ProfileProps> = () => {
 				title="Create Your Profile"
 				description="Let’s get your website ready to accept Algo payments. Please fill in the details below."
 			/>
-			<div className="padding flex flex-col lg:grid lg:grid-cols-3 gap-10">
+			<div className="padding pb-0 flex flex-col lg:grid lg:grid-cols-3 gap-10">
 				<section className="order-2 lg:order-1 lg:col-span-2">
 					{loadingFormData ? (
 						<>
