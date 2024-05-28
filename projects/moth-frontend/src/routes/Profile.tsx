@@ -5,7 +5,7 @@ import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClien
 
 import PageHeader from '@/components/PageHeader';
 import { Loader, SaveIcon, SquareUserRoundIcon } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,7 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import algosdk from 'algosdk';
+import algosdk, { ABIArrayDynamicType } from 'algosdk';
 import { convertAlgoProfile } from '@/utils/data';
 import { useLocation } from 'react-router-dom';
 
@@ -35,12 +35,12 @@ const formSchema = z.object({
 	}),
 });
 
-let appClient: any = null;
+let appClient: MothClient | null = null;
 interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
 	const location = useLocation();
-	const { signer, activeAddress, activeAccount } = useWallet();
+	const { signer, activeAddress, signTransactions } = useWallet();
 	const algodConfig = getAlgodConfigFromViteEnvironment();
 	const algodClient = algokit.getAlgoClient({
 		server: algodConfig.server,
@@ -86,12 +86,13 @@ const Profile: React.FC<ProfileProps> = () => {
 
 			try {
 				setLoadingProfile(true);
-				const profile = await appClient.getProfile(
-					{ address: activeAddress },
+				const profile = await algokit.getAppBoxValueFromABIType(
 					{
-						sender: { signer, addr: activeAddress! },
-						boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+						appId: Number(import.meta.env.VITE_APP_ID),
+						boxName: algosdk.decodeAddress(activeAddress!).publicKey,
+						type: algosdk.ABIType.from('(string,string,string,string,bool,uint64)'),
 					},
+					algodClient,
 				);
 				if (profile) {
 					setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
@@ -133,7 +134,7 @@ const Profile: React.FC<ProfileProps> = () => {
 
 	const submitHandler = async (values: z.infer<typeof formSchema>) => {
 		setLoadingSubmit(true);
-		const { appAddress, appId } = await appClient.appClient.getAppReference();
+		const { appAddress, appId } = await appClient!.appClient.getAppReference();
 		try {
 			// UPLOAD AVATAR TO IPFS IF SELECTED
 			if (selectedAvatar) {
@@ -172,7 +173,7 @@ const Profile: React.FC<ProfileProps> = () => {
 			let profile;
 
 			if (hasProfile) {
-				profile = await appClient
+				profile = await appClient!
 					.editProfile(
 						{
 							description: values.description,
@@ -193,7 +194,7 @@ const Profile: React.FC<ProfileProps> = () => {
 						return null;
 					});
 			} else {
-				profile = await appClient
+				profile = await appClient!
 					.createProfile(
 						{
 							boxMbrPayment: boxMBRPayment,
@@ -216,8 +217,8 @@ const Profile: React.FC<ProfileProps> = () => {
 					});
 			}
 			// SAVE PROFILE DATA
-			setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
-			setDemoProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
+			setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile?.return, activeAddress!) });
+			setDemoProfile({ ...retreivedProfile, ...convertAlgoProfile(profile?.return, activeAddress!) });
 			toast.success('Profile data saved successfully!');
 		} catch (error) {
 			console.error(error);
@@ -471,13 +472,17 @@ const Profile: React.FC<ProfileProps> = () => {
 						<div>Loading...</div>
 					) : (
 						<div className="border bg-slate-50 rounded p-10 flex flex-col items-center text-center">
-							<img
-								src={`${import.meta.env.VITE_PINATA_GATEWAY_URL}/ipfs/${demoProfile.logo}?pinataGatewayToken=${
-									import.meta.env.VITE_PINATA_GATEWAY_KEY
-								}`}
-								alt={demoProfile.title}
-								className="rounded-full w-24 h-24"
-							/>
+							{demoProfile.logo ? (
+								<img
+									src={`${import.meta.env.VITE_PINATA_GATEWAY_URL}/ipfs/${demoProfile.logo}?pinataGatewayToken=${
+										import.meta.env.VITE_PINATA_GATEWAY_KEY
+									}`}
+									alt={demoProfile.title}
+									className="rounded-full w-24 h-24"
+								/>
+							) : (
+								<div className="block shrink-0 rounded-full w-24 h-24"></div>
+							)}
 							<h2 className="text-lg font-bold mt-5">{demoProfile.title}</h2>
 							<a
 								href={demoProfile.url}
