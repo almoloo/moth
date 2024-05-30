@@ -50,6 +50,19 @@
 		content: '';
 		@apply absolute inset-0 m-1 rounded-full bg-slate-300;
 	}
+
+	.provider-label {
+		@apply cursor-pointer flex items-center border rounded-lg px-3 py-4;
+	}
+
+	.provider-label:has(.provider-radio:checked),
+	.provider-label:has(.provider-radio[aria-checked='true']) {
+		@apply bg-slate-50;
+	}
+
+	.provider-radio {
+		margin-left: auto;
+	}
 }
 
 @layer utilities {
