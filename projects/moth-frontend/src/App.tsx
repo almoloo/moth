@@ -6,13 +6,14 @@ import algosdk from 'algosdk';
 import { SnackbarProvider } from 'notistack';
 import Home from './routes/Home';
 import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import About from './routes/About';
 import Explore from './routes/Explore';
 import Profile from './routes/Profile';
 import Gateway from './routes/Gateway';
 import Layout from './components/Layout';
 import NoMatch from './components/NoMatch';
+import Dashboard from './routes/Dashboard';
 
 let providersArray: ProvidersArray;
 if (import.meta.env.VITE_ALGOD_NETWORK === '') {
@@ -86,6 +87,10 @@ export default function App() {
 						<Route
 							path="*"
 							element={addLayout(<NoMatch />)}
+						/>
+						<Route
+							path="/dashboard"
+							element={addLayout(<Dashboard />)}
 						/>
 					</Routes>
 				</Router>

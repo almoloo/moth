@@ -17,8 +17,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import algosdk, { ABIArrayDynamicType } from 'algosdk';
-import { convertAlgoProfile } from '@/utils/data';
+import algosdk from 'algosdk';
+import { convertAlgoProfile, fetchProfile } from '@/utils/data';
 import { useLocation } from 'react-router-dom';
 
 const formSchema = z.object({
@@ -40,7 +40,7 @@ interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
 	const location = useLocation();
-	const { signer, activeAddress, signTransactions } = useWallet();
+	const { signer, activeAddress } = useWallet();
 	const algodConfig = getAlgodConfigFromViteEnvironment();
 	const algodClient = algokit.getAlgoClient({
 		server: algodConfig.server,
@@ -86,14 +86,7 @@ const Profile: React.FC<ProfileProps> = () => {
 
 			try {
 				setLoadingProfile(true);
-				const profile = await algokit.getAppBoxValueFromABIType(
-					{
-						appId: Number(import.meta.env.VITE_APP_ID),
-						boxName: algosdk.decodeAddress(activeAddress!).publicKey,
-						type: algosdk.ABIType.from('(string,string,string,string,bool,uint64)'),
-					},
-					algodClient,
-				);
+				const profile = await fetchProfile(activeAddress, algodClient);
 				if (profile) {
 					setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
 					setHasProfile(true);

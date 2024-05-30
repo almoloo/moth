@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Logo from './Logo';
 import { Button } from './ui/button';
 import { Link } from 'react-router-dom';
 import { BracesIcon, GithubIcon } from 'lucide-react';
-import ConnectWallet from '../components/ConnectWallet';
-import Transact from '../components/Transact';
-import AppCalls from '../components/AppCalls';
 import { Toaster } from '@/components/ui/sonner';
 import ConnectButton from './ConnectButton';
 import { useWallet } from '@txnlab/use-wallet';
@@ -16,22 +13,6 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
 	const { activeAddress } = useWallet();
-	const [openWalletModal, setOpenWalletModal] = useState<boolean>(false);
-	const [openDemoModal, setOpenDemoModal] = useState<boolean>(false);
-	const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false);
-
-	const toggleWalletModal = () => {
-		setOpenWalletModal(!openWalletModal);
-	};
-
-	const toggleDemoModal = () => {
-		setOpenDemoModal(!openDemoModal);
-	};
-
-	const toggleAppCallsModal = () => {
-		setAppCallsDemoModal(!appCallsDemoModal);
-	};
-
 	return (
 		<>
 			<header className="px-[25px] py-[15px] lg:px-[100px] flex items-center border-b sticky top-0 z-10 bg-white">
@@ -48,25 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 							<Link to="/about">About Us</Link>
 						</Button>
 					)}
-					<ConnectButton toggleModal={toggleWalletModal} />
-					{/* {activeAddress && (
-						<button
-							data-test-id="transactions-demo"
-							className="btn m-2"
-							onClick={toggleDemoModal}
-						>
-							Transactions Demo
-						</button>
-					)} */}
-					{/* {activeAddress && (
-						<button
-							data-test-id="appcalls-demo"
-							className="btn m-2"
-							onClick={toggleAppCallsModal}
-						>
-							Contract Interactions Demo
-						</button>
-					)} */}
+					<ConnectButton />
 				</nav>
 			</header>
 			<main className="layout-container">{children}</main>
@@ -96,18 +59,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 					</p>
 				</div>
 			</footer>
-			<ConnectWallet
-				openModal={openWalletModal}
-				closeModal={toggleWalletModal}
-			/>
-			<Transact
-				openModal={openDemoModal}
-				setModalState={setOpenDemoModal}
-			/>
-			<AppCalls
-				openModal={appCallsDemoModal}
-				setModalState={setAppCallsDemoModal}
-			/>
 			<Toaster />
 		</>
 	);

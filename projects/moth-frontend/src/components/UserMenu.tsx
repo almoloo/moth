@@ -1,7 +1,7 @@
 import React from 'react';
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from './ui/dropdown-menu';
 import { Link } from 'react-router-dom';
-import { CircleHelpIcon, HomeIcon, LogOutIcon, UserRoundIcon } from 'lucide-react';
+import { CircleHelpIcon, HomeIcon, LayoutDashboardIcon, LogOutIcon, UserRoundIcon } from 'lucide-react';
 import { useWallet } from '@txnlab/use-wallet';
 
 const UserMenu = () => {
@@ -17,6 +17,15 @@ const UserMenu = () => {
 				>
 					<HomeIcon className="h-4 w-4 mr-2" />
 					Home
+				</Link>
+			</DropdownMenuItem>
+			<DropdownMenuItem>
+				<Link
+					to="/dashboard"
+					className="flex items-center"
+				>
+					<LayoutDashboardIcon className="h-4 w-4 mr-2" />
+					Dashboard
 				</Link>
 			</DropdownMenuItem>
 			<DropdownMenuItem>

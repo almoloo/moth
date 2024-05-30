@@ -1,3 +1,7 @@
+// import type { BoxValueRequestParams } from '@algorandfoundation/algokit-utils/types/app';
+import * as algokit from '@algorandfoundation/algokit-utils';
+import algosdk, { Algodv2 } from 'algosdk';
+
 export const convertAlgoProfile = (profile: any, address: string) => {
 	return {
 		address: address,
@@ -9,4 +13,15 @@ export const convertAlgoProfile = (profile: any, address: string) => {
 		loyaltyMultiplierEnabled: false,
 		loyaltyPercentage: profile[5].toString(),
 	};
+};
+
+export const fetchProfile = async (address: string, algodClient: Algodv2) => {
+	return await algokit.getAppBoxValueFromABIType(
+		{
+			appId: Number(import.meta.env.VITE_APP_ID),
+			boxName: algosdk.decodeAddress(address).publicKey,
+			type: algosdk.ABIType.from('(string,string,string,string,bool,uint64)'),
+		},
+		algodClient,
+	);
 };
