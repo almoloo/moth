@@ -12,11 +12,12 @@ let appClient: MothClient;
 
 const defultPercentage: number = 5;
 const siteFee: number = 1;
+let tokenId: bigint | undefined;
 let algod: algosdk.Algodv2;
 
 describe('HelloWorld', () => {
   let sender: algosdk.Account;
-  // let creator: algosdk.Account;
+  let creator: algosdk.Account;
 
   beforeEach(fixture.beforeEach);
 
@@ -26,7 +27,7 @@ describe('HelloWorld', () => {
     const { algorand } = fixture;
 
     algod = algorand.client.algod;
-    // creator = testAccount;
+    creator = testAccount;
 
     sender = await getOrCreateKmdWalletAccount(
       {
@@ -47,6 +48,29 @@ describe('HelloWorld', () => {
     );
 
     await appClient.create.createApplication({ defultPercentage, siteFee });
+  });
+
+  test('create asset', async () => {
+    const { appAddress } = await appClient.appClient.getAppReference();
+    const ptxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      from: creator.addr,
+      to: appAddress,
+      amount: 200000,
+      suggestedParams: await algokit.getTransactionParams(undefined, algod),
+    });
+    const signedTxn = ptxn.signTxn(creator.sk);
+    const { txId } = await algod.sendRawTransaction(signedTxn).do();
+    await algosdk.waitForConfirmation(algod, txId, 4);
+
+    const createAsa = await appClient.createAsa(
+      {},
+      {
+        sendParams: {
+          fee: algokit.microAlgos(2_000),
+        },
+      }
+    );
+    tokenId = createAsa.return?.valueOf();
   });
 
   test('get contract Fee', async () => {
