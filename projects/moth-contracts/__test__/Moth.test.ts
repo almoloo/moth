@@ -16,7 +16,7 @@ let algod: algosdk.Algodv2;
 
 describe('HelloWorld', () => {
   let sender: algosdk.Account;
-  let creator: algosdk.Account;
+  // let creator: algosdk.Account;
 
   beforeEach(fixture.beforeEach);
 
@@ -26,7 +26,7 @@ describe('HelloWorld', () => {
     const { algorand } = fixture;
 
     algod = algorand.client.algod;
-    creator = testAccount;
+    // creator = testAccount;
 
     sender = await getOrCreateKmdWalletAccount(
       {
@@ -49,8 +49,8 @@ describe('HelloWorld', () => {
     await appClient.create.createApplication({ defultPercentage, siteFee });
   });
 
-  test('get Site Fee', async () => {
-    const getSiteFee = await appClient.getSiteFee({});
+  test('get contract Fee', async () => {
+    const getSiteFee = await appClient.getContractFee({});
 
     expect(getSiteFee.return?.valueOf()).toEqual(BigInt(siteFee));
   });

@@ -12,18 +12,82 @@ type profile = {
 export class Moth extends Contract {
   defultPercentage = GlobalStateKey<uint64>();
 
-  // in uAlgo
-  siteFee = GlobalStateKey<uint64>();
+  /** Our payment fee in uAlgo */
+  contractFee = GlobalStateKey<uint64>();
+
+  /** Moth Royalty piont Token */
+  royaltyPointToken = GlobalStateKey<AssetID>();
+
+  contractBalance = GlobalStateKey<uint64>();
 
   profiles = BoxMap<Address, profile>();
 
   createApplication(defultPercentage: uint64, siteFee: uint64): void {
     this.defultPercentage.value = defultPercentage;
-    this.siteFee.value = siteFee;
+    this.contractFee.value = siteFee;
+  }
+
+  /** Ensure the caller is app creator */
+  private OnlyCreator(): void {
+    assert(this.app.creator === this.txn.sender);
+  }
+
+  CreateAsa(): AssetID {
+    this.OnlyCreator();
+
+    const createAsset = sendAssetCreation({
+      configAssetName: 'Mathak',
+      configAssetUnitName: 'MAK',
+      configAssetTotal: 100000,
+      configAssetDecimals: 0,
+      configAssetClawback: this.app.address,
+      configAssetManager: this.app.address,
+    });
+
+    this.royaltyPointToken.value = createAsset;
+
+    return createAsset;
+  }
+
+  OptIn(optInTxn: AssetTransferTxn): boolean {
+    assert(this.royaltyPointToken.exists);
+
+    verifyAssetTransferTxn(optInTxn, {
+      sender: this.txn.sender,
+      xferAsset: this.royaltyPointToken.value,
+      assetAmount: 0,
+      assetReceiver: this.txn.sender,
+    });
+
+    return this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
+  }
+
+  Gateway(payment: PayTxn, toAddress: Address, amount: uint64): void {
+    assert(this.royaltyPointToken.exists);
+    assert(this.profiles(toAddress).exists);
+    this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
+
+    verifyTxn(payment, {
+      amount: amount,
+      receiver: this.app.address,
+    });
+
+    sendPayment({
+      amount: amount,
+      receiver: toAddress,
+      sender: this.app.address,
+    });
+
+    sendAssetTransfer({
+      xferAsset: this.royaltyPointToken.value,
+      assetAmount: amount / 100,
+      assetReceiver: this.txn.sender,
+      sender: this.app.address,
+    });
   }
 
   // eslint-disable-next-line no-unused-vars
-  getMBR(boxMBRPayment: PayTxn): uint64 {
+  GetMBR(boxMBRPayment: PayTxn): uint64 {
     const preAppMBR = this.app.address.minBalance;
     this.profiles(this.txn.sender).value = {
       title: 'string',
@@ -31,7 +95,7 @@ export class Moth extends Contract {
       description: 'string',
       url: 'string',
       loyaltyEnabled: true,
-      loyaltyPercentage: 10,
+      loyaltyPercentage: 1000,
     };
     const Mbr = this.app.address.minBalance - preAppMBR;
     this.profiles(this.txn.sender).delete();
@@ -47,7 +111,7 @@ export class Moth extends Contract {
     loyaltyEnabled: boolean,
     loyaltyPercentage: uint64
   ): profile {
-    const preAppMBR = this.app.address.minBalance;
+    // const preAppMBR = this.app.address.minBalance;
     this.profiles(this.txn.sender).value = {
       title: title,
       logo: logo,
@@ -86,8 +150,8 @@ export class Moth extends Contract {
     return this.profiles(this.txn.sender).value;
   }
 
-  GetSiteFee(): uint64 {
-    return this.siteFee.value;
+  GetContractFee(): uint64 {
+    return this.contractFee.value;
   }
 
   getProfile(address: Address): profile {

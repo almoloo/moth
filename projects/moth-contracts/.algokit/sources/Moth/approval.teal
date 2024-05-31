@@ -41,17 +41,123 @@ switch *call_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEM
 createApplication:
 	proto 2 0
 
-	// contracts/Moth.algo.ts:21
+	// contracts/Moth.algo.ts:24
 	// this.defultPercentage.value = defultPercentage
 	byte 0x646566756c7450657263656e74616765 // "defultPercentage"
 	frame_dig -1 // defultPercentage: uint64
 	app_global_put
 
-	// contracts/Moth.algo.ts:22
+	// contracts/Moth.algo.ts:25
 	// this.siteFee.value = siteFee
 	byte 0x73697465466565 // "siteFee"
 	frame_dig -2 // siteFee: uint64
 	app_global_put
+	retsub
+
+// OnlyCreator(): void
+//
+// Ensure the caller is app creator
+OnlyCreator:
+	proto 0 0
+
+	// contracts/Moth.algo.ts:30
+	// assert(this.app.creator === this.txn.sender)
+	txna Applications 0
+	app_params_get AppCreator
+	pop
+	txn Sender
+	==
+	assert
+	retsub
+
+// CreateAsa()uint64
+*abi_route_CreateAsa:
+	// The ABI return prefix
+	byte 0x151f7c75
+
+	// execute CreateAsa()uint64
+	callsub CreateAsa
+	itob
+	concat
+	log
+	int 1
+	return
+
+// CreateAsa(): AssetID
+CreateAsa:
+	proto 0 1
+
+	// Push empty bytes after the frame pointer to reserve space for local variables
+	byte 0x
+
+	// contracts/Moth.algo.ts:34
+	// this.OnlyCreator()
+	callsub OnlyCreator
+
+	// contracts/Moth.algo.ts:36
+	// createAsset = sendAssetCreation({
+	//       configAssetName: 'Mathak',
+	//       configAssetUnitName: 'MAK',
+	//       configAssetTotal: 100000,
+	//       configAssetDecimals: 0,
+	//       configAssetClawback: this.app.address,
+	//       configAssetManager: this.app.address,
+	//     })
+	itxn_begin
+	int acfg
+	itxn_field TypeEnum
+
+	// contracts/Moth.algo.ts:37
+	// configAssetName: 'Mathak'
+	byte 0x4d617468616b // "Mathak"
+	itxn_field ConfigAssetName
+
+	// contracts/Moth.algo.ts:38
+	// configAssetUnitName: 'MAK'
+	byte 0x4d414b // "MAK"
+	itxn_field ConfigAssetUnitName
+
+	// contracts/Moth.algo.ts:39
+	// configAssetTotal: 100000
+	int 100000
+	itxn_field ConfigAssetTotal
+
+	// contracts/Moth.algo.ts:40
+	// configAssetDecimals: 0
+	int 0
+	itxn_field ConfigAssetDecimals
+
+	// contracts/Moth.algo.ts:41
+	// configAssetClawback: this.app.address
+	global CurrentApplicationAddress
+	itxn_field ConfigAssetClawback
+
+	// contracts/Moth.algo.ts:42
+	// configAssetManager: this.app.address
+	global CurrentApplicationAddress
+	itxn_field ConfigAssetManager
+
+	// Fee field not set, defaulting to 0
+	int 0
+	itxn_field Fee
+
+	// Submit inner transaction
+	itxn_submit
+	itxn CreatedAssetID
+	frame_bury 0 // createAsset: uint64
+
+	// contracts/Moth.algo.ts:45
+	// this.royaltyPointToken.value = createAsset
+	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
+	frame_dig 0 // createAsset: uint64
+	app_global_put
+
+	// contracts/Moth.algo.ts:47
+	// return createAsset;
+	frame_dig 0 // createAsset: uint64
+
+	// set the subroutine return value
+	frame_bury 0
 	retsub
 
 // getMBR(pay)uint64
@@ -87,21 +193,21 @@ getMBR:
 	byte 0x
 	dup
 
-	// contracts/Moth.algo.ts:27
+	// contracts/Moth.algo.ts:52
 	// preAppMBR = this.app.address.minBalance
 	global CurrentApplicationAddress
 	acct_params_get AcctMinBalance
 	pop
 	frame_bury 0 // preAppMBR: uint64
 
-	// contracts/Moth.algo.ts:28
+	// contracts/Moth.algo.ts:53
 	// this.profiles(this.txn.sender).value = {
-	//       title: 'string',
-	//       logo: 'string',
-	//       description: 'string',
-	//       url: 'string',
+	//       title: 'stringggggggggggggggggggggggggggggggggggggggg',
+	//       logo: 'stringgggggggggggggggggggggggggggggggggggggggg',
+	//       description: 'stringgggggggggggggggggg',
+	//       url: 'stringgggggggggggggggggggggggggggg',
 	//       loyaltyEnabled: true,
-	//       loyaltyPercentage: 10,
+	//       loyaltyPercentage: 1000,
 	//     }
 	txn Sender
 	dup
@@ -110,26 +216,26 @@ getMBR:
 	byte 0x // initial head
 	byte 0x // initial tail
 	byte 0x0011 // initial head offset
-	byte 0x0006737472696e67
+	byte 0x002d737472696e67676767676767676767676767676767676767676767676767676767676767676767676767676767
 	callsub *process_dynamic_tuple_element
-	byte 0x0006737472696e67
+	byte 0x002e737472696e6767676767676767676767676767676767676767676767676767676767676767676767676767676767
 	callsub *process_dynamic_tuple_element
-	byte 0x0006737472696e67
+	byte 0x0018737472696e67676767676767676767676767676767676767
 	callsub *process_dynamic_tuple_element
-	byte 0x0006737472696e67
+	byte 0x0022737472696e6767676767676767676767676767676767676767676767676767676767
 	callsub *process_dynamic_tuple_element
 	byte 0x00
 	int 0
 	int 1
 	setbit
 	callsub *process_static_tuple_element
-	byte 0x000000000000000a
+	byte 0x00000000000003e8
 	callsub *process_static_tuple_element
 	pop // pop head offset
 	concat // concat head and tail
 	box_put
 
-	// contracts/Moth.algo.ts:36
+	// contracts/Moth.algo.ts:61
 	// Mbr = this.app.address.minBalance - preAppMBR
 	global CurrentApplicationAddress
 	acct_params_get AcctMinBalance
@@ -138,12 +244,12 @@ getMBR:
 	-
 	frame_bury 1 // Mbr: uint64
 
-	// contracts/Moth.algo.ts:37
+	// contracts/Moth.algo.ts:62
 	// this.profiles(this.txn.sender).delete()
 	txn Sender
 	box_del
 
-	// contracts/Moth.algo.ts:38
+	// contracts/Moth.algo.ts:63
 	// return Mbr;
 	frame_dig 1 // Mbr: uint64
 
@@ -214,17 +320,7 @@ getMBR:
 CreateProfile:
 	proto 7 1
 
-	// Push empty bytes after the frame pointer to reserve space for local variables
-	byte 0x
-
-	// contracts/Moth.algo.ts:50
-	// preAppMBR = this.app.address.minBalance
-	global CurrentApplicationAddress
-	acct_params_get AcctMinBalance
-	pop
-	frame_bury 0 // preAppMBR: uint64
-
-	// contracts/Moth.algo.ts:51
+	// contracts/Moth.algo.ts:76
 	// this.profiles(this.txn.sender).value = {
 	//       title: title,
 	//       logo: logo,
@@ -284,16 +380,13 @@ CreateProfile:
 	concat // concat head and tail
 	box_put
 
-	// contracts/Moth.algo.ts:65
+	// contracts/Moth.algo.ts:90
 	// return this.profiles(this.txn.sender).value;
 	txn Sender
 	box_get
 
 	// box value does not exist: this.profiles(this.txn.sender).value
 	assert
-
-	// set the subroutine return value
-	frame_bury 0
 	retsub
 
 // EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
@@ -344,7 +437,7 @@ CreateProfile:
 EditProfile:
 	proto 6 1
 
-	// contracts/Moth.algo.ts:76
+	// contracts/Moth.algo.ts:101
 	// assert(this.profiles(this.txn.sender).exists)
 	txn Sender
 	box_len
@@ -352,7 +445,7 @@ EditProfile:
 	pop
 	assert
 
-	// contracts/Moth.algo.ts:77
+	// contracts/Moth.algo.ts:102
 	// this.profiles(this.txn.sender).value = {
 	//       title: title,
 	//       logo: logo,
@@ -412,7 +505,7 @@ EditProfile:
 	concat // concat head and tail
 	box_put
 
-	// contracts/Moth.algo.ts:86
+	// contracts/Moth.algo.ts:111
 	// return this.profiles(this.txn.sender).value;
 	txn Sender
 	box_get
@@ -438,7 +531,7 @@ EditProfile:
 GetSiteFee:
 	proto 0 1
 
-	// contracts/Moth.algo.ts:90
+	// contracts/Moth.algo.ts:115
 	// return this.siteFee.value;
 	byte 0x73697465466565 // "siteFee"
 	app_global_get
@@ -473,7 +566,7 @@ getProfile:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// contracts/Moth.algo.ts:94
+	// contracts/Moth.algo.ts:119
 	// assert(this.profiles(address).exists)
 	frame_dig -1 // address: Address
 	box_len
@@ -481,12 +574,12 @@ getProfile:
 	pop
 	assert
 
-	// contracts/Moth.algo.ts:95
+	// contracts/Moth.algo.ts:120
 	// values = this.profiles(address).value
 	frame_dig -1 // address: Address
 	frame_bury 0 // storage key//values
 
-	// contracts/Moth.algo.ts:97
+	// contracts/Moth.algo.ts:122
 	// return values;
 	frame_dig 0 // storage key//values
 	box_get
@@ -507,13 +600,14 @@ getProfile:
 	err
 
 *call_NoOp:
+	method "CreateAsa()uint64"
 	method "getMBR(pay)uint64"
 	method "CreateProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
 	method "EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
 	method "GetSiteFee()uint64"
 	method "getProfile(address)(string,string,string,string,bool,uint64)"
 	txna ApplicationArgs 0
-	match *abi_route_getMBR *abi_route_CreateProfile *abi_route_EditProfile *abi_route_GetSiteFee *abi_route_getProfile
+	match *abi_route_CreateAsa *abi_route_getMBR *abi_route_CreateProfile *abi_route_EditProfile *abi_route_GetSiteFee *abi_route_getProfile
 
 	// this contract does not implement the given ABI method for call NoOp
 	err

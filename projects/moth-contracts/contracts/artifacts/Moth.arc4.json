@@ -19,7 +19,46 @@
       }
     },
     {
-      "name": "getMBR",
+      "name": "CreateAsa",
+      "args": [],
+      "returns": {
+        "type": "uint64"
+      }
+    },
+    {
+      "name": "OptIn",
+      "args": [
+        {
+          "name": "optInTxn",
+          "type": "axfer"
+        }
+      ],
+      "returns": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "Gateway",
+      "args": [
+        {
+          "name": "payment",
+          "type": "pay"
+        },
+        {
+          "name": "toAddress",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetMBR",
       "args": [
         {
           "name": "boxMBRPayment",
@@ -99,7 +138,7 @@
       }
     },
     {
-      "name": "GetSiteFee",
+      "name": "GetContractFee",
       "args": [],
       "returns": {
         "type": "uint64"
