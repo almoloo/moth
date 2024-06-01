@@ -8,9 +8,11 @@ import ConnectDialog from './ConnectDialog';
 import { DropdownMenu, DropdownMenuTrigger } from './ui/dropdown-menu';
 import UserMenu from './UserMenu';
 
-interface ConnectButtonProps {}
+interface ConnectButtonProps {
+	standAlone?: boolean;
+}
 
-const ConnectButton: React.FC<ConnectButtonProps> = () => {
+const ConnectButton: React.FC<ConnectButtonProps> = ({ standAlone }) => {
 	const { activeAddress } = useWallet();
 
 	return (
@@ -36,7 +38,13 @@ const ConnectButton: React.FC<ConnectButtonProps> = () => {
 			) : (
 				<AlertDialog>
 					<AlertDialogTrigger asChild>
-						<Button size="sm">Connect Wallet</Button>
+						<Button
+							size={standAlone ? 'default' : 'sm'}
+							className={standAlone ? 'w-full' : ''}
+						>
+							{standAlone && <WalletIcon className="h-4 w-4 mr-2" />}
+							Connect Wallet
+						</Button>
 					</AlertDialogTrigger>
 					<ConnectDialog />
 				</AlertDialog>

@@ -27,15 +27,15 @@
 
 @layer components {
 	.points-label {
-		@apply cursor-pointer flex items-center border px-3 py-4;
+		@apply cursor-pointer flex items-center border rounded-lg px-3 py-4;
 	}
 
-	.points-label:first-of-type {
-		@apply rounded-t-lg;
+	.points-label:first-of-type:not(:last-of-type) {
+		@apply rounded-b-none;
 	}
 
-	.points-label:last-of-type {
-		@apply rounded-b-lg border-t-0;
+	.points-label:last-of-type:not(:first-of-type) {
+		@apply rounded-t-none border-t-0;
 	}
 
 	.points-radio:checked + .points-label {

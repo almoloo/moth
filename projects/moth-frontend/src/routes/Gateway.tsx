@@ -1,7 +1,7 @@
 import Logo from '@/components/Logo';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Profile } from '@/utils/definitions';
-import { BracesIcon, ExternalLinkIcon } from 'lucide-react';
+import { BracesIcon, ExternalLinkIcon, WalletIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import algosdk from 'algosdk';
@@ -10,15 +10,16 @@ import { TransactionSignerAccount } from '@algorandfoundation/algokit-utils/type
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
 import * as algokit from '@algorandfoundation/algokit-utils';
 import { MothClient } from '@/contracts/Moth';
-import { convertAlgoProfile } from '@/utils/data';
+import { convertAlgoProfile, fetchProfile } from '@/utils/data';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import ConnectButton from '@/components/ConnectButton';
 
 interface GatewayProps {}
 
 const Gateway: React.FC<GatewayProps> = () => {
 	const { address, amount, returnUrl } = useParams();
-	const { signer, activeAddress } = useWallet();
+	const { signer, activeAddress, getAssets } = useWallet();
 	const algodConfig = getAlgodConfigFromViteEnvironment();
 	const algodClient = algokit.getAlgoClient({
 		server: algodConfig.server,
@@ -28,33 +29,22 @@ const Gateway: React.FC<GatewayProps> = () => {
 
 	const [loading, setLoading] = useState<boolean>(true);
 	const [loadingProfile, setLoadingProfile] = useState<boolean>(false);
+	const [loadingGS, setLoadingGS] = useState<boolean>(false);
 	const [gatewayProfile, setGatewayProfile] = useState<Profile | null>(null);
 	const [userPoints, setUserPoints] = useState<number>(0);
+	const [globalState, setGlobalState] = useState<any>(null);
+	const [paymentMethod, setPaymentMethod] = useState<'full' | 'points'>('full');
 
 	useEffect(() => {
 		const getProfileData = async () => {
 			setLoadingProfile(true);
-			const appClient = new MothClient(
-				{
-					sender: { signer, addr: activeAddress } as TransactionSignerAccount,
-					resolveBy: 'id',
-					id: Number(import.meta.env.VITE_APP_ID),
-				},
-				algodClient,
-			);
 
 			try {
-				const profile = await appClient.getProfile(
-					{ address: address! },
-					{
-						sender: { signer, addr: activeAddress! },
-						boxes: [algosdk.decodeAddress(address!).publicKey],
-					},
-				);
+				const profile = await fetchProfile(address!, algodClient);
 				if (profile) {
 					setGatewayProfile(convertAlgoProfile(profile, address!));
-					setLoading(false);
 				}
+				setLoading(false);
 			} catch (error) {
 				console.error(error);
 				toast.error('Failed to fetch profile');
@@ -63,10 +53,60 @@ const Gateway: React.FC<GatewayProps> = () => {
 				setLoadingProfile(false);
 			}
 		};
-		if (!loadingProfile && activeAddress) {
+		if (!loadingProfile) {
 			getProfileData();
 		}
+	}, []);
+
+	useEffect(() => {
+		const getAppClient = async () => {
+			setLoadingGS(true);
+			const appClient = new MothClient(
+				{
+					// sender: { signer, addr: activeAddress } as TransactionSignerAccount,
+					resolveBy: 'id',
+					id: Number(import.meta.env.VITE_APP_ID),
+				},
+				algodClient,
+			);
+			const globalS = await appClient.getGlobalState();
+			setGlobalState(globalS);
+			setLoadingGS(false);
+		};
+		if (!loadingGS && activeAddress) {
+			getAppClient();
+		}
 	}, [activeAddress]);
+
+	useEffect(() => {
+		const getUserTokens = async () => {
+			const assets = await getAssets();
+			const tokenId = globalState.royaltyPointToken?.asNumber();
+			assets
+				.filter((asset) => asset['asset-id'] === tokenId)
+				.map((asset) => {
+					setUserPoints(asset.amount);
+					if (asset.amount > 0) {
+						setPaymentMethod('points');
+					}
+				});
+		};
+		if (globalState && activeAddress) {
+			getUserTokens();
+		}
+	}, [globalState]);
+
+	const UnauthorizedUser: React.FC = () => {
+		return (
+			<div className="flex flex-col gap-4">
+				<p className="text-neutral-600 text-center">
+					To proceed with your transaction and utilize your points, connect your Algorand wallet. This will allow you the
+					flexibility to view, use, and manage your points.
+				</p>
+				<ConnectButton standAlone />
+			</div>
+		);
+	};
 
 	return (
 		<div className="gateway-container px-[50px] lg:px-[300px] flex flex-col justify-center">
@@ -80,8 +120,8 @@ const Gateway: React.FC<GatewayProps> = () => {
 					{loading ? (
 						<>
 							<Skeleton className="w-24 h-24 rounded-full" />
-							<Skeleton className="w-36 h-6 rounded" />
-							<Skeleton className="w-24 h-4 rounded" />
+							<Skeleton className="w-36 h-6 rounded mt-3" />
+							<Skeleton className="w-24 h-4 rounded mt-2 mb-4" />
 							<div className="flex flex-col items-center gap-2">
 								<Skeleton className="w-44 h-4 rounded" />
 								<Skeleton className="w-44 h-4 rounded" />
@@ -95,13 +135,12 @@ const Gateway: React.FC<GatewayProps> = () => {
 									import.meta.env.VITE_PINATA_GATEWAY_KEY
 								}`}
 								alt={gatewayProfile?.title}
-								className="w-24 h-24 rounded-full"
+								className="w-24 h-24 rounded-full bg-slate-50"
 							/>
 							<h2 className="text-lg font-bold mt-3">{gatewayProfile?.title}</h2>
 							<Button
 								variant="link"
 								size="sm"
-								// asChild
 								className="bg-rose-500 text-white py-0 mt-1 mb-4"
 								asChild
 							>
@@ -119,7 +158,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 									}
 								</Link>
 							</Button>
-							<p className="text-sm text-neutral-500">"{gatewayProfile?.description}"</p>
+							<p className="text-sm text-neutral-500">{gatewayProfile?.description}</p>
 						</>
 					)}
 				</section>
@@ -134,16 +173,18 @@ const Gateway: React.FC<GatewayProps> = () => {
 						<>
 							<h2 className="text-lg font-bold mt-3 self-center">Purchase Information</h2>
 							<div className="flex flex-col border-t border-b text-sm font-semibold gap-5 py-5 my-5">
-								<div className="flex items-center">
+								<div className="flex items-center gap-3">
 									<span className="text-neutral-600">Amount:</span>
 									<span className="border-b border-dashed grow"></span>
 									<span className="ml-auto">{amount} ALGO</span>
 								</div>
-								<div className="flex items-center">
-									<span className="text-neutral-600">Points:</span>
-									<span className="border-b border-dashed grow"></span>
-									<span className="ml-auto">5 mpt</span>
-								</div>
+								{gatewayProfile?.loyaltyEnabled && (
+									<div className="flex items-center gap-3">
+										<span className="text-neutral-600">Points:</span>
+										<span className="border-b border-dashed grow"></span>
+										<span className="ml-auto">{gatewayProfile?.loyaltyPercentage} mpt</span>
+									</div>
+								)}
 							</div>
 							<div className="mt-auto">
 								{activeAddress ? (
@@ -152,58 +193,64 @@ const Gateway: React.FC<GatewayProps> = () => {
 											<span className="text-neutral-600">Available Points</span>
 											<span>{userPoints} mpt</span>
 										</div>
-										<div className="my-4">
-											<input
-												type="radio"
-												name="usePoints"
-												id="usePoints"
-												className="points-radio hidden"
-												checked
-											/>
-											<label
-												htmlFor="usePoints"
-												className="points-label"
-											>
-												<div className="flex items-center justify-between grow mr-3">
-													<strong className="text-sm">Redeem Points</strong>
-													<div className="flex flex-col items-end gap-1">
-														<small className="text-rose-500">-{userPoints} mpt</small>
-														<small>8.25 ALGO</small>
+										{gatewayProfile?.loyaltyEnabled && (
+											<div className="my-4">
+												{userPoints > 0 && (
+													<>
+														<input
+															type="radio"
+															name="usePoints"
+															id="usePoints"
+															className="points-radio hidden"
+															checked
+															onChange={() => setPaymentMethod('points')}
+														/>
+														<label
+															htmlFor="usePoints"
+															className="points-label"
+														>
+															<div className="flex items-center justify-between grow mr-3">
+																<strong className="text-sm">Redeem Points</strong>
+																<div className="flex flex-col items-end gap-1">
+																	<small className="text-rose-500">-{userPoints} mpt</small>
+																	<small>8.25 ALGO</small>
+																</div>
+															</div>
+															<span className="points-radio-circle"></span>
+														</label>
+													</>
+												)}
+												<input
+													type="radio"
+													name="usePoints"
+													id="dontUsePoints"
+													className="points-radio hidden"
+													checked={userPoints === 0}
+													onChange={() => setPaymentMethod('full')}
+												/>
+												<label
+													htmlFor="dontUsePoints"
+													className="points-label"
+												>
+													<div className="flex items-center justify-between grow mr-3">
+														<strong className="text-sm">Full Payment</strong>
+														<div className="flex flex-col items-end gap-1">
+															{gatewayProfile.loyaltyEnabled && (
+																<small className="text-emerald-500">
+																	+{gatewayProfile?.loyaltyPercentage} mpt
+																</small>
+															)}
+															<small>15 ALGO</small>
+														</div>
 													</div>
-												</div>
-												<span className="points-radio-circle"></span>
-											</label>
-											<input
-												type="radio"
-												name="usePoints"
-												id="dontUsePoints"
-												className="points-radio hidden"
-												checked
-											/>
-											<label
-												htmlFor="dontUsePoints"
-												className="points-label"
-											>
-												<div className="flex items-center justify-between grow mr-3">
-													<strong className="text-sm">Full Payment</strong>
-													<div className="flex flex-col items-end gap-1">
-														<small className="text-emerald-500">+{gatewayProfile?.loyaltyPercentage} mpt</small>
-														<small>15 ALGO</small>
-													</div>
-												</div>
-												<span className="points-radio-circle"></span>
-											</label>
-										</div>
+													<span className="points-radio-circle"></span>
+												</label>
+											</div>
+										)}
 										<Button className="w-full">Pay {amount} ALGO</Button>
 									</>
 								) : (
-									<>
-										<p>
-											To proceed with your transaction and utilize your points, connect your Algorand wallet. This
-											will allow you the flexibility to view, use, and manage your points.
-										</p>
-										<Button>Connect</Button>
-									</>
+									<UnauthorizedUser />
 								)}
 							</div>
 						</>

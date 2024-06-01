@@ -25,3 +25,20 @@ export const fetchProfile = async (address: string, algodClient: Algodv2) => {
 		algodClient,
 	);
 };
+
+export const fetchProfileTransactions = async (address: string) => {
+	const indexer = new algosdk.Indexer(
+		import.meta.env.VITE_INDEXER_TOKEN,
+		import.meta.env.VITE_ALGOD_SERVER,
+		import.meta.env.VITE_INDEXER_PORT,
+	);
+	return await algokit.searchTransactions(
+		indexer,
+		(s) =>
+			s.txType('pay').addressRole('receiver').address(address) &&
+			s
+				.txType('pay')
+				.addressRole('sender')
+				.address(import.meta.env.VITE_APP_ADDRESS),
+	);
+};

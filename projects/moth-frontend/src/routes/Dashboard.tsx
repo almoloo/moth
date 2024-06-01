@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Unauthorized from '@/components/Unauthorized';
 import { Profile } from '@/utils/definitions';
-import { convertAlgoProfile, fetchProfile } from '@/utils/data';
+import { convertAlgoProfile, fetchProfile, fetchProfileTransactions } from '@/utils/data';
 
 const Dashboard = () => {
 	const location = useLocation();
@@ -20,17 +20,28 @@ const Dashboard = () => {
 		token: algodConfig.token,
 	});
 
-	const [loading, setLoading] = useState(true);
+	const [loadingProfile, setLoadingProfile] = useState(true);
+	const [loadingTransactions, setLoadingTransactions] = useState(true);
 	const [profile, setProfile] = useState<Profile | null>(null);
+	const [transactions, setTransactions] = useState<any[]>([]);
 
 	useEffect(() => {
 		if (activeAddress) {
 			fetchProfile(activeAddress, algodClient).then((profile) => {
 				setProfile(convertAlgoProfile(profile, activeAddress));
-				setLoading(false);
+				setLoadingProfile(false);
 			});
 		}
 	}, [activeAddress, algodClient]);
+
+	useEffect(() => {
+		if (activeAddress) {
+			fetchProfileTransactions(activeAddress).then((transactions) => {
+				setTransactions(transactions.transactions);
+				setLoadingTransactions(false);
+			});
+		}
+	}, [activeAddress]);
 
 	return activeAddress ? (
 		<>
@@ -39,7 +50,9 @@ const Dashboard = () => {
 				title="Dashboard"
 				description="Welcome to your dashboard. Here you can view your account details, transactions, and more."
 			/>
-			{loading && <div>Loading...</div>}
+			{loadingProfile && <div>Loading p...</div>}
+			{loadingTransactions && <div>Loading t...</div>}
+			{JSON.stringify(transactions)}
 			<div className="padding pb-0 flex flex-col lg:grid lg:grid-cols-3 gap-10">
 				<section className="order-2 lg:order-1 lg:col-span-2">a</section>
 				<section className="order-1 lg:order-2 lg:col-span-1">b</section>
