@@ -38,6 +38,13 @@
       }
     },
     {
+      "name": "CheckOptedIn",
+      "args": [],
+      "returns": {
+        "type": "bool"
+      }
+    },
+    {
       "name": "Gateway",
       "args": [
         {

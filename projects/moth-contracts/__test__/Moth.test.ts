@@ -73,6 +73,26 @@ describe('HelloWorld', () => {
     tokenId = createAsa.return?.valueOf();
   });
 
+  test('optIn', async () => {
+    const optIn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+      from: sender.addr,
+      to: sender.addr,
+      assetIndex: Number(tokenId),
+      amount: 0,
+      suggestedParams: await algokit.getTransactionParams(undefined, algod),
+    });
+    const optIncall = await appClient.optIn({ optIn });
+
+    const signedTxn = optIn.signTxn(sender.sk);
+    const { txId } = await algod.sendRawTransaction(signedTxn).do();
+    await algosdk.waitForConfirmation(algod, txId, 4);
+
+    const checkOptIn = await appClient.checkOptedIn({});
+    expect(checkOptIn.return?.valueOf()).toBe(true);
+  });
+
+  test('geteway', async () => {});
+
   test('get contract Fee', async () => {
     const getSiteFee = await appClient.getContractFee({});
 

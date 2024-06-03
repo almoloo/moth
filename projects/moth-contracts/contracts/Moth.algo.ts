@@ -62,6 +62,10 @@ export class Moth extends Contract {
     return this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
   }
 
+  CheckOptedIn(): boolean {
+    return this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
+  }
+
   Gateway(payment: PayTxn, toAddress: Address, amount: uint64): void {
     assert(this.royaltyPointToken.exists);
     assert(this.profiles(toAddress).exists);
