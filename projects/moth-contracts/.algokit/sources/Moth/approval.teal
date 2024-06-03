@@ -94,7 +94,17 @@ CreateAsa:
 	// this.OnlyCreator()
 	callsub OnlyCreator
 
-	// contracts/Moth.algo.ts:38
+	// contracts/Moth.algo.ts:37
+	// assert(!this.royaltyPointToken.exists)
+	txna Applications 0
+	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
+	app_global_get_ex
+	swap
+	pop
+	!
+	assert
+
+	// contracts/Moth.algo.ts:39
 	// createAsset = sendAssetCreation({
 	//       configAssetName: 'Mathak',
 	//       configAssetUnitName: 'MAK',
@@ -107,32 +117,32 @@ CreateAsa:
 	int acfg
 	itxn_field TypeEnum
 
-	// contracts/Moth.algo.ts:39
+	// contracts/Moth.algo.ts:40
 	// configAssetName: 'Mathak'
 	byte 0x4d617468616b // "Mathak"
 	itxn_field ConfigAssetName
 
-	// contracts/Moth.algo.ts:40
+	// contracts/Moth.algo.ts:41
 	// configAssetUnitName: 'MAK'
 	byte 0x4d414b // "MAK"
 	itxn_field ConfigAssetUnitName
 
-	// contracts/Moth.algo.ts:41
+	// contracts/Moth.algo.ts:42
 	// configAssetTotal: 100000
 	int 100000
 	itxn_field ConfigAssetTotal
 
-	// contracts/Moth.algo.ts:42
+	// contracts/Moth.algo.ts:43
 	// configAssetDecimals: 0
 	int 0
 	itxn_field ConfigAssetDecimals
 
-	// contracts/Moth.algo.ts:43
+	// contracts/Moth.algo.ts:44
 	// configAssetClawback: this.app.address
 	global CurrentApplicationAddress
 	itxn_field ConfigAssetClawback
 
-	// contracts/Moth.algo.ts:44
+	// contracts/Moth.algo.ts:45
 	// configAssetManager: this.app.address
 	global CurrentApplicationAddress
 	itxn_field ConfigAssetManager
@@ -146,13 +156,13 @@ CreateAsa:
 	itxn CreatedAssetID
 	frame_bury 0 // createAsset: uint64
 
-	// contracts/Moth.algo.ts:47
+	// contracts/Moth.algo.ts:48
 	// this.royaltyPointToken.value = createAsset
 	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
 	frame_dig 0 // createAsset: uint64
 	app_global_put
 
-	// contracts/Moth.algo.ts:49
+	// contracts/Moth.algo.ts:50
 	// return createAsset;
 	frame_dig 0 // createAsset: uint64
 
@@ -192,16 +202,7 @@ CreateAsa:
 OptIn:
 	proto 1 1
 
-	// contracts/Moth.algo.ts:53
-	// assert(this.royaltyPointToken.exists)
-	txna Applications 0
-	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
-	app_global_get_ex
-	swap
-	pop
-	assert
-
-	// contracts/Moth.algo.ts:55
+	// contracts/Moth.algo.ts:56
 	// verifyAssetTransferTxn(optInTxn, {
 	//       sender: this.txn.sender,
 	//       xferAsset: this.royaltyPointToken.value,
@@ -245,7 +246,7 @@ OptIn:
 	// transaction verification failed: {"txn":"optInTxn","field":"assetReceiver","expected":"this.txn.sender"}
 	assert
 
-	// contracts/Moth.algo.ts:62
+	// contracts/Moth.algo.ts:63
 	// return this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
 	txn Sender
 	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
@@ -275,7 +276,7 @@ OptIn:
 CheckOptedIn:
 	proto 0 1
 
-	// contracts/Moth.algo.ts:66
+	// contracts/Moth.algo.ts:67
 	// return this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
 	txn Sender
 	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
@@ -322,7 +323,7 @@ CheckOptedIn:
 Gateway:
 	proto 3 0
 
-	// contracts/Moth.algo.ts:70
+	// contracts/Moth.algo.ts:71
 	// assert(this.royaltyPointToken.exists)
 	txna Applications 0
 	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
@@ -331,7 +332,7 @@ Gateway:
 	pop
 	assert
 
-	// contracts/Moth.algo.ts:71
+	// contracts/Moth.algo.ts:72
 	// assert(this.profiles(toAddress).exists)
 	frame_dig -2 // toAddress: Address
 	box_len
@@ -339,7 +340,7 @@ Gateway:
 	pop
 	assert
 
-	// contracts/Moth.algo.ts:72
+	// contracts/Moth.algo.ts:73
 	// this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value)
 	txn Sender
 	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
@@ -348,7 +349,7 @@ Gateway:
 	swap
 	pop
 
-	// contracts/Moth.algo.ts:74
+	// contracts/Moth.algo.ts:75
 	// verifyTxn(payment, {
 	//       amount: amount,
 	//       receiver: this.app.address,
@@ -371,7 +372,7 @@ Gateway:
 	// transaction verification failed: {"txn":"payment","field":"receiver","expected":"this.app.address"}
 	assert
 
-	// contracts/Moth.algo.ts:79
+	// contracts/Moth.algo.ts:80
 	// sendPayment({
 	//       amount: amount,
 	//       receiver: toAddress,
@@ -381,17 +382,17 @@ Gateway:
 	int pay
 	itxn_field TypeEnum
 
-	// contracts/Moth.algo.ts:80
+	// contracts/Moth.algo.ts:81
 	// amount: amount
 	frame_dig -3 // amount: uint64
 	itxn_field Amount
 
-	// contracts/Moth.algo.ts:81
+	// contracts/Moth.algo.ts:82
 	// receiver: toAddress
 	frame_dig -2 // toAddress: Address
 	itxn_field Receiver
 
-	// contracts/Moth.algo.ts:82
+	// contracts/Moth.algo.ts:83
 	// sender: this.app.address
 	global CurrentApplicationAddress
 	itxn_field Sender
@@ -403,7 +404,7 @@ Gateway:
 	// Submit inner transaction
 	itxn_submit
 
-	// contracts/Moth.algo.ts:85
+	// contracts/Moth.algo.ts:86
 	// sendAssetTransfer({
 	//       xferAsset: this.royaltyPointToken.value,
 	//       assetAmount: amount / 100,
@@ -414,25 +415,25 @@ Gateway:
 	int axfer
 	itxn_field TypeEnum
 
-	// contracts/Moth.algo.ts:86
+	// contracts/Moth.algo.ts:87
 	// xferAsset: this.royaltyPointToken.value
 	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
 	app_global_get
 	itxn_field XferAsset
 
-	// contracts/Moth.algo.ts:87
+	// contracts/Moth.algo.ts:88
 	// assetAmount: amount / 100
 	frame_dig -3 // amount: uint64
 	int 100
 	/
 	itxn_field AssetAmount
 
-	// contracts/Moth.algo.ts:88
+	// contracts/Moth.algo.ts:89
 	// assetReceiver: this.txn.sender
 	txn Sender
 	itxn_field AssetReceiver
 
-	// contracts/Moth.algo.ts:89
+	// contracts/Moth.algo.ts:90
 	// sender: this.app.address
 	global CurrentApplicationAddress
 	itxn_field Sender
@@ -445,108 +446,8 @@ Gateway:
 	itxn_submit
 	retsub
 
-// GetMBR(pay)uint64
+// GetMBR(string,string,string,string,bool,uint64)uint64
 *abi_route_GetMBR:
-	// The ABI return prefix
-	byte 0x151f7c75
-
-	// boxMBRPayment: pay
-	txn GroupIndex
-	int 1
-	-
-	dup
-	gtxns TypeEnum
-	int pay
-	==
-
-	// argument 0 (boxMBRPayment) for GetMBR must be a pay transaction
-	assert
-
-	// execute GetMBR(pay)uint64
-	callsub GetMBR
-	itob
-	concat
-	log
-	int 1
-	return
-
-// GetMBR(boxMBRPayment: PayTxn): uint64
-GetMBR:
-	proto 1 1
-
-	// Push empty bytes after the frame pointer to reserve space for local variables
-	byte 0x
-	dup
-
-	// contracts/Moth.algo.ts:95
-	// preAppMBR = this.app.address.minBalance
-	global CurrentApplicationAddress
-	acct_params_get AcctMinBalance
-	pop
-	frame_bury 0 // preAppMBR: uint64
-
-	// contracts/Moth.algo.ts:96
-	// this.profiles(this.txn.sender).value = {
-	//       title: 'string',
-	//       logo: 'string',
-	//       description: 'string',
-	//       url: 'string',
-	//       loyaltyEnabled: true,
-	//       loyaltyPercentage: 1000,
-	//     }
-	txn Sender
-	dup
-	box_del
-	pop
-	byte 0x // initial head
-	byte 0x // initial tail
-	byte 0x0011 // initial head offset
-	byte 0x0006737472696e67
-	callsub *process_dynamic_tuple_element
-	byte 0x0006737472696e67
-	callsub *process_dynamic_tuple_element
-	byte 0x0006737472696e67
-	callsub *process_dynamic_tuple_element
-	byte 0x0006737472696e67
-	callsub *process_dynamic_tuple_element
-	byte 0x00
-	int 0
-	int 1
-	setbit
-	callsub *process_static_tuple_element
-	byte 0x00000000000003e8
-	callsub *process_static_tuple_element
-	pop // pop head offset
-	concat // concat head and tail
-	box_put
-
-	// contracts/Moth.algo.ts:104
-	// Mbr = this.app.address.minBalance - preAppMBR
-	global CurrentApplicationAddress
-	acct_params_get AcctMinBalance
-	pop
-	frame_dig 0 // preAppMBR: uint64
-	-
-	frame_bury 1 // Mbr: uint64
-
-	// contracts/Moth.algo.ts:105
-	// this.profiles(this.txn.sender).delete()
-	txn Sender
-	box_del
-
-	// contracts/Moth.algo.ts:106
-	// return Mbr;
-	frame_dig 1 // Mbr: uint64
-
-	// set the subroutine return value
-	frame_bury 0
-
-	// pop all local variables from the stack
-	popn 1
-	retsub
-
-// CreateProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
-*abi_route_CreateProfile:
 	// The ABI return prefix
 	byte 0x151f7c75
 
@@ -561,7 +462,199 @@ GetMBR:
 	int 1
 	==
 
-	// argument 1 (loyaltyEnabled) for CreateProfile must be a bool
+	// argument 1 (loyaltyEnabled) for GetMBR must be a bool
+	assert
+	int 0
+	getbit
+
+	// url: string
+	txna ApplicationArgs 4
+	extract 2 0
+
+	// description: string
+	txna ApplicationArgs 3
+	extract 2 0
+
+	// logo: string
+	txna ApplicationArgs 2
+	extract 2 0
+
+	// title: string
+	txna ApplicationArgs 1
+	extract 2 0
+
+	// execute GetMBR(string,string,string,string,bool,uint64)uint64
+	callsub GetMBR
+	itob
+	concat
+	log
+	int 1
+	return
+
+// GetMBR(title: string, logo: string, description: string, url: string, loyaltyEnabled: boolean, loyaltyPercentage: uint64): uint64
+GetMBR:
+	proto 6 1
+
+	// Push empty bytes after the frame pointer to reserve space for local variables
+	byte 0x
+	dup
+
+	// *if0_condition
+	// contracts/Moth.algo.ts:103
+	// this.profiles(this.txn.sender).exists
+	txn Sender
+	box_len
+	swap
+	pop
+	bz *if0_end
+
+	// *if0_consequent
+	// contracts/Moth.algo.ts:104
+	// this.profiles(this.app.address).value = this.profiles(this.txn.sender).value
+	global CurrentApplicationAddress
+	dup
+	box_del
+	pop
+	txn Sender
+	box_get
+
+	// box value does not exist: this.profiles(this.txn.sender).value
+	assert
+	box_put
+
+*if0_end:
+	// contracts/Moth.algo.ts:107
+	// preAppMBR = this.app.address.minBalance
+	global CurrentApplicationAddress
+	acct_params_get AcctMinBalance
+	pop
+	frame_bury 0 // preAppMBR: uint64
+
+	// contracts/Moth.algo.ts:108
+	// this.profiles(this.app.address).value = {
+	//       title: title,
+	//       logo: logo,
+	//       description: description,
+	//       url: url,
+	//       loyaltyEnabled: loyaltyEnabled,
+	//       loyaltyPercentage: loyaltyPercentage,
+	//     }
+	global CurrentApplicationAddress
+	dup
+	box_del
+	pop
+	byte 0x // initial head
+	byte 0x // initial tail
+	byte 0x0011 // initial head offset
+	frame_dig -1 // title: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	callsub *process_dynamic_tuple_element
+	frame_dig -2 // logo: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	callsub *process_dynamic_tuple_element
+	frame_dig -3 // description: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	callsub *process_dynamic_tuple_element
+	frame_dig -4 // url: string
+	dup
+	len
+	itob
+	extract 6 2
+	swap
+	concat
+	callsub *process_dynamic_tuple_element
+	byte 0x00
+	int 0
+	frame_dig -5 // loyaltyEnabled: boolean
+	setbit
+	callsub *process_static_tuple_element
+	frame_dig -6 // loyaltyPercentage: uint64
+	itob
+	callsub *process_static_tuple_element
+	pop // pop head offset
+	concat // concat head and tail
+	box_put
+
+	// *if1_condition
+	// contracts/Moth.algo.ts:117
+	// preAppMBR > this.app.address.minBalance
+	frame_dig 0 // preAppMBR: uint64
+	global CurrentApplicationAddress
+	acct_params_get AcctMinBalance
+	pop
+	>
+	bz *if1_end
+
+	// *if1_consequent
+	// contracts/Moth.algo.ts:118
+	// this.profiles(this.app.address).delete()
+	global CurrentApplicationAddress
+	box_del
+
+	// contracts/Moth.algo.ts:119
+	// return 0;
+	int 0
+	b *GetMBR*return
+
+*if1_end:
+	// contracts/Moth.algo.ts:122
+	// Mbr = this.app.address.minBalance - preAppMBR
+	global CurrentApplicationAddress
+	acct_params_get AcctMinBalance
+	pop
+	frame_dig 0 // preAppMBR: uint64
+	-
+	frame_bury 1 // Mbr: uint64
+
+	// contracts/Moth.algo.ts:123
+	// this.profiles(this.app.address).delete()
+	global CurrentApplicationAddress
+	box_del
+
+	// contracts/Moth.algo.ts:124
+	// return Mbr;
+	frame_dig 1 // Mbr: uint64
+
+*GetMBR*return:
+	// set the subroutine return value
+	frame_bury 0
+
+	// pop all local variables from the stack
+	popn 1
+	retsub
+
+// EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
+*abi_route_EditProfile:
+	// The ABI return prefix
+	byte 0x151f7c75
+
+	// loyaltyPercentage: uint64
+	txna ApplicationArgs 6
+	btoi
+
+	// loyaltyEnabled: bool
+	txna ApplicationArgs 5
+	dup
+	len
+	int 1
+	==
+
+	// argument 1 (loyaltyEnabled) for EditProfile must be a bool
 	assert
 	int 0
 	getbit
@@ -591,21 +684,31 @@ GetMBR:
 	int pay
 	==
 
-	// argument 6 (boxMBRPayment) for CreateProfile must be a pay transaction
+	// argument 6 (boxMBRPayment) for EditProfile must be a pay transaction
 	assert
 
-	// execute CreateProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
-	callsub CreateProfile
+	// execute EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
+	callsub EditProfile
 	concat
 	log
 	int 1
 	return
 
-// CreateProfile(boxMBRPayment: PayTxn, title: string, logo: string, description: string, url: string, loyaltyEnabled: boolean, loyaltyPercentage: uint64): profile
-CreateProfile:
+// EditProfile(boxMBRPayment: PayTxn, title: string, logo: string, description: string, url: string, loyaltyEnabled: boolean, loyaltyPercentage: uint64): profile
+EditProfile:
 	proto 7 1
 
-	// contracts/Moth.algo.ts:119
+	// Push empty bytes after the frame pointer to reserve space for local variables
+	byte 0x
+
+	// contracts/Moth.algo.ts:136
+	// preAppMBR = this.app.address.minBalance
+	global CurrentApplicationAddress
+	acct_params_get AcctMinBalance
+	pop
+	frame_bury 0 // preAppMBR: uint64
+
+	// contracts/Moth.algo.ts:137
 	// this.profiles(this.txn.sender).value = {
 	//       title: title,
 	//       logo: logo,
@@ -665,211 +768,89 @@ CreateProfile:
 	concat // concat head and tail
 	box_put
 
-	// contracts/Moth.algo.ts:133
+	// *if2_condition
+	// contracts/Moth.algo.ts:146
+	// preAppMBR >= this.app.address.minBalance
+	frame_dig 0 // preAppMBR: uint64
+	global CurrentApplicationAddress
+	acct_params_get AcctMinBalance
+	pop
+	>=
+	bz *if2_else
+
+	// *if2_consequent
+	// contracts/Moth.algo.ts:147
+	// sendPayment({
+	//         amount: preAppMBR - this.app.address.minBalance,
+	//         receiver: this.txn.sender,
+	//         sender: this.app.address,
+	//       })
+	itxn_begin
+	int pay
+	itxn_field TypeEnum
+
+	// contracts/Moth.algo.ts:148
+	// amount: preAppMBR - this.app.address.minBalance
+	frame_dig 0 // preAppMBR: uint64
+	global CurrentApplicationAddress
+	acct_params_get AcctMinBalance
+	pop
+	-
+	itxn_field Amount
+
+	// contracts/Moth.algo.ts:149
+	// receiver: this.txn.sender
+	txn Sender
+	itxn_field Receiver
+
+	// contracts/Moth.algo.ts:150
+	// sender: this.app.address
+	global CurrentApplicationAddress
+	itxn_field Sender
+
+	// Fee field not set, defaulting to 0
+	int 0
+	itxn_field Fee
+
+	// Submit inner transaction
+	itxn_submit
+	b *if2_end
+
+*if2_else:
+	// contracts/Moth.algo.ts:153
+	// verifyTxn(boxMBRPayment, {
+	//         receiver: this.app.address,
+	//         amount: this.app.address.minBalance - preAppMBR,
+	//       })
+	// verify receiver
+	frame_dig -1 // boxMBRPayment: PayTxn
+	gtxns Receiver
+	global CurrentApplicationAddress
+	==
+
+	// transaction verification failed: {"txn":"boxMBRPayment","field":"receiver","expected":"this.app.address"}
+	assert
+
+	// verify amount
+	frame_dig -1 // boxMBRPayment: PayTxn
+	gtxns Amount
+	global CurrentApplicationAddress
+	acct_params_get AcctMinBalance
+	pop
+	frame_dig 0 // preAppMBR: uint64
+	-
+	==
+
+	// transaction verification failed: {"txn":"boxMBRPayment","field":"amount","expected":"this.app.address.minBalance - preAppMBR"}
+	assert
+
+*if2_end:
+	// contracts/Moth.algo.ts:159
 	// return this.profiles(this.txn.sender).value;
 	txn Sender
 	box_get
 
 	// box value does not exist: this.profiles(this.txn.sender).value
-	assert
-	retsub
-
-// EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
-*abi_route_EditProfile:
-	// The ABI return prefix
-	byte 0x151f7c75
-
-	// loyaltyPercentage: uint64
-	txna ApplicationArgs 6
-	btoi
-
-	// loyaltyEnabled: bool
-	txna ApplicationArgs 5
-	dup
-	len
-	int 1
-	==
-
-	// argument 1 (loyaltyEnabled) for EditProfile must be a bool
-	assert
-	int 0
-	getbit
-
-	// url: string
-	txna ApplicationArgs 4
-	extract 2 0
-
-	// description: string
-	txna ApplicationArgs 3
-	extract 2 0
-
-	// logo: string
-	txna ApplicationArgs 2
-	extract 2 0
-
-	// title: string
-	txna ApplicationArgs 1
-	extract 2 0
-
-	// execute EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)
-	callsub EditProfile
-	concat
-	log
-	int 1
-	return
-
-// EditProfile(title: string, logo: string, description: string, url: string, loyaltyEnabled: boolean, loyaltyPercentage: uint64): profile
-EditProfile:
-	proto 6 1
-
-	// contracts/Moth.algo.ts:144
-	// assert(this.profiles(this.txn.sender).exists)
-	txn Sender
-	box_len
-	swap
-	pop
-	assert
-
-	// contracts/Moth.algo.ts:145
-	// this.profiles(this.txn.sender).value = {
-	//       title: title,
-	//       logo: logo,
-	//       description: description,
-	//       url: url,
-	//       loyaltyEnabled: loyaltyEnabled,
-	//       loyaltyPercentage: loyaltyPercentage,
-	//     }
-	txn Sender
-	dup
-	box_del
-	pop
-	byte 0x // initial head
-	byte 0x // initial tail
-	byte 0x0011 // initial head offset
-	frame_dig -1 // title: string
-	dup
-	len
-	itob
-	extract 6 2
-	swap
-	concat
-	callsub *process_dynamic_tuple_element
-	frame_dig -2 // logo: string
-	dup
-	len
-	itob
-	extract 6 2
-	swap
-	concat
-	callsub *process_dynamic_tuple_element
-	frame_dig -3 // description: string
-	dup
-	len
-	itob
-	extract 6 2
-	swap
-	concat
-	callsub *process_dynamic_tuple_element
-	frame_dig -4 // url: string
-	dup
-	len
-	itob
-	extract 6 2
-	swap
-	concat
-	callsub *process_dynamic_tuple_element
-	byte 0x00
-	int 0
-	frame_dig -5 // loyaltyEnabled: boolean
-	setbit
-	callsub *process_static_tuple_element
-	frame_dig -6 // loyaltyPercentage: uint64
-	itob
-	callsub *process_static_tuple_element
-	pop // pop head offset
-	concat // concat head and tail
-	box_put
-
-	// contracts/Moth.algo.ts:154
-	// return this.profiles(this.txn.sender).value;
-	txn Sender
-	box_get
-
-	// box value does not exist: this.profiles(this.txn.sender).value
-	assert
-	retsub
-
-// GetContractFee()uint64
-*abi_route_GetContractFee:
-	// The ABI return prefix
-	byte 0x151f7c75
-
-	// execute GetContractFee()uint64
-	callsub GetContractFee
-	itob
-	concat
-	log
-	int 1
-	return
-
-// GetContractFee(): uint64
-GetContractFee:
-	proto 0 1
-
-	// contracts/Moth.algo.ts:158
-	// return this.contractFee.value;
-	byte 0x636f6e7472616374466565 // "contractFee"
-	app_global_get
-	retsub
-
-// getProfile(address)(string,string,string,string,bool,uint64)
-*abi_route_getProfile:
-	// The ABI return prefix
-	byte 0x151f7c75
-
-	// address: address
-	txna ApplicationArgs 1
-	dup
-	len
-	int 32
-	==
-
-	// argument 0 (address) for getProfile must be a address
-	assert
-
-	// execute getProfile(address)(string,string,string,string,bool,uint64)
-	callsub getProfile
-	concat
-	log
-	int 1
-	return
-
-// getProfile(address: Address): profile
-getProfile:
-	proto 1 1
-
-	// Push empty bytes after the frame pointer to reserve space for local variables
-	byte 0x
-
-	// contracts/Moth.algo.ts:162
-	// assert(this.profiles(address).exists)
-	frame_dig -1 // address: Address
-	box_len
-	swap
-	pop
-	assert
-
-	// contracts/Moth.algo.ts:163
-	// values = this.profiles(address).value
-	frame_dig -1 // address: Address
-	frame_bury 0 // storage key//values
-
-	// contracts/Moth.algo.ts:165
-	// return values;
-	frame_dig 0 // storage key//values
-	box_get
-
-	// box value does not exist: this.profiles(address).value
 	assert
 
 	// set the subroutine return value
@@ -889,13 +870,10 @@ getProfile:
 	method "OptIn(axfer)bool"
 	method "CheckOptedIn()bool"
 	method "Gateway(pay,address,uint64)void"
-	method "GetMBR(pay)uint64"
-	method "CreateProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
-	method "EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
-	method "GetContractFee()uint64"
-	method "getProfile(address)(string,string,string,string,bool,uint64)"
+	method "GetMBR(string,string,string,string,bool,uint64)uint64"
+	method "EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
 	txna ApplicationArgs 0
-	match *abi_route_CreateAsa *abi_route_OptIn *abi_route_CheckOptedIn *abi_route_Gateway *abi_route_GetMBR *abi_route_CreateProfile *abi_route_EditProfile *abi_route_GetContractFee *abi_route_getProfile
+	match *abi_route_CreateAsa *abi_route_OptIn *abi_route_CheckOptedIn *abi_route_Gateway *abi_route_GetMBR *abi_route_EditProfile
 
 	// this contract does not implement the given ABI method for call NoOp
 	err

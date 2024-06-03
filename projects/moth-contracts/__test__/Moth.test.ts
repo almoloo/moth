@@ -55,7 +55,7 @@ describe('HelloWorld', () => {
     const ptxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
       from: creator.addr,
       to: appAddress,
-      amount: 200000,
+      amount: 300000,
       suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
     const signedTxn = ptxn.signTxn(creator.sk);
@@ -73,60 +73,72 @@ describe('HelloWorld', () => {
     tokenId = createAsa.return?.valueOf();
   });
 
-  test('optIn', async () => {
-    const optIn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-      from: sender.addr,
-      to: sender.addr,
-      assetIndex: Number(tokenId),
-      amount: 0,
-      suggestedParams: await algokit.getTransactionParams(undefined, algod),
-    });
-    const optIncall = await appClient.optIn({ optIn });
-
-    const signedTxn = optIn.signTxn(sender.sk);
-    const { txId } = await algod.sendRawTransaction(signedTxn).do();
-    await algosdk.waitForConfirmation(algod, txId, 4);
-
-    const checkOptIn = await appClient.checkOptedIn({});
-    expect(checkOptIn.return?.valueOf()).toBe(true);
-  });
-
-  test('geteway', async () => {});
-
-  test('get contract Fee', async () => {
-    const getSiteFee = await appClient.getContractFee({});
-
-    expect(getSiteFee.return?.valueOf()).toEqual(BigInt(siteFee));
-  });
-
-  test('getmbr', async () => {
-    const { appAddress } = await appClient.appClient.getAppReference();
-
-    const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-      from: sender.addr,
-      to: appAddress,
-      amount: 100000,
-      suggestedParams: await algokit.getTransactionParams(undefined, algod),
-    });
-
-    const proposalFromMethod = await appClient.getMbr(
-      { boxMBRPayment },
-      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
-    );
-    expect(proposalFromMethod.return?.valueOf()).toBe(BigInt(34_900));
-  });
-
   test('create profile', async () => {
     const { appAddress } = await appClient.appClient.getAppReference();
 
+    const calculateMbr = await appClient.getMbr(
+      {
+        title: 'shopppppppppppppppppppppppppppppppppppppppppp',
+        logo: 'logo id',
+        description: 'a site to sell',
+        url: 'site url',
+        loyaltyEnabled: true,
+        loyaltyPercentage: 5,
+      },
+      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
+    );
+
     const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
       from: sender.addr,
       to: appAddress,
-      amount: 134_900,
+      amount: BigInt(calculateMbr.return?.valueOf()!),
       suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
+    const newProfile = await appClient.editProfile(
+      {
+        boxMBRPayment,
+        title: 'shopppppppppppppppppppppppppppppppppppppppppp',
+        logo: 'logo id',
+        description: 'a site to sell',
+        url: 'site url',
+        loyaltyEnabled: true,
+        loyaltyPercentage: 5,
+      },
+      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
+    );
 
-    const newProfile = await appClient.createProfile(
+    expect(newProfile.return?.valueOf()).toStrictEqual([
+      'shopppppppppppppppppppppppppppppppppppppppppp',
+      'logo id',
+      'a site to sell',
+      'site url',
+      true,
+      BigInt(5),
+    ]);
+  });
+
+  test('edit profile', async () => {
+    const { appAddress } = await appClient.appClient.getAppReference();
+
+    const calculateMbr = await appClient.getMbr(
+      {
+        title: 'shop',
+        logo: 'logo id',
+        description: 'a site to sell',
+        url: 'site url',
+        loyaltyEnabled: true,
+        loyaltyPercentage: 5,
+      },
+      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
+    );
+
+    const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      from: sender.addr,
+      to: appAddress,
+      amount: BigInt(calculateMbr.return?.valueOf()!),
+      suggestedParams: await algokit.getTransactionParams(undefined, algod),
+    });
+    const newProfile = await appClient.editProfile(
       {
         boxMBRPayment,
         title: 'shop',
@@ -136,7 +148,7 @@ describe('HelloWorld', () => {
         loyaltyEnabled: true,
         loyaltyPercentage: 5,
       },
-      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
+      { sender, sendParams: { fee: algokit.microAlgos(2_000) }, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
     );
 
     expect(newProfile.return?.valueOf()).toStrictEqual([
@@ -149,41 +161,15 @@ describe('HelloWorld', () => {
     ]);
   });
 
-  test('edit Profile', async () => {
-    const editProfile = await appClient.editProfile(
-      {
-        title: 'new shop',
-        logo: 'logo id',
-        description: 'a site to sell',
-        url: 'site url',
-        loyaltyEnabled: true,
-        loyaltyPercentage: 5,
-      },
-      { sender, boxes: [algosdk.decodeAddress(sender.addr).publicKey] }
-    );
-
-    expect(editProfile.return?.valueOf()).toStrictEqual([
-      'new shop',
-      'logo id',
-      'a site to sell',
-      'site url',
-      true,
-      BigInt(5),
-    ]);
-  });
-
-  test('get profile', async () => {
-    const profile = await appClient.getProfile({
-      address: sender.addr,
+  test('optIn', async () => {
+    const optIn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+      from: sender.addr,
+      to: sender.addr,
+      assetIndex: Number(tokenId),
+      amount: 0,
+      suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
-
-    expect(profile.return?.valueOf()).toStrictEqual([
-      'new shop',
-      'logo id',
-      'a site to sell',
-      'site url',
-      true,
-      BigInt(5),
-    ]);
+    const optIncall = await appClient.optIn({ optInTxn: optIn }, { sender });
+    expect(optIncall.return?.valueOf()).toBe(true);
   });
 });

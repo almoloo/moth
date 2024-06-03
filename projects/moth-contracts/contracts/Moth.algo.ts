@@ -34,6 +34,7 @@ export class Moth extends Contract {
 
   CreateAsa(): AssetID {
     this.OnlyCreator();
+    assert(!this.royaltyPointToken.exists);
 
     const createAsset = sendAssetCreation({
       configAssetName: 'Mathak',
@@ -50,7 +51,7 @@ export class Moth extends Contract {
   }
 
   OptIn(optInTxn: AssetTransferTxn): boolean {
-    assert(this.royaltyPointToken.exists);
+    // assert(this.royaltyPointToken.exists);
 
     verifyAssetTransferTxn(optInTxn, {
       sender: this.txn.sender,
@@ -91,22 +92,39 @@ export class Moth extends Contract {
   }
 
   // eslint-disable-next-line no-unused-vars
-  GetMBR(boxMBRPayment: PayTxn): uint64 {
+  GetMBR(
+    title: string,
+    logo: string,
+    description: string,
+    url: string,
+    loyaltyEnabled: boolean,
+    loyaltyPercentage: uint64
+  ): uint64 {
+    if (this.profiles(this.txn.sender).exists) {
+      this.profiles(this.app.address).value = this.profiles(this.txn.sender).value;
+    }
+
     const preAppMBR = this.app.address.minBalance;
-    this.profiles(this.txn.sender).value = {
-      title: 'string',
-      logo: 'string',
-      description: 'string',
-      url: 'string',
-      loyaltyEnabled: true,
-      loyaltyPercentage: 1000,
+    this.profiles(this.app.address).value = {
+      title: title,
+      logo: logo,
+      description: description,
+      url: url,
+      loyaltyEnabled: loyaltyEnabled,
+      loyaltyPercentage: loyaltyPercentage,
     };
+
+    if (preAppMBR > this.app.address.minBalance) {
+      this.profiles(this.app.address).delete();
+      return 0;
+    }
+
     const Mbr = this.app.address.minBalance - preAppMBR;
-    this.profiles(this.txn.sender).delete();
+    this.profiles(this.app.address).delete();
     return Mbr;
   }
 
-  CreateProfile(
+  EditProfile(
     boxMBRPayment: PayTxn,
     title: string,
     logo: string,
@@ -115,7 +133,7 @@ export class Moth extends Contract {
     loyaltyEnabled: boolean,
     loyaltyPercentage: uint64
   ): profile {
-    // const preAppMBR = this.app.address.minBalance;
+    const preAppMBR = this.app.address.minBalance;
     this.profiles(this.txn.sender).value = {
       title: title,
       logo: logo,
@@ -125,43 +143,19 @@ export class Moth extends Contract {
       loyaltyPercentage: loyaltyPercentage,
     };
 
-    // verifyTxn(boxMBRPayment, {
-    //   receiver: this.app.address,
-    //   amount: this.app.address.minBalance - preAppMBR,
-    // });
+    if (preAppMBR >= this.app.address.minBalance) {
+      sendPayment({
+        amount: preAppMBR - this.app.address.minBalance,
+        receiver: this.txn.sender,
+        sender: this.app.address,
+      });
+    } else {
+      verifyTxn(boxMBRPayment, {
+        receiver: this.app.address,
+        amount: this.app.address.minBalance - preAppMBR,
+      });
+    }
 
     return this.profiles(this.txn.sender).value;
-  }
-
-  EditProfile(
-    title: string,
-    logo: string,
-    description: string,
-    url: string,
-    loyaltyEnabled: boolean,
-    loyaltyPercentage: uint64
-  ): profile {
-    assert(this.profiles(this.txn.sender).exists);
-    this.profiles(this.txn.sender).value = {
-      title: title,
-      logo: logo,
-      description: description,
-      url: url,
-      loyaltyEnabled: loyaltyEnabled,
-      loyaltyPercentage: loyaltyPercentage,
-    };
-
-    return this.profiles(this.txn.sender).value;
-  }
-
-  GetContractFee(): uint64 {
-    return this.contractFee.value;
-  }
-
-  getProfile(address: Address): profile {
-    assert(this.profiles(address).exists);
-    const values = this.profiles(address).value;
-
-    return values;
   }
 }

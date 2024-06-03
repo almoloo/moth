@@ -68,22 +68,6 @@
       "name": "GetMBR",
       "args": [
         {
-          "name": "boxMBRPayment",
-          "type": "pay"
-        }
-      ],
-      "returns": {
-        "type": "uint64"
-      }
-    },
-    {
-      "name": "CreateProfile",
-      "args": [
-        {
-          "name": "boxMBRPayment",
-          "type": "pay"
-        },
-        {
           "name": "title",
           "type": "string"
         },
@@ -109,13 +93,17 @@
         }
       ],
       "returns": {
-        "type": "(string,string,string,string,bool,uint64)"
+        "type": "uint64"
       }
     },
     {
       "name": "EditProfile",
       "args": [
         {
+          "name": "boxMBRPayment",
+          "type": "pay"
+        },
+        {
           "name": "title",
           "type": "string"
         },
@@ -138,25 +126,6 @@
         {
           "name": "loyaltyPercentage",
           "type": "uint64"
-        }
-      ],
-      "returns": {
-        "type": "(string,string,string,string,bool,uint64)"
-      }
-    },
-    {
-      "name": "GetContractFee",
-      "args": [],
-      "returns": {
-        "type": "uint64"
-      }
-    },
-    {
-      "name": "getProfile",
-      "args": [
-        {
-          "name": "address",
-          "type": "address"
         }
       ],
       "returns": {
