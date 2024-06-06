@@ -163,13 +163,38 @@ describe('HelloWorld', () => {
 
   test('optIn', async () => {
     const optIn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-      from: sender.addr,
-      to: sender.addr,
+      from: creator.addr,
+      to: creator.addr,
       assetIndex: Number(tokenId),
       amount: 0,
       suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
-    const optIncall = await appClient.optIn({ optInTxn: optIn }, { sender });
+    const optIncall = await appClient.optIn({ optInTxn: optIn }, { sender: creator });
     expect(optIncall.return?.valueOf()).toBe(true);
+  });
+
+  test('geteway', async () => {
+    const { appAddress } = await appClient.appClient.getAppReference();
+
+    const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      from: creator.addr,
+      to: appAddress,
+      amount: 3000,
+      suggestedParams: await algokit.getTransactionParams(undefined, algod),
+    });
+
+    const info = await algokit.getAccountInformation(sender.addr, algod);
+    await appClient.gatewayFull(
+      { payment: paymentTxn, amount: 3000, toAddress: sender.addr },
+      { sender: creator, sendParams: { fee: algokit.microAlgos(3_000) } }
+    );
+
+    const def = (await algokit.getAccountInformation(sender.addr, algod)).amount - info.amount;
+
+    const infoo = await algokit.getAccountInformation(creator.addr, algod);
+    console.warn(tokenId);
+    console.warn(infoo);
+
+    expect(def).toBe(3000);
   });
 });

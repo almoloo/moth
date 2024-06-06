@@ -45,7 +45,7 @@
       }
     },
     {
-      "name": "Gateway",
+      "name": "GatewayFull",
       "args": [
         {
           "name": "payment",
@@ -57,6 +57,30 @@
         },
         {
           "name": "amount",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GatewaySpendToken",
+      "args": [
+        {
+          "name": "payment",
+          "type": "pay"
+        },
+        {
+          "name": "toAddress",
+          "type": "address"
+        },
+        {
+          "name": "totalAmount",
+          "type": "uint64"
+        },
+        {
+          "name": "tokenToSpend",
           "type": "uint64"
         }
       ],

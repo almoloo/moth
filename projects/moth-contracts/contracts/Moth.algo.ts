@@ -18,13 +18,18 @@ export class Moth extends Contract {
   /** Moth Royalty piont Token */
   royaltyPointToken = GlobalStateKey<AssetID>();
 
-  contractBalance = GlobalStateKey<uint64>();
+  contractTokenBalance = GlobalStateKey<uint64>();
+
+  contractFeeBalance = GlobalStateKey<uint64>();
 
   profiles = BoxMap<Address, profile>();
 
   createApplication(defultPercentage: uint64, siteFee: uint64): void {
     this.defultPercentage.value = defultPercentage;
     this.contractFee.value = siteFee;
+
+    this.contractFeeBalance.value = 0;
+    this.contractTokenBalance.value = 0;
   }
 
   /** Ensure the caller is app creator */
@@ -67,9 +72,11 @@ export class Moth extends Contract {
     return this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
   }
 
-  Gateway(payment: PayTxn, toAddress: Address, amount: uint64): void {
+  GatewayFull(payment: PayTxn, toAddress: Address, amount: uint64): void {
     assert(this.royaltyPointToken.exists);
     assert(this.profiles(toAddress).exists);
+    assert(this.contractFee.value < amount);
+
     this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
 
     verifyTxn(payment, {
@@ -77,16 +84,53 @@ export class Moth extends Contract {
       receiver: this.app.address,
     });
 
-    sendPayment({
-      amount: amount,
-      receiver: toAddress,
-      sender: this.app.address,
-    });
+    const toProfile = this.profiles(toAddress).value;
+    const addedToken = (amount / 100) * toProfile.loyaltyPercentage;
+    this.contractFeeBalance.value += this.contractFee.value;
+    this.contractTokenBalance.value += addedToken;
 
     sendAssetTransfer({
       xferAsset: this.royaltyPointToken.value,
-      assetAmount: amount / 100,
+      assetAmount: addedToken,
       assetReceiver: this.txn.sender,
+      sender: this.app.address,
+    });
+
+    sendPayment({
+      amount: amount - addedToken - this.contractFee.value,
+      receiver: toAddress,
+      sender: this.app.address,
+    });
+  }
+
+  GatewaySpendToken(payment: PayTxn, toAddress: Address, totalAmount: uint64, tokenToSpend: uint64): void {
+    assert(this.royaltyPointToken.exists);
+    assert(this.profiles(toAddress).exists);
+    assert(this.contractFee.value < totalAmount);
+
+    const toProfile = this.profiles(toAddress).value;
+    assert(toProfile.loyaltyEnabled);
+
+    assert(this.txn.sender.assetBalance(this.royaltyPointToken.value) > tokenToSpend);
+
+    verifyTxn(payment, {
+      amount: totalAmount - tokenToSpend,
+      receiver: this.app.address,
+    });
+
+    this.contractFeeBalance.value += this.contractFee.value;
+    this.contractTokenBalance.value -= tokenToSpend;
+
+    sendAssetTransfer({
+      xferAsset: this.royaltyPointToken.value,
+      assetAmount: tokenToSpend,
+      assetReceiver: this.app.address,
+      sender: this.txn.sender,
+    });
+
+    sendPayment({
+      amount: totalAmount - this.contractFee.value,
+      receiver: toAddress,
       sender: this.app.address,
     });
   }
