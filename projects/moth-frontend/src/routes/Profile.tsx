@@ -6,7 +6,7 @@ import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClien
 import PageHeader from '@/components/PageHeader';
 import { Loader, SaveIcon, SquareUserRoundIcon } from 'lucide-react';
 import React, { ReactNode, useEffect } from 'react';
-import { z } from 'zod';
+import { bigint, z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -48,7 +48,7 @@ const Profile: React.FC<ProfileProps> = () => {
 		token: algodConfig.token,
 	});
 
-	const [hasProfile, setHasProfile] = React.useState<boolean>(false);
+	// const [hasProfile, setHasProfile] = React.useState<boolean>(false);
 	const [loadingFormData, setLoadingFormData] = React.useState<boolean>(true);
 	const [loadingSubmit, setLoadingSubmit] = React.useState<boolean>(false);
 	const [loadedProfile, setLoadedProfile] = React.useState<boolean>(false);
@@ -89,7 +89,7 @@ const Profile: React.FC<ProfileProps> = () => {
 				const profile = await fetchProfile(activeAddress, algodClient);
 				if (profile) {
 					setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
-					setHasProfile(true);
+					// setHasProfile(true);
 					setLoadedProfile(true);
 					setLoadingProfile(false);
 				}
@@ -155,60 +155,55 @@ const Profile: React.FC<ProfileProps> = () => {
 				// SET values.logo TO IPFS HASH
 				values.logo = resData.IpfsHash;
 			}
-
+			console.log('values', values);
+			const calculateMbr = await appClient?.getMbr(
+				{
+					title: values.title,
+					description: values.description,
+					url: values.url,
+					logo: values.logo,
+					loyaltyEnabled: values.loyaltyEnabled,
+					loyaltyPercentage: Number(values.loyaltyPercentage),
+				},
+				{
+					sender: { signer, addr: activeAddress! },
+					// boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+					sendParams: {
+						populateAppCallResources: true,
+					},
+				},
+			);
+			console.log('calculateMbr', calculateMbr);
 			const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
 				from: activeAddress!,
 				to: appAddress,
-				amount: 134_900,
+				amount: BigInt(calculateMbr?.return?.valueOf()!),
 				suggestedParams: await algokit.getTransactionParams(undefined, algodClient),
 			});
+			console.log('boxMBRPayment', boxMBRPayment);
 
 			let profile;
-
-			if (hasProfile) {
-				profile = await appClient!
-					.editProfile(
-						{
-							description: values.description,
-							logo: values.logo,
-							title: values.title,
-							url: values.url,
-							loyaltyEnabled: values.loyaltyEnabled,
-							loyaltyPercentage: Number(values.loyaltyPercentage),
-						},
-						{
-							sender: { signer, addr: activeAddress! },
-							boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
-						},
-					)
-					.catch((e: Error) => {
-						console.error(`Error editing profile data: ${e.message}`);
-						toast.error(`Error editing profile data.`);
-						return null;
-					});
-			} else {
-				profile = await appClient!
-					.createProfile(
-						{
-							boxMbrPayment: boxMBRPayment,
-							title: values.title,
-							description: values.description,
-							url: values.url,
-							logo: values.logo,
-							loyaltyEnabled: values.loyaltyEnabled,
-							loyaltyPercentage: Number(values.loyaltyPercentage),
-						},
-						{
-							sender: { signer, addr: activeAddress! },
-							boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
-						},
-					)
-					.catch((e: Error) => {
-						console.error(`Error creating profile: ${e.message}`);
-						toast.error(`Error creating profile: ${e.message}`);
-						return null;
-					});
-			}
+			profile = await appClient!
+				.editProfile(
+					{
+						boxMbrPayment: boxMBRPayment,
+						title: values.title,
+						description: values.description,
+						url: values.url,
+						logo: values.logo,
+						loyaltyEnabled: values.loyaltyEnabled,
+						loyaltyPercentage: Number(values.loyaltyPercentage),
+					},
+					{
+						sender: { signer, addr: activeAddress! },
+						boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+					},
+				)
+				.catch((e: Error) => {
+					console.error(`Error creating profile: ${e.message}`);
+					toast.error(`Error creating profile: ${e.message}`);
+					return null;
+				});
 			// SAVE PROFILE DATA
 			setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile?.return, activeAddress!) });
 			setDemoProfile({ ...retreivedProfile, ...convertAlgoProfile(profile?.return, activeAddress!) });
@@ -464,7 +459,11 @@ const Profile: React.FC<ProfileProps> = () => {
 					{loadingFormData ? (
 						<div>Loading...</div>
 					) : (
-						<div className="border bg-slate-50 rounded p-10 flex flex-col items-center text-center">
+						<div
+							className={`border bg-slate-50 rounded p-10 flex-col items-center text-center ${
+								demoProfile.title === '' && demoProfile.url === '' && demoProfile.description === '' ? 'hidden' : 'flex'
+							}`}
+						>
 							{demoProfile.logo ? (
 								<img
 									src={`${import.meta.env.VITE_PINATA_GATEWAY_URL}/ipfs/${demoProfile.logo}?pinataGatewayToken=${

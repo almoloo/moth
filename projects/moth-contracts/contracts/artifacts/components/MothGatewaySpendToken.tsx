@@ -4,50 +4,44 @@ import { Moth, MothClient } from '../contracts/MothClient'
 import { useWallet } from '@txnlab/use-wallet'
 
 /* Example usage
-<MothGetMBR
+<MothGatewaySpendToken
   buttonClass="btn m-2"
   buttonLoadingNode={<span className="loading loading-spinner" />}
-  buttonNode="Call GetMBR"
+  buttonNode="Call GatewaySpendToken"
   typedClient={typedClient}
-  title={title}
-  logo={logo}
-  description={description}
-  url={url}
-  loyaltyEnabled={loyaltyEnabled}
-  loyaltyPercentage={loyaltyPercentage}
+  payment={payment}
+  toAddress={toAddress}
+  totalAmount={totalAmount}
+  tokenToSpend={tokenToSpend}
 />
 */
-type MothGetMBRArgs = Moth['methods']['GetMBR(string,string,string,string,bool,uint64)uint64']['argsObj']
+type MothGatewaySpendTokenArgs = Moth['methods']['GatewaySpendToken(pay,address,uint64,uint64)void']['argsObj']
 
 type Props = {
   buttonClass: string
   buttonLoadingNode?: ReactNode
   buttonNode: ReactNode
   typedClient: MothClient
-  title: MothGetMBRArgs['title']
-  logo: MothGetMBRArgs['logo']
-  description: MothGetMBRArgs['description']
-  url: MothGetMBRArgs['url']
-  loyaltyEnabled: MothGetMBRArgs['loyaltyEnabled']
-  loyaltyPercentage: MothGetMBRArgs['loyaltyPercentage']
+  payment: MothGatewaySpendTokenArgs['payment']
+  toAddress: MothGatewaySpendTokenArgs['toAddress']
+  totalAmount: MothGatewaySpendTokenArgs['totalAmount']
+  tokenToSpend: MothGatewaySpendTokenArgs['tokenToSpend']
 }
 
-const MothGetMBR = (props: Props) => {
+const MothGatewaySpendToken = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(false)
   const { activeAddress, signer } = useWallet()
   const sender = { signer, addr: activeAddress! }
 
   const callMethod = async () => {
     setLoading(true)
-    console.log(`Calling GetMBR`)
-    await props.typedClient.GetMBR(
+    console.log(`Calling GatewaySpendToken`)
+    await props.typedClient.GatewaySpendToken(
       {
-        title: props.title,
-        logo: props.logo,
-        description: props.description,
-        url: props.url,
-        loyaltyEnabled: props.loyaltyEnabled,
-        loyaltyPercentage: props.loyaltyPercentage,
+        payment: props.payment,
+        toAddress: props.toAddress,
+        totalAmount: props.totalAmount,
+        tokenToSpend: props.tokenToSpend,
       },
       { sender },
     )
@@ -61,4 +55,4 @@ const MothGetMBR = (props: Props) => {
   )
 }
 
-export default MothGetMBR
+export default MothGatewaySpendToken

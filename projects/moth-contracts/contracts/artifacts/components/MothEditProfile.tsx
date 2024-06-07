@@ -9,6 +9,7 @@ import { useWallet } from '@txnlab/use-wallet'
   buttonLoadingNode={<span className="loading loading-spinner" />}
   buttonNode="Call EditProfile"
   typedClient={typedClient}
+  boxMBRPayment={boxMBRPayment}
   title={title}
   logo={logo}
   description={description}
@@ -17,13 +18,14 @@ import { useWallet } from '@txnlab/use-wallet'
   loyaltyPercentage={loyaltyPercentage}
 />
 */
-type MothEditProfileArgs = Moth['methods']['EditProfile(string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)']['argsObj']
+type MothEditProfileArgs = Moth['methods']['EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)']['argsObj']
 
 type Props = {
   buttonClass: string
   buttonLoadingNode?: ReactNode
   buttonNode: ReactNode
   typedClient: MothClient
+  boxMBRPayment: MothEditProfileArgs['boxMBRPayment']
   title: MothEditProfileArgs['title']
   logo: MothEditProfileArgs['logo']
   description: MothEditProfileArgs['description']
@@ -42,6 +44,7 @@ const MothEditProfile = (props: Props) => {
     console.log(`Calling EditProfile`)
     await props.typedClient.EditProfile(
       {
+        boxMBRPayment: props.boxMBRPayment,
         title: props.title,
         logo: props.logo,
         description: props.description,
