@@ -48,7 +48,7 @@ const Profile: React.FC<ProfileProps> = () => {
 		token: algodConfig.token,
 	});
 
-	// const [hasProfile, setHasProfile] = React.useState<boolean>(false);
+	const [hasProfile, setHasProfile] = React.useState<boolean>(false);
 	const [loadingFormData, setLoadingFormData] = React.useState<boolean>(true);
 	const [loadingSubmit, setLoadingSubmit] = React.useState<boolean>(false);
 	const [loadedProfile, setLoadedProfile] = React.useState<boolean>(false);
@@ -89,7 +89,7 @@ const Profile: React.FC<ProfileProps> = () => {
 				const profile = await fetchProfile(activeAddress, algodClient);
 				if (profile) {
 					setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile, activeAddress!) });
-					// setHasProfile(true);
+					setHasProfile(true);
 					setLoadedProfile(true);
 					setLoadingProfile(false);
 				}
@@ -155,7 +155,6 @@ const Profile: React.FC<ProfileProps> = () => {
 				// SET values.logo TO IPFS HASH
 				values.logo = resData.IpfsHash;
 			}
-			console.log('values', values);
 			const calculateMbr = await appClient?.getMbr(
 				{
 					title: values.title,
@@ -173,14 +172,16 @@ const Profile: React.FC<ProfileProps> = () => {
 					},
 				},
 			);
-			console.log('calculateMbr', calculateMbr);
+			console.log('🎈', BigInt(calculateMbr?.return?.valueOf()!));
 			const boxMBRPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
 				from: activeAddress!,
 				to: appAddress,
-				amount: BigInt(calculateMbr?.return?.valueOf()!),
+				amount:
+					Number(calculateMbr?.return?.valueOf()!) > 0
+						? BigInt(calculateMbr?.return?.valueOf()!)
+						: algokit.microAlgos(100_000).valueOf(),
 				suggestedParams: await algokit.getTransactionParams(undefined, algodClient),
 			});
-			console.log('boxMBRPayment', boxMBRPayment);
 
 			let profile;
 			profile = await appClient!
@@ -204,6 +205,17 @@ const Profile: React.FC<ProfileProps> = () => {
 					toast.error(`Error creating profile: ${e.message}`);
 					return null;
 				});
+
+			// if (!profile) {
+			// const optIn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+			// 	from: activeAddress!,
+			// 	to: activeAddress!,
+			// 	assetIndex: Number(import.meta.env.VITE_TOKEN_ID),
+			// 	amount: 0,
+			// 	suggestedParams: await algokit.getTransactionParams(undefined, algodClient),
+			// });
+			// const optIncall = await appClient?.optIn({ optInTxn: optIn }, { sender: { signer, addr: activeAddress! } });
+			// }
 			// SAVE PROFILE DATA
 			setRetreivedProfile({ ...retreivedProfile, ...convertAlgoProfile(profile?.return, activeAddress!) });
 			setDemoProfile({ ...retreivedProfile, ...convertAlgoProfile(profile?.return, activeAddress!) });

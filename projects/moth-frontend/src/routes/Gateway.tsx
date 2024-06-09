@@ -96,6 +96,70 @@ const Gateway: React.FC<GatewayProps> = () => {
 		}
 	}, [globalState]);
 
+	const handleOptIn = async (appClient: MothClient) => {
+		console.log('Opting in');
+
+		const optIn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+			from: activeAddress!,
+			to: activeAddress!,
+			assetIndex: globalState.royaltyPointToken?.asNumber(),
+			amount: 0,
+			suggestedParams: await algokit.getTransactionParams(undefined, algodClient),
+		});
+		const optIncall = await appClient?.optIn({ optInTxn: optIn }, { sender: { signer, addr: activeAddress! } });
+		return await optIncall?.return?.valueOf();
+	};
+
+	const handleFullPayment = async () => {
+		try {
+			console.log('Full payment');
+			const appClient = new MothClient(
+				{
+					sender: { signer, addr: activeAddress } as TransactionSignerAccount,
+					resolveBy: 'id',
+					id: Number(import.meta.env.VITE_APP_ID),
+				},
+				algodClient,
+			);
+
+			const assetInfo = await algokit.getAccountAssetInformation(
+				activeAddress!,
+				globalState.royaltyPointToken?.asNumber(),
+				algodClient,
+			);
+			if (Number(assetInfo.balance.valueOf()) === 0) {
+				await handleOptIn(appClient);
+			}
+
+			const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+				from: activeAddress!,
+				to: import.meta.env.VITE_APP_ADDRESS,
+				amount: Number(amount),
+				suggestedParams: await algokit.getTransactionParams(undefined, algodClient),
+			});
+
+			const info = await algokit.getAccountInformation(activeAddress!, algodClient);
+			console.log('info', info);
+			const tx = await appClient.gatewayFull(
+				{ payment: paymentTxn, amount: Number(amount), toAddress: address! },
+				{
+					sender: { signer, addr: activeAddress! },
+					sendParams: { fee: algokit.microAlgos(3_000) },
+					boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+				},
+			);
+			console.log(tx);
+			// const def = (await algokit.getAccountInformation(activeAddress!, algodClient)).amount - info.amount;
+		} catch (error) {
+			console.error(error);
+			toast.error('Failed to opt-in to token');
+		}
+	};
+
+	const handlePointsPayment = async () => {
+		console.log('Points payment');
+	};
+
 	const UnauthorizedUser: React.FC = () => {
 		return (
 			<div className="flex flex-col gap-4">
@@ -182,7 +246,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 									<div className="flex items-center gap-3">
 										<span className="text-neutral-600">Points:</span>
 										<span className="border-b border-dashed grow"></span>
-										<span className="ml-auto">{gatewayProfile?.loyaltyPercentage} mpt</span>
+										<span className="ml-auto">{gatewayProfile?.loyaltyPercentage} mak</span>
 									</div>
 								)}
 							</div>
@@ -191,7 +255,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 									<>
 										<div className="flex items-center justify-between text-xs">
 											<span className="text-neutral-600">Available Points</span>
-											<span>{userPoints} mpt</span>
+											<span>{userPoints} mak</span>
 										</div>
 										{gatewayProfile?.loyaltyEnabled && (
 											<div className="my-4">
@@ -212,7 +276,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 															<div className="flex items-center justify-between grow mr-3">
 																<strong className="text-sm">Redeem Points</strong>
 																<div className="flex flex-col items-end gap-1">
-																	<small className="text-rose-500">-{userPoints} mpt</small>
+																	<small className="text-rose-500">-{userPoints} mak</small>
 																	<small>8.25 ALGO</small>
 																</div>
 															</div>
@@ -237,7 +301,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 														<div className="flex flex-col items-end gap-1">
 															{gatewayProfile.loyaltyEnabled && (
 																<small className="text-emerald-500">
-																	+{gatewayProfile?.loyaltyPercentage} mpt
+																	+{gatewayProfile?.loyaltyPercentage} mak
 																</small>
 															)}
 															<small>15 ALGO</small>
@@ -247,7 +311,13 @@ const Gateway: React.FC<GatewayProps> = () => {
 												</label>
 											</div>
 										)}
-										<Button className="w-full">Pay {amount} ALGO</Button>
+										<Button
+											className="w-full"
+											disabled={loadingGS}
+											onClick={paymentMethod === 'full' ? handleFullPayment : handlePointsPayment}
+										>
+											Pay {amount} ALGO
+										</Button>
 									</>
 								) : (
 									<UnauthorizedUser />
