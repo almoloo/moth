@@ -103,7 +103,7 @@ export class Moth extends Contract {
     });
   }
 
-  GatewaySpendToken(payment: PayTxn, toAddress: Address, totalAmount: uint64, tokenToSpend: uint64): void {
+  GatewaySpendToken(payment: PayTxn, toAddress: Address, totalAmount: uint64, tokenToSpend: uint64): uint64 {
     assert(this.royaltyPointToken.exists);
     assert(this.profiles(toAddress).exists);
     assert(this.contractFee.value < totalAmount);
@@ -112,27 +112,28 @@ export class Moth extends Contract {
     assert(toProfile.loyaltyEnabled);
 
     assert(this.txn.sender.assetBalance(this.royaltyPointToken.value) > tokenToSpend);
+    return 0;
 
-    verifyTxn(payment, {
-      amount: totalAmount - tokenToSpend,
-      receiver: this.app.address,
-    });
+    // verifyTxn(payment, {
+    //   amount: totalAmount - tokenToSpend,
+    //   receiver: this.app.address,
+    // });
 
-    this.contractFeeBalance.value += this.contractFee.value;
-    this.contractTokenBalance.value -= tokenToSpend;
+    // this.contractFeeBalance.value += this.contractFee.value;
+    // this.contractTokenBalance.value -= tokenToSpend;
 
-    sendAssetTransfer({
-      xferAsset: this.royaltyPointToken.value,
-      assetAmount: tokenToSpend,
-      assetReceiver: this.app.address,
-      sender: this.txn.sender,
-    });
+    // sendAssetTransfer({
+    //   xferAsset: this.royaltyPointToken.value,
+    //   assetAmount: tokenToSpend,
+    //   assetReceiver: this.app.address,
+    //   sender: this.txn.sender,
+    // });
 
-    sendPayment({
-      amount: totalAmount - this.contractFee.value,
-      receiver: toAddress,
-      sender: this.app.address,
-    });
+    // sendPayment({
+    //   amount: totalAmount - this.contractFee.value,
+    //   receiver: toAddress,
+    //   sender: this.app.address,
+    // });
   }
 
   // eslint-disable-next-line no-unused-vars

@@ -32,7 +32,7 @@ describe('HelloWorld', () => {
     sender = await getOrCreateKmdWalletAccount(
       {
         name: 'tealscript-dao-sender',
-        fundWith: algos(10000),
+        fundWith: algos(50000),
       },
       algod,
       kmd
@@ -198,20 +198,22 @@ describe('HelloWorld', () => {
     expect(def).toBe(2849);
   });
 
-  test.skip('getway spend token', async () => {
+  test('getway spend token', async () => {
     const { appAddress } = await appClient.appClient.getAppReference();
     const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
       from: creator.addr,
       to: appAddress,
-      amount: 5000 - 150,
+      amount: 1850,
       suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
 
     const info = await algokit.getAccountInformation(sender.addr, algod);
-    await appClient.gatewaySpendToken(
-      { payment: paymentTxn, totalAmount: 5000, toAddress: sender.addr, tokenToSpend: 150 },
+    const aaa = await appClient.gatewaySpendToken(
+      { payment: paymentTxn, totalAmount: 2000, toAddress: sender.addr, tokenToSpend: 150 },
       { sender: creator, sendParams: { fee: algokit.microAlgos(3_000) } }
     );
+
+    console.warn(aaa.return?.valueOf());
 
     const def = (await algokit.getAccountInformation(sender.addr, algod)).amount - info.amount;
 
