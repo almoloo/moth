@@ -17,7 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import algosdk from 'algosdk';
+import algosdk, { TransactionLike } from 'algosdk';
 import { convertAlgoProfile, fetchProfile } from '@/utils/data';
 import { useLocation } from 'react-router-dom';
 
@@ -40,7 +40,7 @@ interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
 	const location = useLocation();
-	const { signer, activeAddress } = useWallet();
+	const { signer, activeAddress, signTransactions } = useWallet();
 	const algodConfig = getAlgodConfigFromViteEnvironment();
 	const algodClient = algokit.getAlgoClient({
 		server: algodConfig.server,
@@ -166,9 +166,10 @@ const Profile: React.FC<ProfileProps> = () => {
 				},
 				{
 					sender: { signer, addr: activeAddress! },
-					// boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+					boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
 					sendParams: {
 						populateAppCallResources: true,
+						fee: algokit.microAlgos(2_000),
 					},
 				},
 			);
@@ -198,6 +199,9 @@ const Profile: React.FC<ProfileProps> = () => {
 					{
 						sender: { signer, addr: activeAddress! },
 						boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+						sendParams: {
+							fee: algokit.microAlgos(2_000),
+						},
 					},
 				)
 				.catch((e: Error) => {
