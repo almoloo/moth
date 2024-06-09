@@ -516,8 +516,11 @@ GatewayFull:
 	itxn_submit
 	retsub
 
-// GatewaySpendToken(pay,address,uint64,uint64)void
+// GatewaySpendToken(pay,address,uint64,uint64)uint64
 *abi_route_GatewaySpendToken:
+	// The ABI return prefix
+	byte 0x151f7c75
+
 	// tokenToSpend: uint64
 	txna ApplicationArgs 3
 	btoi
@@ -548,14 +551,17 @@ GatewayFull:
 	// argument 3 (payment) for GatewaySpendToken must be a pay transaction
 	assert
 
-	// execute GatewaySpendToken(pay,address,uint64,uint64)void
+	// execute GatewaySpendToken(pay,address,uint64,uint64)uint64
 	callsub GatewaySpendToken
+	itob
+	concat
+	log
 	int 1
 	return
 
-// GatewaySpendToken(payment: PayTxn, toAddress: Address, totalAmount: uint64, tokenToSpend: uint64): void
+// GatewaySpendToken(payment: PayTxn, toAddress: Address, totalAmount: uint64, tokenToSpend: uint64): uint64
 GatewaySpendToken:
-	proto 4 0
+	proto 4 1
 
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
@@ -614,125 +620,12 @@ GatewaySpendToken:
 	>
 	assert
 
-	// contracts/Moth.algo.ts:116
-	// verifyTxn(payment, {
-	//       amount: totalAmount - tokenToSpend,
-	//       receiver: this.app.address,
-	//     })
-	// verify amount
-	frame_dig -1 // payment: PayTxn
-	gtxns Amount
-	frame_dig -3 // totalAmount: uint64
-	frame_dig -4 // tokenToSpend: uint64
-	-
-	==
-
-	// transaction verification failed: {"txn":"payment","field":"amount","expected":"totalAmount - tokenToSpend"}
-	assert
-
-	// verify receiver
-	frame_dig -1 // payment: PayTxn
-	gtxns Receiver
-	global CurrentApplicationAddress
-	==
-
-	// transaction verification failed: {"txn":"payment","field":"receiver","expected":"this.app.address"}
-	assert
-
-	// contracts/Moth.algo.ts:121
-	// this.contractFeeBalance.value += this.contractFee.value
-	byte 0x636f6e747261637446656542616c616e6365 // "contractFeeBalance"
-	app_global_get
-	byte 0x636f6e7472616374466565 // "contractFee"
-	app_global_get
-	+
-	byte 0x636f6e747261637446656542616c616e6365 // "contractFeeBalance"
-	swap
-	app_global_put
-
-	// contracts/Moth.algo.ts:122
-	// this.contractTokenBalance.value -= tokenToSpend
-	byte 0x636f6e7472616374546f6b656e42616c616e6365 // "contractTokenBalance"
-	app_global_get
-	frame_dig -4 // tokenToSpend: uint64
-	-
-	byte 0x636f6e7472616374546f6b656e42616c616e6365 // "contractTokenBalance"
-	swap
-	app_global_put
-
-	// contracts/Moth.algo.ts:124
-	// sendAssetTransfer({
-	//       xferAsset: this.royaltyPointToken.value,
-	//       assetAmount: tokenToSpend,
-	//       assetReceiver: this.app.address,
-	//       sender: this.txn.sender,
-	//     })
-	itxn_begin
-	int axfer
-	itxn_field TypeEnum
-
-	// contracts/Moth.algo.ts:125
-	// xferAsset: this.royaltyPointToken.value
-	byte 0x726f79616c7479506f696e74546f6b656e // "royaltyPointToken"
-	app_global_get
-	itxn_field XferAsset
-
-	// contracts/Moth.algo.ts:126
-	// assetAmount: tokenToSpend
-	frame_dig -4 // tokenToSpend: uint64
-	itxn_field AssetAmount
-
-	// contracts/Moth.algo.ts:127
-	// assetReceiver: this.app.address
-	global CurrentApplicationAddress
-	itxn_field AssetReceiver
-
-	// contracts/Moth.algo.ts:128
-	// sender: this.txn.sender
-	txn Sender
-	itxn_field Sender
-
-	// Fee field not set, defaulting to 0
+	// contracts/Moth.algo.ts:115
+	// return 0;
 	int 0
-	itxn_field Fee
 
-	// Submit inner transaction
-	itxn_submit
-
-	// contracts/Moth.algo.ts:131
-	// sendPayment({
-	//       amount: totalAmount - this.contractFee.value,
-	//       receiver: toAddress,
-	//       sender: this.app.address,
-	//     })
-	itxn_begin
-	int pay
-	itxn_field TypeEnum
-
-	// contracts/Moth.algo.ts:132
-	// amount: totalAmount - this.contractFee.value
-	frame_dig -3 // totalAmount: uint64
-	byte 0x636f6e7472616374466565 // "contractFee"
-	app_global_get
-	-
-	itxn_field Amount
-
-	// contracts/Moth.algo.ts:133
-	// receiver: toAddress
-	frame_dig -2 // toAddress: Address
-	itxn_field Receiver
-
-	// contracts/Moth.algo.ts:134
-	// sender: this.app.address
-	global CurrentApplicationAddress
-	itxn_field Sender
-
-	// Fee field not set, defaulting to 0
-	int 0
-	itxn_field Fee
-
-	// Submit inner transaction
-	itxn_submit
+	// set the subroutine return value
+	frame_bury 0
 	retsub
 
 // GetMBR(string,string,string,string,bool,uint64)uint64
@@ -789,7 +682,7 @@ GetMBR:
 	dup
 
 	// *if0_condition
-	// contracts/Moth.algo.ts:147
+	// contracts/Moth.algo.ts:148
 	// this.profiles(this.txn.sender).exists
 	txn Sender
 	box_len
@@ -798,7 +691,7 @@ GetMBR:
 	bz *if0_end
 
 	// *if0_consequent
-	// contracts/Moth.algo.ts:148
+	// contracts/Moth.algo.ts:149
 	// this.profiles(this.app.address).value = this.profiles(this.txn.sender).value
 	global CurrentApplicationAddress
 	dup
@@ -812,14 +705,14 @@ GetMBR:
 	box_put
 
 *if0_end:
-	// contracts/Moth.algo.ts:151
+	// contracts/Moth.algo.ts:152
 	// preAppMBR = this.app.address.minBalance
 	global CurrentApplicationAddress
 	acct_params_get AcctMinBalance
 	pop
 	frame_bury 0 // preAppMBR: uint64
 
-	// contracts/Moth.algo.ts:152
+	// contracts/Moth.algo.ts:153
 	// this.profiles(this.app.address).value = {
 	//       title: title,
 	//       logo: logo,
@@ -880,7 +773,7 @@ GetMBR:
 	box_put
 
 	// *if1_condition
-	// contracts/Moth.algo.ts:161
+	// contracts/Moth.algo.ts:162
 	// preAppMBR > this.app.address.minBalance
 	frame_dig 0 // preAppMBR: uint64
 	global CurrentApplicationAddress
@@ -890,18 +783,18 @@ GetMBR:
 	bz *if1_end
 
 	// *if1_consequent
-	// contracts/Moth.algo.ts:162
+	// contracts/Moth.algo.ts:163
 	// this.profiles(this.app.address).delete()
 	global CurrentApplicationAddress
 	box_del
 
-	// contracts/Moth.algo.ts:163
+	// contracts/Moth.algo.ts:164
 	// return 0;
 	int 0
 	b *GetMBR*return
 
 *if1_end:
-	// contracts/Moth.algo.ts:166
+	// contracts/Moth.algo.ts:167
 	// Mbr = this.app.address.minBalance - preAppMBR
 	global CurrentApplicationAddress
 	acct_params_get AcctMinBalance
@@ -910,12 +803,12 @@ GetMBR:
 	-
 	frame_bury 1 // Mbr: uint64
 
-	// contracts/Moth.algo.ts:167
+	// contracts/Moth.algo.ts:168
 	// this.profiles(this.app.address).delete()
 	global CurrentApplicationAddress
 	box_del
 
-	// contracts/Moth.algo.ts:168
+	// contracts/Moth.algo.ts:169
 	// return Mbr;
 	frame_dig 1 // Mbr: uint64
 
@@ -990,14 +883,14 @@ EditProfile:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// contracts/Moth.algo.ts:180
+	// contracts/Moth.algo.ts:181
 	// preAppMBR = this.app.address.minBalance
 	global CurrentApplicationAddress
 	acct_params_get AcctMinBalance
 	pop
 	frame_bury 0 // preAppMBR: uint64
 
-	// contracts/Moth.algo.ts:181
+	// contracts/Moth.algo.ts:182
 	// this.profiles(this.txn.sender).value = {
 	//       title: title,
 	//       logo: logo,
@@ -1058,7 +951,7 @@ EditProfile:
 	box_put
 
 	// *if2_condition
-	// contracts/Moth.algo.ts:190
+	// contracts/Moth.algo.ts:191
 	// preAppMBR >= this.app.address.minBalance
 	frame_dig 0 // preAppMBR: uint64
 	global CurrentApplicationAddress
@@ -1068,7 +961,7 @@ EditProfile:
 	bz *if2_else
 
 	// *if2_consequent
-	// contracts/Moth.algo.ts:191
+	// contracts/Moth.algo.ts:192
 	// sendPayment({
 	//         amount: preAppMBR - this.app.address.minBalance,
 	//         receiver: this.txn.sender,
@@ -1078,7 +971,7 @@ EditProfile:
 	int pay
 	itxn_field TypeEnum
 
-	// contracts/Moth.algo.ts:192
+	// contracts/Moth.algo.ts:193
 	// amount: preAppMBR - this.app.address.minBalance
 	frame_dig 0 // preAppMBR: uint64
 	global CurrentApplicationAddress
@@ -1087,12 +980,12 @@ EditProfile:
 	-
 	itxn_field Amount
 
-	// contracts/Moth.algo.ts:193
+	// contracts/Moth.algo.ts:194
 	// receiver: this.txn.sender
 	txn Sender
 	itxn_field Receiver
 
-	// contracts/Moth.algo.ts:194
+	// contracts/Moth.algo.ts:195
 	// sender: this.app.address
 	global CurrentApplicationAddress
 	itxn_field Sender
@@ -1106,7 +999,7 @@ EditProfile:
 	b *if2_end
 
 *if2_else:
-	// contracts/Moth.algo.ts:197
+	// contracts/Moth.algo.ts:198
 	// verifyTxn(boxMBRPayment, {
 	//         receiver: this.app.address,
 	//         amount: this.app.address.minBalance - preAppMBR,
@@ -1134,7 +1027,7 @@ EditProfile:
 	assert
 
 *if2_end:
-	// contracts/Moth.algo.ts:203
+	// contracts/Moth.algo.ts:204
 	// return this.profiles(this.txn.sender).value;
 	txn Sender
 	box_get
@@ -1159,7 +1052,7 @@ EditProfile:
 	method "OptIn(axfer)bool"
 	method "CheckOptedIn()bool"
 	method "GatewayFull(pay,address,uint64)void"
-	method "GatewaySpendToken(pay,address,uint64,uint64)void"
+	method "GatewaySpendToken(pay,address,uint64,uint64)uint64"
 	method "GetMBR(string,string,string,string,bool,uint64)uint64"
 	method "EditProfile(pay,string,string,string,string,bool,uint64)(string,string,string,string,bool,uint64)"
 	txna ApplicationArgs 0
