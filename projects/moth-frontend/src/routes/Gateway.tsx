@@ -4,7 +4,7 @@ import { Profile } from '@/utils/definitions';
 import { BracesIcon, ExternalLinkIcon, WalletIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import algosdk from 'algosdk';
+import algosdk, { Kmd } from 'algosdk';
 import { useWallet } from '@txnlab/use-wallet';
 import { TransactionSignerAccount } from '@algorandfoundation/algokit-utils/types/account';
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
@@ -34,6 +34,8 @@ const Gateway: React.FC<GatewayProps> = () => {
 	const [userPoints, setUserPoints] = useState<number>(0);
 	const [globalState, setGlobalState] = useState<any>(null);
 	const [paymentMethod, setPaymentMethod] = useState<'full' | 'points'>('full');
+	const [accountBalance, setAccountBalance] = useState<number>(0);
+	const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
 
 	useEffect(() => {
 		const getProfileData = async () => {
@@ -72,9 +74,36 @@ const Gateway: React.FC<GatewayProps> = () => {
 			const globalS = await appClient.getGlobalState();
 			setGlobalState(globalS);
 			setLoadingGS(false);
+
+			// const kmd: Kmd = new algosdk.Kmd(
+			// 	import.meta.env.VITE_KMD_TOKEN,
+			// 	import.meta.env.VITE_KMD_SERVER,
+			// 	import.meta.env.VITE_KMD_PORT,
+			// );
+
+			// const suggestedParams = await algodClient.getTransactionParams().do();
+
+			// const dispenserAccount = await algokit.getLocalNetDispenserAccount(algodClient, kmd).then(async function (account) {
+			// 	console.log('dispenserAccount', account);
+			// 	// transfer funds from dispenser account to DN456YFXDIKGZGHNIN73J7ST24IKGPYKE3T5MUR3HTHGCV6DE3RY23X72A
+			// 	const txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+			// 		from: account.addr,
+			// 		amount: 100_000_000,
+			// 		suggestedParams,
+			// 		to: 'DN456YFXDIKGZGHNIN73J7ST24IKGPYKE3T5MUR3HTHGCV6DE3RY23X72A',
+			// 	});
+			// 	const tx = algokit.sendTransaction({ transaction: txn, from: account }, algodClient);
+			// });
 		};
+
+		const getAccountBalance = async () => {
+			const balance = await algokit.getAccountInformation(activeAddress!, algodClient);
+			setAccountBalance(balance.amount);
+		};
+
 		if (!loadingGS && activeAddress) {
 			getAppClient();
+			getAccountBalance();
 		}
 	}, [activeAddress]);
 
@@ -95,6 +124,14 @@ const Gateway: React.FC<GatewayProps> = () => {
 			getUserTokens();
 		}
 	}, [globalState]);
+
+	useEffect(() => {
+		if (paymentMethod === 'full') {
+			setInsufficientBalance(Number(accountBalance.microAlgos()) + Number(algokit.microAlgos(3_000)) < Number(amount) * 1_000_000);
+		} else {
+			setInsufficientBalance(Number(amount) * 1_000_000 - algokit.microAlgos(userPoints * 1_000).algos > accountBalance);
+		}
+	}, [paymentMethod, accountBalance]);
 
 	const handleOptIn = async (appClient: MothClient) => {
 		console.log('Opting in');
@@ -121,35 +158,48 @@ const Gateway: React.FC<GatewayProps> = () => {
 				},
 				algodClient,
 			);
+			console.log('appClient', appClient);
+			await algokit
+				.getAccountAssetInformation(activeAddress!, globalState.royaltyPointToken?.asNumber(), algodClient)
+				.catch(async (error) => {
+					const optinStatus = await handleOptIn(appClient);
+					console.log('optinStatus', optinStatus);
+				});
 
-			const assetInfo = await algokit.getAccountAssetInformation(
-				activeAddress!,
-				globalState.royaltyPointToken?.asNumber(),
-				algodClient,
-			);
-			if (Number(assetInfo.balance.valueOf()) === 0) {
-				await handleOptIn(appClient);
+			const suggestedParams = await algodClient.getTransactionParams().do();
+
+			const senderBalance = (await algokit.getAccountInformation(activeAddress!, algodClient)).amount;
+			const totalAmount = Number(amount) * 1_000_000 + algokit.microAlgos(3_000).valueOf();
+
+			if (senderBalance < totalAmount) {
+				console.error('Insufficient balance');
+				toast.error('Insufficient balance');
+				return;
 			}
 
+			// TODO: HOSSEIN: CALCULATIONS!
 			const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
 				from: activeAddress!,
 				to: import.meta.env.VITE_APP_ADDRESS,
-				amount: Number(amount),
-				suggestedParams: await algokit.getTransactionParams(undefined, algodClient),
+				amount: Number(amount) * 1000000,
+				// amount: 3000,
+				suggestedParams,
 			});
+			console.log('paymentTxn', paymentTxn);
 
-			const info = await algokit.getAccountInformation(activeAddress!, algodClient);
-			console.log('info', info);
+			// TODO: HOSSEIN: CALCULATIONS!
 			const tx = await appClient.gatewayFull(
-				{ payment: paymentTxn, amount: Number(amount), toAddress: address! },
+				{ payment: paymentTxn, amount: Number(amount) * 1000000, toAddress: address! },
+				// { payment: paymentTxn, amount: 3000, toAddress: address! },
 				{
 					sender: { signer, addr: activeAddress! },
 					sendParams: { fee: algokit.microAlgos(3_000) },
-					boxes: [algosdk.decodeAddress(activeAddress!).publicKey],
+					boxes: [algosdk.decodeAddress(address!).publicKey],
+					assets: [globalState.royaltyPointToken?.asNumber()],
+					accounts: [address!],
 				},
 			);
-			console.log(tx);
-			// const def = (await algokit.getAccountInformation(activeAddress!, algodClient)).amount - info.amount;
+			console.log('tx', tx);
 		} catch (error) {
 			console.error(error);
 			toast.error('Failed to opt-in to token');
@@ -246,7 +296,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 									<div className="flex items-center gap-3">
 										<span className="text-neutral-600">Points:</span>
 										<span className="border-b border-dashed grow"></span>
-										<span className="ml-auto">{gatewayProfile?.loyaltyPercentage} mak</span>
+										<span className="ml-auto">{gatewayProfile?.loyaltyPercentage}%</span>
 									</div>
 								)}
 							</div>
@@ -266,7 +316,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 															name="usePoints"
 															id="usePoints"
 															className="points-radio hidden"
-															checked
+															checked={userPoints > 0 && paymentMethod === 'points'}
 															onChange={() => setPaymentMethod('points')}
 														/>
 														<label
@@ -277,7 +327,12 @@ const Gateway: React.FC<GatewayProps> = () => {
 																<strong className="text-sm">Redeem Points</strong>
 																<div className="flex flex-col items-end gap-1">
 																	<small className="text-rose-500">-{userPoints} mak</small>
-																	<small>8.25 ALGO</small>
+																	{/* TODO: HOSSEIN: CALCULATIONS! */}
+																	<small>
+																		{algokit.microAlgos(Number(amount)).valueOf() -
+																			algokit.microAlgos(userPoints * 0.0001).valueOf()}{' '}
+																		ALGO
+																	</small>
 																</div>
 															</div>
 															<span className="points-radio-circle"></span>
@@ -289,7 +344,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 													name="usePoints"
 													id="dontUsePoints"
 													className="points-radio hidden"
-													checked={userPoints === 0}
+													checked={userPoints === 0 || paymentMethod === 'full'}
 													onChange={() => setPaymentMethod('full')}
 												/>
 												<label
@@ -301,10 +356,10 @@ const Gateway: React.FC<GatewayProps> = () => {
 														<div className="flex flex-col items-end gap-1">
 															{gatewayProfile.loyaltyEnabled && (
 																<small className="text-emerald-500">
-																	+{gatewayProfile?.loyaltyPercentage} mak
+																	+{gatewayProfile?.loyaltyPercentage}% mak
 																</small>
 															)}
-															<small>15 ALGO</small>
+															<small>{amount} ALGO</small>
 														</div>
 													</div>
 													<span className="points-radio-circle"></span>
@@ -313,10 +368,18 @@ const Gateway: React.FC<GatewayProps> = () => {
 										)}
 										<Button
 											className="w-full"
-											disabled={loadingGS}
+											disabled={loadingGS || insufficientBalance}
 											onClick={paymentMethod === 'full' ? handleFullPayment : handlePointsPayment}
 										>
-											Pay {amount} ALGO
+											{/* TODO: HOSSEIN: CALCULATIONS! */}
+											{insufficientBalance
+												? 'Insufficient Balance'
+												: `Pay ${
+														paymentMethod === 'full'
+															? amount
+															: algokit.microAlgos(Number(amount)).valueOf() -
+															  algokit.microAlgos(userPoints * 0.0001).valueOf()
+												  } ALGO`}
 										</Button>
 									</>
 								) : (
