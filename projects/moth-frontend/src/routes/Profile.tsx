@@ -180,7 +180,7 @@ const Profile: React.FC<ProfileProps> = () => {
 				amount:
 					Number(calculateMbr?.return?.valueOf()!) > 0
 						? BigInt(calculateMbr?.return?.valueOf()!)
-						: algokit.microAlgos(100_000).valueOf(),
+						: algokit.microAlgos(2_000).valueOf(),
 				suggestedParams: await algokit.getTransactionParams(undefined, algodClient),
 			});
 

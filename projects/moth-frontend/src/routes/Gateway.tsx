@@ -1,7 +1,7 @@
 import Logo from '@/components/Logo';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Profile } from '@/utils/definitions';
-import { BracesIcon, ExternalLinkIcon, WalletIcon } from 'lucide-react';
+import { BracesIcon, ExternalLinkIcon, ShieldCheckIcon, WalletIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import algosdk, { Kmd } from 'algosdk';
@@ -27,6 +27,12 @@ const Gateway: React.FC<GatewayProps> = () => {
 		token: algodConfig.token,
 	});
 
+	interface GatewayTxResponse {
+		txId: string;
+		points: number;
+		type: 'full' | 'points';
+	}
+
 	const [loading, setLoading] = useState<boolean>(true);
 	const [loadingProfile, setLoadingProfile] = useState<boolean>(false);
 	const [loadingGS, setLoadingGS] = useState<boolean>(false);
@@ -36,6 +42,8 @@ const Gateway: React.FC<GatewayProps> = () => {
 	const [paymentMethod, setPaymentMethod] = useState<'full' | 'points'>('full');
 	const [accountBalance, setAccountBalance] = useState<number>(0);
 	const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
+	const [txResponse, setTxResponse] = useState<GatewayTxResponse | null>(null);
+	const [redirectTimer, setRedirectTimer] = useState<number>(10);
 
 	useEffect(() => {
 		const getProfileData = async () => {
@@ -133,6 +141,12 @@ const Gateway: React.FC<GatewayProps> = () => {
 		}
 	}, [paymentMethod, accountBalance]);
 
+	useEffect(() => {
+		if (redirectTimer <= 0) {
+			window.location.href = returnUrl!.replace('TRANSACTION_ID', txResponse?.txId!);
+		}
+	}, [redirectTimer]);
+
 	const handleOptIn = async (appClient: MothClient) => {
 		console.log('Opting in');
 
@@ -200,6 +214,17 @@ const Gateway: React.FC<GatewayProps> = () => {
 				},
 			);
 			console.log('tx', tx);
+			// setTxResponse({
+			// 	points: tx.return
+			// })
+			// SET REDIRECT TIMER
+			const interval = setInterval(() => {
+				setRedirectTimer((prev) => prev - 1);
+			}, 1000);
+			setTimeout(() => {
+				clearInterval(interval);
+				// history
+			}, 10000);
 		} catch (error) {
 			console.error(error);
 			toast.error('Failed to opt-in to token');
@@ -276,119 +301,156 @@ const Gateway: React.FC<GatewayProps> = () => {
 						</>
 					)}
 				</section>
-				<section className="p-[25px] lg:p-[50px] lg:border-l flex flex-col gap-4">
-					{loading ? (
-						<>
-							<Skeleton className="w-48 h-6 rounded self-center" />
-							<Skeleton className="w-full h-24 rounded" />
-							<Skeleton className="w-full h-10 rounded mt-auto" />
-						</>
-					) : (
-						<>
-							<h2 className="text-lg font-bold mt-3 self-center">Purchase Information</h2>
+				{txResponse ? (
+					<section className="p-[25px] lg:p-[50px] lg:border-l flex flex-col gap-4">
+						<div className="flex flex-col">
+							<ShieldCheckIcon
+								className="h-10 w-10 text-emerald-500 self-center"
+								strokeWidth={1.5}
+							/>
+							<h2 className="text-lg font-bold mt-4 self-center text-emerald-500">Successful Transaction</h2>
 							<div className="flex flex-col border-t border-b text-sm font-semibold gap-5 py-5 my-5">
 								<div className="flex items-center gap-3">
 									<span className="text-neutral-600">Amount:</span>
 									<span className="border-b border-dashed grow"></span>
 									<span className="ml-auto">{amount} ALGO</span>
 								</div>
-								{gatewayProfile?.loyaltyEnabled && (
+								<div className="flex items-center gap-3">
+									<span className="text-neutral-600">Points:</span>
+									<span className="border-b border-dashed grow"></span>
+									{txResponse.type === 'full' ? (
+										<span className="ml-auto text-emerald-500">+{txResponse.points} mak</span>
+									) : (
+										<span className="ml-auto text-rose-500">-{txResponse.points} mak</span>
+									)}
+								</div>
+							</div>
+						</div>
+						<div className="mt-auto">
+							<div className="flex flex-col gap-4">
+								<strong className="text-rose-500 text-center">Do not close this tab!</strong>
+								<p className="text-neutral-600 text-center">
+									In order to complete this transaction, wait for the timer to run out or click on the button below.
+								</p>
+								<Button size="lg">Complete Transaction ({redirectTimer}s)</Button>
+							</div>
+						</div>
+					</section>
+				) : (
+					<section className="p-[25px] lg:p-[50px] lg:border-l flex flex-col gap-4">
+						{loading ? (
+							<>
+								<Skeleton className="w-48 h-6 rounded self-center" />
+								<Skeleton className="w-full h-24 rounded" />
+								<Skeleton className="w-full h-10 rounded mt-auto" />
+							</>
+						) : (
+							<>
+								<h2 className="text-lg font-bold mt-3 self-center">Purchase Information</h2>
+								<div className="flex flex-col border-t border-b text-sm font-semibold gap-5 py-5 my-5">
 									<div className="flex items-center gap-3">
-										<span className="text-neutral-600">Points:</span>
+										<span className="text-neutral-600">Amount:</span>
 										<span className="border-b border-dashed grow"></span>
-										<span className="ml-auto">{gatewayProfile?.loyaltyPercentage}%</span>
+										<span className="ml-auto">{amount} ALGO</span>
 									</div>
-								)}
-							</div>
-							<div className="mt-auto">
-								{activeAddress ? (
-									<>
-										<div className="flex items-center justify-between text-xs">
-											<span className="text-neutral-600">Available Points</span>
-											<span>{userPoints} mak</span>
+									{gatewayProfile?.loyaltyEnabled && (
+										<div className="flex items-center gap-3">
+											<span className="text-neutral-600">Points:</span>
+											<span className="border-b border-dashed grow"></span>
+											<span className="ml-auto">{gatewayProfile?.loyaltyPercentage}%</span>
 										</div>
-										{gatewayProfile?.loyaltyEnabled && (
-											<div className="my-4">
-												{userPoints > 0 && (
-													<>
-														<input
-															type="radio"
-															name="usePoints"
-															id="usePoints"
-															className="points-radio hidden"
-															checked={userPoints > 0 && paymentMethod === 'points'}
-															onChange={() => setPaymentMethod('points')}
-														/>
-														<label
-															htmlFor="usePoints"
-															className="points-label"
-														>
-															<div className="flex items-center justify-between grow mr-3">
-																<strong className="text-sm">Redeem Points</strong>
-																<div className="flex flex-col items-end gap-1">
-																	<small className="text-rose-500">-{userPoints} mak</small>
-																	{/* TODO: HOSSEIN: CALCULATIONS! */}
-																	<small>
-																		{algokit.microAlgos(Number(amount)).valueOf() -
-																			algokit.microAlgos(userPoints * 0.0001).valueOf()}{' '}
-																		ALGO
-																	</small>
-																</div>
-															</div>
-															<span className="points-radio-circle"></span>
-														</label>
-													</>
-												)}
-												<input
-													type="radio"
-													name="usePoints"
-													id="dontUsePoints"
-													className="points-radio hidden"
-													checked={userPoints === 0 || paymentMethod === 'full'}
-													onChange={() => setPaymentMethod('full')}
-												/>
-												<label
-													htmlFor="dontUsePoints"
-													className="points-label"
-												>
-													<div className="flex items-center justify-between grow mr-3">
-														<strong className="text-sm">Full Payment</strong>
-														<div className="flex flex-col items-end gap-1">
-															{gatewayProfile.loyaltyEnabled && (
-																<small className="text-emerald-500">
-																	+{gatewayProfile?.loyaltyPercentage}% mak
-																</small>
-															)}
-															<small>{amount} ALGO</small>
-														</div>
-													</div>
-													<span className="points-radio-circle"></span>
-												</label>
+									)}
+								</div>
+								<div className="mt-auto">
+									{activeAddress ? (
+										<>
+											<div className="flex items-center justify-between text-xs">
+												<span className="text-neutral-600">Available Points</span>
+												<span>{userPoints} mak</span>
 											</div>
-										)}
-										<Button
-											className="w-full"
-											disabled={loadingGS || insufficientBalance}
-											onClick={paymentMethod === 'full' ? handleFullPayment : handlePointsPayment}
-										>
-											{/* TODO: HOSSEIN: CALCULATIONS! */}
-											{insufficientBalance
-												? 'Insufficient Balance'
-												: `Pay ${
-														paymentMethod === 'full'
-															? amount
-															: algokit.microAlgos(Number(amount)).valueOf() -
-															  algokit.microAlgos(userPoints * 0.0001).valueOf()
-												  } ALGO`}
-										</Button>
-									</>
-								) : (
-									<UnauthorizedUser />
-								)}
-							</div>
-						</>
-					)}
-				</section>
+											{gatewayProfile?.loyaltyEnabled && (
+												<div className="my-4">
+													{userPoints > 0 && (
+														<>
+															<input
+																type="radio"
+																name="usePoints"
+																id="usePoints"
+																className="points-radio hidden"
+																checked={userPoints > 0 && paymentMethod === 'points'}
+																onChange={() => setPaymentMethod('points')}
+															/>
+															<label
+																htmlFor="usePoints"
+																className="points-label"
+															>
+																<div className="flex items-center justify-between grow mr-3">
+																	<strong className="text-sm">Redeem Points</strong>
+																	<div className="flex flex-col items-end gap-1">
+																		<small className="text-rose-500">-{userPoints} mak</small>
+																		{/* TODO: HOSSEIN: CALCULATIONS! */}
+																		<small>
+																			{algokit.microAlgos(Number(amount)).valueOf() -
+																				algokit.microAlgos(userPoints * 0.0001).valueOf()}{' '}
+																			ALGO
+																		</small>
+																	</div>
+																</div>
+																<span className="points-radio-circle"></span>
+															</label>
+														</>
+													)}
+													<input
+														type="radio"
+														name="usePoints"
+														id="dontUsePoints"
+														className="points-radio hidden"
+														checked={userPoints === 0 || paymentMethod === 'full'}
+														onChange={() => setPaymentMethod('full')}
+													/>
+													<label
+														htmlFor="dontUsePoints"
+														className="points-label"
+													>
+														<div className="flex items-center justify-between grow mr-3">
+															<strong className="text-sm">Full Payment</strong>
+															<div className="flex flex-col items-end gap-1">
+																{gatewayProfile.loyaltyEnabled && (
+																	<small className="text-emerald-500">
+																		+{gatewayProfile?.loyaltyPercentage}% mak
+																	</small>
+																)}
+																<small>{amount} ALGO</small>
+															</div>
+														</div>
+														<span className="points-radio-circle"></span>
+													</label>
+												</div>
+											)}
+											<Button
+												className="w-full"
+												disabled={loadingGS || insufficientBalance}
+												onClick={paymentMethod === 'full' ? handleFullPayment : handlePointsPayment}
+											>
+												{/* TODO: HOSSEIN: CALCULATIONS! */}
+												{insufficientBalance
+													? 'Insufficient Balance'
+													: `Pay ${
+															paymentMethod === 'full'
+																? amount
+																: algokit.microAlgos(Number(amount)).valueOf() -
+																  algokit.microAlgos(userPoints * 0.0001).valueOf()
+													  } ALGO`}
+											</Button>
+										</>
+									) : (
+										<UnauthorizedUser />
+									)}
+								</div>
+							</>
+						)}
+					</section>
+				)}
 			</main>
 			<footer className="py-[25px] lg:py-[50px] flex items-center self-center gap-1">
 				<BracesIcon className="h-4 w-4 text-rose-300" />
