@@ -45,6 +45,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 	const [txResponse, setTxResponse] = useState<GatewayTxResponse | null>(null);
 	const [redirectTimer, setRedirectTimer] = useState<number>(10);
 
+	// ---------- GET USER PROFILE
 	useEffect(() => {
 		const getProfileData = async () => {
 			setLoadingProfile(true);
@@ -68,6 +69,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 		}
 	}, []);
 
+	// ---------- GET APP GLOBAL STATE
 	useEffect(() => {
 		const getAppClient = async () => {
 			setLoadingGS(true);
@@ -115,6 +117,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 		}
 	}, [activeAddress]);
 
+	// ---------- GET USER TOKEN BALANCE
 	useEffect(() => {
 		const getUserTokens = async () => {
 			const assets = await getAssets();
@@ -133,6 +136,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 		}
 	}, [globalState]);
 
+	// ---------- CHECK IF USER HAS ENOUGH BALANCE TO ENABLE PAY BUTTON
 	useEffect(() => {
 		if (paymentMethod === 'full') {
 			setInsufficientBalance(Number(accountBalance.microAlgos()) + Number(algokit.microAlgos(3_000)) < Number(amount) * 1_000_000);
@@ -141,12 +145,14 @@ const Gateway: React.FC<GatewayProps> = () => {
 		}
 	}, [paymentMethod, accountBalance]);
 
+	// ---------- REDIRECT TO CALLBACK URL WHEN TIMER FINISHES
 	useEffect(() => {
 		if (redirectTimer <= 0) {
-			window.location.href = returnUrl!.replace('TRANSACTION_ID', txResponse?.txId!);
+			window.location.href = decodeURIComponent(returnUrl!).replace('TRANSACTION_ID', txResponse?.txId!);
 		}
 	}, [redirectTimer]);
 
+	// ---------- HANDLE OPT-IN TO TOKEN
 	const handleOptIn = async (appClient: MothClient) => {
 		console.log('Opting in');
 
@@ -161,6 +167,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 		return await optIncall?.return?.valueOf();
 	};
 
+	// ---------- HANDLE FULL PAYMENT TRANSACTION
 	const handleFullPayment = async () => {
 		try {
 			console.log('Full payment');
@@ -214,27 +221,89 @@ const Gateway: React.FC<GatewayProps> = () => {
 				},
 			);
 			console.log('tx', tx);
-			// setTxResponse({
-			// 	points: tx.return
-			// })
+
+			setTxResponse({
+				points: Number(tx.return?.[2]) > 0 ? Number(tx.return?.[2]) : Number(tx.return?.[1]),
+				txId: tx.return?.[0]!,
+				type: Number(tx.return?.[2]) > 0 ? 'full' : 'points',
+			});
 			// SET REDIRECT TIMER
 			const interval = setInterval(() => {
+				if (redirectTimer <= 0) {
+					clearInterval(interval);
+				}
 				setRedirectTimer((prev) => prev - 1);
 			}, 1000);
-			setTimeout(() => {
-				clearInterval(interval);
-				// history
-			}, 10000);
 		} catch (error) {
 			console.error(error);
 			toast.error('Failed to opt-in to token');
 		}
 	};
 
+	// ---------- HANDLE POINTS PAYMENT TRANSACTION
 	const handlePointsPayment = async () => {
 		console.log('Points payment');
+		const appClient = new MothClient(
+			{
+				sender: { signer, addr: activeAddress } as TransactionSignerAccount,
+				resolveBy: 'id',
+				id: Number(import.meta.env.VITE_APP_ID),
+			},
+			algodClient,
+		);
+
+		const suggestedParams = await algodClient.getTransactionParams().do();
+
+		const senderBalance = (await algokit.getAccountInformation(activeAddress!, algodClient)).amount;
+		const totalAmount = Number(amount) * 1_000_000 + algokit.microAlgos(3_000).valueOf() - userPoints;
+
+		if (senderBalance < totalAmount) {
+			console.error('Insufficient balance');
+			toast.error('Insufficient balance');
+			return;
+		}
+
+		const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+			from: activeAddress!,
+			to: import.meta.env.VITE_APP_ADDRESS,
+			amount: Number(amount) * 1_000_000 - userPoints,
+			// amount: 3000,
+			suggestedParams,
+		});
+		console.log('paymentTxn', paymentTxn);
+
+		console.log('totalAmount', totalAmount);
+		console.log('userPoints', userPoints);
+		console.log('amount', Number(amount) * 1_000_000);
+
+		const tx = await appClient.gatewaySpendToken(
+			{ payment: paymentTxn, totalAmount: Number(amount) * 1000000, toAddress: address!, tokenToSpend: userPoints },
+			// { payment: paymentTxn, amount: 3000, toAddress: address! },
+			{
+				sender: { signer, addr: activeAddress! },
+				sendParams: { fee: algokit.microAlgos(3_000) },
+				boxes: [algosdk.decodeAddress(address!).publicKey],
+				assets: [globalState.royaltyPointToken?.asNumber()],
+				accounts: [address!],
+			},
+		);
+		console.log('tx', tx);
+
+		setTxResponse({
+			points: Number(tx.return?.[2]) > 0 ? Number(tx.return?.[2]) : Number(tx.return?.[1]),
+			txId: tx.return?.[0]!,
+			type: Number(tx.return?.[2]) > 0 ? 'full' : 'points',
+		});
+
+		const interval = setInterval(() => {
+			if (redirectTimer <= 0) {
+				clearInterval(interval);
+			}
+			setRedirectTimer((prev) => prev - 1);
+		}, 1000);
 	};
 
+	// ---------- UNAUTHORIZED USER COMPONENT
 	const UnauthorizedUser: React.FC = () => {
 		return (
 			<div className="flex flex-col gap-4">
@@ -315,6 +384,13 @@ const Gateway: React.FC<GatewayProps> = () => {
 									<span className="border-b border-dashed grow"></span>
 									<span className="ml-auto">{amount} ALGO</span>
 								</div>
+								{txResponse.type === 'points' && (
+									<div className="flex items-center gap-3">
+										<span className="text-neutral-600">Paid:</span>
+										<span className="border-b border-dashed grow"></span>
+										<span className="ml-auto">{(Number(amount) * 1_000_000 - txResponse.points) * 0.000001} ALGO</span>
+									</div>
+								)}
 								<div className="flex items-center gap-3">
 									<span className="text-neutral-600">Points:</span>
 									<span className="border-b border-dashed grow"></span>
@@ -390,9 +466,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 																		<small className="text-rose-500">-{userPoints} mak</small>
 																		{/* TODO: HOSSEIN: CALCULATIONS! */}
 																		<small>
-																			{algokit.microAlgos(Number(amount)).valueOf() -
-																				algokit.microAlgos(userPoints * 0.0001).valueOf()}{' '}
-																			ALGO
+																			{(Number(amount) * 1_000_000 - userPoints) * 0.000001} ALGO
 																		</small>
 																	</div>
 																</div>
@@ -438,8 +512,7 @@ const Gateway: React.FC<GatewayProps> = () => {
 													: `Pay ${
 															paymentMethod === 'full'
 																? amount
-																: algokit.microAlgos(Number(amount)).valueOf() -
-																  algokit.microAlgos(userPoints * 0.0001).valueOf()
+																: (Number(amount) * 1_000_000 - userPoints) * 0.000001
 													  } ALGO`}
 											</Button>
 										</>
