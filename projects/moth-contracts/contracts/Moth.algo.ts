@@ -16,8 +16,6 @@ type GatewayReturn = {
 };
 
 export class Moth extends Contract {
-  defultPercentage = GlobalStateKey<uint64>();
-
   /** Our payment fee in uAlgo */
   contractFee = GlobalStateKey<uint64>();
 
@@ -30,8 +28,7 @@ export class Moth extends Contract {
 
   profiles = BoxMap<Address, profile>();
 
-  createApplication(defultPercentage: uint64, siteFee: uint64): void {
-    this.defultPercentage.value = defultPercentage;
+  createApplication(siteFee: uint64): void {
     this.contractFee.value = siteFee;
 
     this.contractFeeBalance.value = 0;
@@ -218,5 +215,25 @@ export class Moth extends Contract {
     }
 
     return this.profiles(this.txn.sender).value;
+  }
+
+  ChangeContractFee(newFee: uint64): void {
+    this.OnlyCreator();
+    this.contractFee.value = newFee;
+  }
+
+  WithdrawContractFee(): uint64 {
+    this.OnlyCreator();
+
+    sendPayment({
+      amount: this.contractFeeBalance.value,
+      receiver: this.app.creator,
+      sender: this.app.address,
+    });
+
+    const total = this.contractFeeBalance.value;
+    this.contractFeeBalance.value = 0;
+
+    return total;
   }
 }
