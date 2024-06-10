@@ -55,7 +55,7 @@ describe('HelloWorld', () => {
     const ptxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
       from: creator.addr,
       to: appAddress,
-      amount: 300000,
+      amount: 3000000,
       suggestedParams: await algokit.getTransactionParams(undefined, algod),
     });
     const signedTxn = ptxn.signTxn(creator.sk);
@@ -184,10 +184,12 @@ describe('HelloWorld', () => {
     });
 
     const info = await algokit.getAccountInformation(sender.addr, algod);
-    await appClient.gatewayFull(
+    const gatewayTxn = await appClient.gatewayFull(
       { payment: paymentTxn, amount: 3000, toAddress: sender.addr },
       { sender: creator, sendParams: { fee: algokit.microAlgos(3_000) } }
     );
+
+    console.warn(gatewayTxn.return?.valueOf()!);
 
     const def = (await algokit.getAccountInformation(sender.addr, algod)).amount - info.amount;
 
@@ -208,15 +210,13 @@ describe('HelloWorld', () => {
     });
 
     const info = await algokit.getAccountInformation(sender.addr, algod);
-    const aaa = await appClient.gatewaySpendToken(
+    await appClient.gatewaySpendToken(
       { payment: paymentTxn, totalAmount: 2000, toAddress: sender.addr, tokenToSpend: 150 },
       { sender: creator, sendParams: { fee: algokit.microAlgos(3_000) } }
     );
 
-    console.warn(aaa.return?.valueOf());
-
     const def = (await algokit.getAccountInformation(sender.addr, algod)).amount - info.amount;
 
-    expect(def).toBe(2849 + 5000);
+    expect(def).toBe(1999);
   });
 });

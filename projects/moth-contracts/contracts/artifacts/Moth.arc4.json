@@ -61,7 +61,7 @@
         }
       ],
       "returns": {
-        "type": "void"
+        "type": "(string,uint64,uint64)"
       }
     },
     {
@@ -85,7 +85,7 @@
         }
       ],
       "returns": {
-        "type": "uint64"
+        "type": "(string,uint64,uint64)"
       }
     },
     {

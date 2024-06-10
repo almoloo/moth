@@ -9,6 +9,12 @@ type profile = {
   loyaltyPercentage: uint64;
 };
 
+type GatewayReturn = {
+  txId: string;
+  spendedToken: uint64;
+  recivedToken: uint64;
+};
+
 export class Moth extends Contract {
   defultPercentage = GlobalStateKey<uint64>();
 
@@ -72,7 +78,7 @@ export class Moth extends Contract {
     return this.txn.sender.isOptedInToAsset(this.royaltyPointToken.value);
   }
 
-  GatewayFull(payment: PayTxn, toAddress: Address, amount: uint64): void {
+  GatewayFull(payment: PayTxn, toAddress: Address, amount: uint64): GatewayReturn {
     assert(this.royaltyPointToken.exists);
     assert(this.profiles(toAddress).exists);
     assert(this.contractFee.value < amount);
@@ -101,39 +107,49 @@ export class Moth extends Contract {
       receiver: toAddress,
       sender: this.app.address,
     });
+
+    return {
+      txId: this.txn.txID,
+      recivedToken: addedToken,
+      spendedToken: 0,
+    };
   }
 
-  GatewaySpendToken(payment: PayTxn, toAddress: Address, totalAmount: uint64, tokenToSpend: uint64): uint64 {
+  GatewaySpendToken(payment: PayTxn, toAddress: Address, totalAmount: uint64, tokenToSpend: uint64): GatewayReturn {
     assert(this.royaltyPointToken.exists);
     assert(this.profiles(toAddress).exists);
     assert(this.contractFee.value < totalAmount);
 
     const toProfile = this.profiles(toAddress).value;
     assert(toProfile.loyaltyEnabled);
+    assert(this.txn.sender.assetBalance(this.royaltyPointToken.value) >= tokenToSpend);
 
-    assert(this.txn.sender.assetBalance(this.royaltyPointToken.value) > tokenToSpend);
-    return 0;
+    verifyTxn(payment, {
+      amount: totalAmount - tokenToSpend,
+      receiver: this.app.address,
+    });
 
-    // verifyTxn(payment, {
-    //   amount: totalAmount - tokenToSpend,
-    //   receiver: this.app.address,
-    // });
+    this.contractFeeBalance.value += this.contractFee.value;
+    this.contractTokenBalance.value -= tokenToSpend;
 
-    // this.contractFeeBalance.value += this.contractFee.value;
-    // this.contractTokenBalance.value -= tokenToSpend;
+    sendAssetTransfer({
+      xferAsset: this.royaltyPointToken.value,
+      assetAmount: tokenToSpend,
+      assetReceiver: this.app.address,
+      assetSender: this.txn.sender,
+    });
 
-    // sendAssetTransfer({
-    //   xferAsset: this.royaltyPointToken.value,
-    //   assetAmount: tokenToSpend,
-    //   assetReceiver: this.app.address,
-    //   sender: this.txn.sender,
-    // });
+    sendPayment({
+      amount: totalAmount - this.contractFee.value,
+      receiver: toAddress,
+      sender: this.app.address,
+    });
 
-    // sendPayment({
-    //   amount: totalAmount - this.contractFee.value,
-    //   receiver: toAddress,
-    //   sender: this.app.address,
-    // });
+    return {
+      txId: this.txn.txID,
+      recivedToken: 0,
+      spendedToken: tokenToSpend,
+    };
   }
 
   // eslint-disable-next-line no-unused-vars
