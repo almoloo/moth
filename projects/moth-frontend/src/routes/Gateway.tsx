@@ -146,9 +146,13 @@ const Gateway: React.FC<GatewayProps> = () => {
 	}, [paymentMethod, accountBalance]);
 
 	// ---------- REDIRECT TO CALLBACK URL WHEN TIMER FINISHES
+	const redirectToCallback = () => {
+		window.location.href = decodeURIComponent(returnUrl!).replace('TRANSACTION_ID', txResponse?.txId!);
+	};
+
 	useEffect(() => {
 		if (redirectTimer <= 0) {
-			window.location.href = decodeURIComponent(returnUrl!).replace('TRANSACTION_ID', txResponse?.txId!);
+			redirectToCallback();
 		}
 	}, [redirectTimer]);
 
@@ -208,7 +212,6 @@ const Gateway: React.FC<GatewayProps> = () => {
 			});
 			console.log('paymentTxn', paymentTxn);
 
-			// TODO: HOSSEIN: CALCULATIONS!
 			const tx = await appClient.gatewayFull(
 				{ payment: paymentTxn, amount: Number(amount) * 1000000, toAddress: address! },
 				// { payment: paymentTxn, amount: 3000, toAddress: address! },
@@ -221,11 +224,12 @@ const Gateway: React.FC<GatewayProps> = () => {
 				},
 			);
 			console.log('tx', tx);
+			const paymentTx = tx.transactions.filter((txn) => txn.type === 'pay')[0];
 
 			setTxResponse({
-				points: Number(tx.return?.[2]) > 0 ? Number(tx.return?.[2]) : Number(tx.return?.[1]),
-				txId: tx.return?.[0]!,
-				type: Number(tx.return?.[2]) > 0 ? 'full' : 'points',
+				points: Number(tx.return?.[1]) > 0 ? Number(tx.return?.[1]) : Number(tx.return?.[0]),
+				txId: paymentTx.txID(),
+				type: Number(tx.return?.[1]) > 0 ? 'full' : 'points',
 			});
 			// SET REDIRECT TIMER
 			const interval = setInterval(() => {
@@ -289,9 +293,11 @@ const Gateway: React.FC<GatewayProps> = () => {
 		);
 		console.log('tx', tx);
 
+		const paymentTx = tx.transactions.filter((txn) => txn.type === 'pay')[0];
+
 		setTxResponse({
 			points: Number(tx.return?.[2]) > 0 ? Number(tx.return?.[2]) : Number(tx.return?.[1]),
-			txId: tx.return?.[0]!,
+			txId: paymentTx.txID(),
 			type: Number(tx.return?.[2]) > 0 ? 'full' : 'points',
 		});
 
@@ -408,7 +414,12 @@ const Gateway: React.FC<GatewayProps> = () => {
 								<p className="text-neutral-600 text-center">
 									In order to complete this transaction, wait for the timer to run out or click on the button below.
 								</p>
-								<Button size="lg">Complete Transaction ({redirectTimer}s)</Button>
+								<Button
+									size="lg"
+									onClick={redirectToCallback}
+								>
+									Complete Transaction ({redirectTimer}s)
+								</Button>
 							</div>
 						</div>
 					</section>

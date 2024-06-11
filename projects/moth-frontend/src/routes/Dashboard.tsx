@@ -30,10 +30,10 @@ const Dashboard = () => {
 			try {
 				fetchProfile(activeAddress, algodClient).then((profile) => {
 					setProfile(convertAlgoProfile(profile, activeAddress));
-					setLoadingProfile(false);
 				});
 			} catch (error) {
 				console.error(error);
+			} finally {
 				setLoadingProfile(false);
 			}
 		}

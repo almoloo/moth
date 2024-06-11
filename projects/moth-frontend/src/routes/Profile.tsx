@@ -337,9 +337,8 @@ const Profile: React.FC<ProfileProps> = () => {
 												/>
 											</FormControl>
 											<FormDescription className="leading-relaxed text-sm">
-												Enter the URL of your website here. This will be used to direct users back to your site
-												after a successful transaction. Please ensure the URL is correct and starts with ‘http://’
-												or ‘https://’.
+												Enter the URL of your website here. Please ensure the URL is correct and starts with
+												‘http://’ or ‘https://’.
 											</FormDescription>
 											<FormMessage />
 										</FormItem>
@@ -401,13 +400,13 @@ const Profile: React.FC<ProfileProps> = () => {
 									control={form.control}
 									name="loyaltyMultiplierEnabled"
 									render={({ field }) => (
-										<FormItem>
+										<FormItem className="opacity-75">
 											<div className="flex items-center gap-5">
 												<FormControl>
 													<Switch
 														checked={field.value}
 														onCheckedChange={field.onChange}
-														disabled={loadingSubmit}
+														disabled
 													/>
 												</FormControl>
 												<FormLabel className="font-semibold cursor-pointer">
@@ -418,6 +417,7 @@ const Profile: React.FC<ProfileProps> = () => {
 												Toggle this switch to activate the loyalty points multiplier for users who have had a recent
 												transaction. When activated, the regular loyalty points earned from a transaction will be
 												multiplied by a certain amount, encouraging repeat transactions.
+												<em className="block mt-2 text-emerald-500">Coming soon!</em>
 											</FormDescription>
 											<FormMessage />
 										</FormItem>

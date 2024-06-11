@@ -1,7 +1,7 @@
 import React from 'react';
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from './ui/dropdown-menu';
 import { Link } from 'react-router-dom';
-import { CircleHelpIcon, HomeIcon, LayoutDashboardIcon, LogOutIcon, UserRoundIcon } from 'lucide-react';
+import { CircleHelpIcon, FlaskConicalIcon, HomeIcon, LayoutDashboardIcon, LogOutIcon, UserRoundIcon } from 'lucide-react';
 import { useWallet } from '@txnlab/use-wallet';
 
 const UserMenu = () => {
@@ -41,10 +41,10 @@ const UserMenu = () => {
 			<DropdownMenuItem>
 				<Link
 					className="flex items-center"
-					to="/"
+					to="/sample"
 				>
-					<CircleHelpIcon className="h-4 w-4 mr-2" />
-					How to Use
+					<FlaskConicalIcon className="h-4 w-4 mr-2" />
+					Sample
 				</Link>
 			</DropdownMenuItem>
 			<DropdownMenuSeparator />

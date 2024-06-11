@@ -4,6 +4,8 @@ import { CoffeeIcon, RepeatIcon, TrophyIcon, WalletIcon } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import ConnectButton from '@/components/ConnectButton';
+import { useWallet } from '@txnlab/use-wallet';
 
 interface HomeProps {}
 
@@ -31,6 +33,8 @@ const faqList = [
 ];
 
 const Home: React.FC<HomeProps> = () => {
+	const { activeAddress } = useWallet();
+
 	return (
 		<>
 			{/* ----- HERO ----- */}
@@ -42,12 +46,19 @@ const Home: React.FC<HomeProps> = () => {
 						technology.
 					</p>
 					<div className="flex space-x-4 justify-center lg:justify-start">
-						<Button variant="default">
+						{/* <Button variant="default">
 							<WalletIcon className="h-4 w-4 mr-2" />
 							Get Started
-						</Button>
+						</Button> */}
+						{activeAddress ? (
+							<Button>
+								<Link to="/dashboard">Dashboard</Link>
+							</Button>
+						) : (
+							<ConnectButton standAlone />
+						)}
 						<Button variant="outline">
-							<Link to="/">Learn More</Link>
+							<Link to="https://github.com/almoloo/moth">Learn More</Link>
 						</Button>
 					</div>
 				</div>

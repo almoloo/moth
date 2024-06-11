@@ -14,6 +14,7 @@ import Gateway from './routes/Gateway';
 import Layout from './components/Layout';
 import NoMatch from './components/NoMatch';
 import Dashboard from './routes/Dashboard';
+import Sample from './routes/Sample';
 
 let providersArray: ProvidersArray;
 if (import.meta.env.VITE_ALGOD_NETWORK === '') {
@@ -91,6 +92,10 @@ export default function App() {
 						<Route
 							path="/dashboard"
 							element={addLayout(<Dashboard />)}
+						/>
+						<Route
+							path="/sample"
+							element={addLayout(<Sample />)}
 						/>
 					</Routes>
 				</Router>
