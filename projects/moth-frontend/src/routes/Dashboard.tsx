@@ -11,7 +11,6 @@ import { convertAlgoProfile, fetchProfile, fetchProfileTransactions } from '@/ut
 import { ellipseAddress } from '@/utils/ellipseAddress';
 
 const Dashboard = () => {
-	const location = useLocation();
 	const { activeAddress } = useWallet();
 
 	const algodConfig = getAlgodConfigFromViteEnvironment();
