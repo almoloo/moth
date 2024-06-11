@@ -33,15 +33,16 @@ Each shop owner has their own customizable profile, allowing them to showcase th
    - Fill out your gateway profile with the necessary information.
 2. Redirect to the gateway URL:
 
-   - To use the gateway, redirect to the following URL: https://royalty-point-system.com/gateway
+   - To use the gateway, redirect to the following URL: https://localhost:5173/gateway/[YOUR_WALLET_ADDRESS]/[AMOUNT]/[CALLBACK_URL]
    - Include the following required parameters in the URL:
-     - to_address: Your wallet address
-     - amount: The amount of ALGO your client should pay
-     - call_back: A URL to redirect to after the payment is completed
+     - Your wallet address
+     - The amount of ALGO your client should pay
+     - A URL-encoded URL to redirect to after the payment is completed.
+       Make sure to include the term "TRANSACTION_ID" somewhere in your URL, it will be replaced with the actual transaction URL.
 
 3. Validate the transaction:
    - After the payment is completed, the platform will redirect to the call_back URL you provided.
-   - In the callback request, you will receive the transaction ID (txid).
+   - In the callback request, you will receive the transaction ID (txid) in your URL.
    - You can use the txid to verify the transaction on the Algorand blockchain and ensure that the payment was successful.
 
 # Contributing
