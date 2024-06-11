@@ -10,7 +10,6 @@ type profile = {
 };
 
 type GatewayReturn = {
-  txId: string;
   spendedToken: uint64;
   recivedToken: uint64;
 };
@@ -47,7 +46,7 @@ export class Moth extends Contract {
     const createAsset = sendAssetCreation({
       configAssetName: 'Mathak',
       configAssetUnitName: 'MAK',
-      configAssetTotal: 100000,
+      configAssetTotal: 10000000000000000,
       configAssetDecimals: 0,
       configAssetClawback: this.app.address,
       configAssetManager: this.app.address,
@@ -106,7 +105,7 @@ export class Moth extends Contract {
     });
 
     return {
-      txId: this.txn.txID,
+      // txId: this.txn.txID,
       recivedToken: addedToken,
       spendedToken: 0,
     };
@@ -143,7 +142,7 @@ export class Moth extends Contract {
     });
 
     return {
-      txId: this.txn.txID,
+      // txId: this.txn.txID,
       recivedToken: 0,
       spendedToken: tokenToSpend,
     };

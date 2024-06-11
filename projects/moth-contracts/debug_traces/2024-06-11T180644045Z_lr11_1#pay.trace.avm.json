@@ -1,0 +1,70 @@
+{
+  "last-round": 11,
+  "txn-groups": [
+    {
+      "txn-results": [
+        {
+          "txn-result": {
+            "pool-error": "",
+            "txn": {
+              "txn": {
+                "amt": 1850,
+                "fee": 1000,
+                "fv": 11,
+                "gen": "dockernet-v1",
+                "gh": "CWXhpGq0EXz4RrGq8ZsufcfFfj/vx5ky64rdGsBUF7k=",
+                "grp": "CXbrFHWPoyCZxNSV/EYJEYsJZ1GFqZOydKZ9Es2uI+s=",
+                "lv": 1011,
+                "rcv": "K9SfqHv4CIDtifWuS6UZPwYBLC0UevbSESUswWsLRYo=",
+                "snd": "Bf/FPeXmebWuvUHWDZGkunBZifLZIjGw+TpTPEb0uQE=",
+                "type": "pay"
+              }
+            }
+          }
+        },
+        {
+          "txn-result": {
+            "pool-error": "",
+            "txn": {
+              "txn": {
+                "apaa": [
+                  "V+7/Uw==",
+                  "d/8Jp5PAgODc0CQMgtOOS4nv+D4NLFTstsOqfvhB4o8=",
+                  "AAAAAAAAB9A=",
+                  "AAAAAAAAAJY="
+                ],
+                "apid": 1003,
+                "fee": 3000,
+                "fv": 11,
+                "gen": "dockernet-v1",
+                "gh": "CWXhpGq0EXz4RrGq8ZsufcfFfj/vx5ky64rdGsBUF7k=",
+                "grp": "CXbrFHWPoyCZxNSV/EYJEYsJZ1GFqZOydKZ9Es2uI+s=",
+                "lv": 1011,
+                "snd": "Bf/FPeXmebWuvUHWDZGkunBZifLZIjGw+TpTPEb0uQE=",
+                "type": "appl"
+              }
+            }
+          }
+        }
+      ],
+      "app-budget-added": 700,
+      "failed-at": [
+        0
+      ],
+      "failure-message": "transaction AUABQ6TZAOY4XZPHP4R4QPUOQ3C2JAIAGDSIRYTLULIGCUTCVYBA: account FPKJ7KD37AEIB3MJ6WXEXJIZH4DACLBNCR5PNUQREUWMC2YLIWFH2NHX24 balance 1850 below min 100000 (0 assets)"
+    }
+  ],
+  "version": 2,
+  "eval-overrides": {
+    "allow-empty-signatures": true,
+    "max-log-calls": 2048,
+    "max-log-size": 65536
+  },
+  "exec-trace-config": {
+    "enable": true,
+    "scratch-change": true,
+    "stack-change": true,
+    "state-change": true
+  },
+  "initial-states": {}
+}

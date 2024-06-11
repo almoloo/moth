@@ -1,0 +1,69 @@
+{
+  "last-round": 10,
+  "txn-groups": [
+    {
+      "txn-results": [
+        {
+          "txn-result": {
+            "pool-error": "",
+            "txn": {
+              "txn": {
+                "amt": 3000,
+                "fee": 1000,
+                "fv": 10,
+                "gen": "dockernet-v1",
+                "gh": "CWXhpGq0EXz4RrGq8ZsufcfFfj/vx5ky64rdGsBUF7k=",
+                "grp": "w28IhtwecnEbvHFLmav0Dzqq9XLa+iXcKvbR19GJndU=",
+                "lv": 1010,
+                "rcv": "K9SfqHv4CIDtifWuS6UZPwYBLC0UevbSESUswWsLRYo=",
+                "snd": "Bf/FPeXmebWuvUHWDZGkunBZifLZIjGw+TpTPEb0uQE=",
+                "type": "pay"
+              }
+            }
+          }
+        },
+        {
+          "txn-result": {
+            "pool-error": "",
+            "txn": {
+              "txn": {
+                "apaa": [
+                  "h1AVvA==",
+                  "d/8Jp5PAgODc0CQMgtOOS4nv+D4NLFTstsOqfvhB4o8=",
+                  "AAAAAAAAC7g="
+                ],
+                "apid": 1003,
+                "fee": 3000,
+                "fv": 10,
+                "gen": "dockernet-v1",
+                "gh": "CWXhpGq0EXz4RrGq8ZsufcfFfj/vx5ky64rdGsBUF7k=",
+                "grp": "w28IhtwecnEbvHFLmav0Dzqq9XLa+iXcKvbR19GJndU=",
+                "lv": 1010,
+                "snd": "Bf/FPeXmebWuvUHWDZGkunBZifLZIjGw+TpTPEb0uQE=",
+                "type": "appl"
+              }
+            }
+          }
+        }
+      ],
+      "app-budget-added": 700,
+      "failed-at": [
+        0
+      ],
+      "failure-message": "transaction U63B4WZLICQZOHEX4WV3EZTAAMDUCUH64CF27XQG776SCCKUYEQQ: account FPKJ7KD37AEIB3MJ6WXEXJIZH4DACLBNCR5PNUQREUWMC2YLIWFH2NHX24 balance 3000 below min 100000 (0 assets)"
+    }
+  ],
+  "version": 2,
+  "eval-overrides": {
+    "allow-empty-signatures": true,
+    "max-log-calls": 2048,
+    "max-log-size": 65536
+  },
+  "exec-trace-config": {
+    "enable": true,
+    "scratch-change": true,
+    "stack-change": true,
+    "state-change": true
+  },
+  "initial-states": {}
+}

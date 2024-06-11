@@ -6,10 +6,6 @@
       "name": "createApplication",
       "args": [
         {
-          "name": "defultPercentage",
-          "type": "uint64"
-        },
-        {
           "name": "siteFee",
           "type": "uint64"
         }
@@ -61,7 +57,7 @@
         }
       ],
       "returns": {
-        "type": "(string,uint64,uint64)"
+        "type": "(uint64,uint64)"
       }
     },
     {
@@ -85,7 +81,7 @@
         }
       ],
       "returns": {
-        "type": "(string,uint64,uint64)"
+        "type": "(uint64,uint64)"
       }
     },
     {
@@ -154,6 +150,25 @@
       ],
       "returns": {
         "type": "(string,string,string,string,bool,uint64)"
+      }
+    },
+    {
+      "name": "ChangeContractFee",
+      "args": [
+        {
+          "name": "newFee",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "WithdrawContractFee",
+      "args": [],
+      "returns": {
+        "type": "uint64"
       }
     }
   ]

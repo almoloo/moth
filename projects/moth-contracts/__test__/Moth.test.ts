@@ -10,7 +10,6 @@ algokit.Config.configure({ populateAppCallResources: true });
 
 let appClient: MothClient;
 
-const defultPercentage: number = 5;
 const siteFee: number = 1;
 let tokenId: bigint | undefined;
 let algod: algosdk.Algodv2;
@@ -47,7 +46,7 @@ describe('HelloWorld', () => {
       algorand.client.algod
     );
 
-    await appClient.create.createApplication({ defultPercentage, siteFee });
+    await appClient.create.createApplication({ siteFee });
   });
 
   test('create asset', async () => {
@@ -184,12 +183,12 @@ describe('HelloWorld', () => {
     });
 
     const info = await algokit.getAccountInformation(sender.addr, algod);
-    const gatewayTxn = await appClient.gatewayFull(
+    await appClient.gatewayFull(
       { payment: paymentTxn, amount: 3000, toAddress: sender.addr },
       { sender: creator, sendParams: { fee: algokit.microAlgos(3_000) } }
     );
 
-    console.warn(gatewayTxn.return?.valueOf()!);
+    // console.warn(gatewayTxn.return?.valueOf()!);
 
     const def = (await algokit.getAccountInformation(sender.addr, algod)).amount - info.amount;
 

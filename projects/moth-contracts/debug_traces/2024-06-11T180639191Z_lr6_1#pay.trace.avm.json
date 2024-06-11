@@ -1,0 +1,78 @@
+{
+  "last-round": 6,
+  "txn-groups": [
+    {
+      "txn-results": [
+        {
+          "txn-result": {
+            "pool-error": "",
+            "txn": {
+              "txn": {
+                "amt": 54900,
+                "fee": 1000,
+                "fv": 6,
+                "gen": "dockernet-v1",
+                "gh": "CWXhpGq0EXz4RrGq8ZsufcfFfj/vx5ky64rdGsBUF7k=",
+                "grp": "zCFdIfHSOGSG/fqSm+oVfHyMLQ3m/jI5IBry33edut4=",
+                "lv": 1006,
+                "rcv": "K9SfqHv4CIDtifWuS6UZPwYBLC0UevbSESUswWsLRYo=",
+                "snd": "d/8Jp5PAgODc0CQMgtOOS4nv+D4NLFTstsOqfvhB4o8=",
+                "type": "pay"
+              }
+            }
+          }
+        },
+        {
+          "txn-result": {
+            "pool-error": "",
+            "txn": {
+              "txn": {
+                "apaa": [
+                  "ubgcsg==",
+                  "AC1zaG9wcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHA=",
+                  "AAdsb2dvIGlk",
+                  "AA5hIHNpdGUgdG8gc2VsbA==",
+                  "AAhzaXRlIHVybA==",
+                  "gA==",
+                  "AAAAAAAAAAU="
+                ],
+                "apbx": [
+                  {
+                    "n": "d/8Jp5PAgODc0CQMgtOOS4nv+D4NLFTstsOqfvhB4o8="
+                  }
+                ],
+                "apid": 1003,
+                "fee": 1000,
+                "fv": 6,
+                "gen": "dockernet-v1",
+                "gh": "CWXhpGq0EXz4RrGq8ZsufcfFfj/vx5ky64rdGsBUF7k=",
+                "grp": "zCFdIfHSOGSG/fqSm+oVfHyMLQ3m/jI5IBry33edut4=",
+                "lv": 1006,
+                "snd": "d/8Jp5PAgODc0CQMgtOOS4nv+D4NLFTstsOqfvhB4o8=",
+                "type": "appl"
+              }
+            }
+          }
+        }
+      ],
+      "app-budget-added": 700,
+      "failed-at": [
+        0
+      ],
+      "failure-message": "transaction 6VSMYORTIXACYJMJMDTQPBNSPDOWXMBLYGX2QQ2XID4FYJ7WNMJA: account FPKJ7KD37AEIB3MJ6WXEXJIZH4DACLBNCR5PNUQREUWMC2YLIWFH2NHX24 balance 54900 below min 100000 (0 assets)"
+    }
+  ],
+  "version": 2,
+  "eval-overrides": {
+    "allow-empty-signatures": true,
+    "max-log-calls": 2048,
+    "max-log-size": 65536
+  },
+  "exec-trace-config": {
+    "enable": true,
+    "scratch-change": true,
+    "stack-change": true,
+    "state-change": true
+  },
+  "initial-states": {}
+}
