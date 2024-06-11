@@ -12,15 +12,41 @@ The system features a shop owner profile system, where each shop owner can custo
 
 # Key Features
 
-### On-Chain Loyalty System:
+## On-Chain Loyalty System:
 The entire project is built on the Algorand blockchain, ensuring a secure and transparent platform for earning and redeeming points.
 
-### Point Transfer:
+## Point Transfer:
 Users can transfer their earned ASA points to their friends and family, enabling a community-driven loyalty system.
 
-### Shop Owner Profiles:
+## Shop Owner Profiles:
 Each shop owner has their own customizable profile, allowing them to showcase their offerings and settings. Users can easily browse the available shops through the project's website.
+
+# How to Use
+
+1. ## Connect your wallet and complete your gateway profile:
+   - Connect your Algorand wallet to the Royalty Point System platform.
+   - Fill out your gateway profile with the necessary information.
+   
+2. Redirect to the gateway URL:
+   - To use the gateway, redirect to the following URL: https://royalty-point-system.com/gateway
+   - Include the following required parameters in the URL:
+     - to_address: Your wallet address
+     - amount: The amount of ALGO your client should pay
+     - call_back: A URL to redirect to after the payment is completed
+
+3. Validate the transaction:
+   - After the payment is completed, the platform will redirect to the call_back URL you provided.
+   - In the callback request, you will receive the transaction ID (txid).
+   - You can use the txid to verify the transaction on the Algorand blockchain and ensure that the payment was successful.
+
 
 # Contributing
 
 Contributions to the Loyalty Point System are welcome! If you have any ideas, bug fixes, or feature enhancements, please submit a pull request on the project's GitHub repository.
+
+# Contact Us
+For any inquiries or feedback, feel free to reach out to us:
+
+Ali Mousavi - [@almoloo](https://twitter.com/almoloo) - amousavig@icloud.com
+
+Hossein Arabi - [@hossein-79](https://github.com/Hossein-79) - ho.arabi79@gmail.com
