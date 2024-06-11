@@ -10,14 +10,11 @@ type profile = {
 };
 
 type GatewayReturn = {
-  txId: string;
   spendedToken: uint64;
   recivedToken: uint64;
 };
 
 export class Moth extends Contract {
-  defultPercentage = GlobalStateKey<uint64>();
-
   /** Our payment fee in uAlgo */
   contractFee = GlobalStateKey<uint64>();
 
@@ -30,8 +27,7 @@ export class Moth extends Contract {
 
   profiles = BoxMap<Address, profile>();
 
-  createApplication(defultPercentage: uint64, siteFee: uint64): void {
-    this.defultPercentage.value = defultPercentage;
+  createApplication(siteFee: uint64): void {
     this.contractFee.value = siteFee;
 
     this.contractFeeBalance.value = 0;
@@ -50,7 +46,7 @@ export class Moth extends Contract {
     const createAsset = sendAssetCreation({
       configAssetName: 'Mathak',
       configAssetUnitName: 'MAK',
-      configAssetTotal: 100000,
+      configAssetTotal: 10000000000000000,
       configAssetDecimals: 0,
       configAssetClawback: this.app.address,
       configAssetManager: this.app.address,
@@ -109,7 +105,7 @@ export class Moth extends Contract {
     });
 
     return {
-      txId: this.txn.txID,
+      // txId: this.txn.txID,
       recivedToken: addedToken,
       spendedToken: 0,
     };
@@ -146,7 +142,7 @@ export class Moth extends Contract {
     });
 
     return {
-      txId: this.txn.txID,
+      // txId: this.txn.txID,
       recivedToken: 0,
       spendedToken: tokenToSpend,
     };
@@ -218,5 +214,25 @@ export class Moth extends Contract {
     }
 
     return this.profiles(this.txn.sender).value;
+  }
+
+  ChangeContractFee(newFee: uint64): void {
+    this.OnlyCreator();
+    this.contractFee.value = newFee;
+  }
+
+  WithdrawContractFee(): uint64 {
+    this.OnlyCreator();
+
+    sendPayment({
+      amount: this.contractFeeBalance.value,
+      receiver: this.app.creator,
+      sender: this.app.address,
+    });
+
+    const total = this.contractFeeBalance.value;
+    this.contractFeeBalance.value = 0;
+
+    return total;
   }
 }
