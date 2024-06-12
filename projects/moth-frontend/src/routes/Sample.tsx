@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { FlaskConicalIcon } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Sample = () => {
+	const [address, setAddress] = useState('');
 	function useQuery() {
 		const { search } = useLocation();
 
@@ -33,16 +35,23 @@ const Sample = () => {
 						<code className="text-lg text-neutral-600 mt-2">{query.get('txid')}</code>
 					</div>
 				) : (
-					<Button
-						size="lg"
-						type="button"
-						variant="default"
-						asChild
-					>
-						<Link to="/gateway/BPALZW45EWOXWUTPOQMSQOCLLKCEIWV2RVHJ6ILDCHKMBTYEUG4RSBFLE4/0.01/http%3A%2F%2Flocalhost%3A5173%2Fsample%3Ftxid%3DTRANSACTION_ID">
-							Pay 0.01 ALGO
-						</Link>
-					</Button>
+					<div className="flex gap-3 grow">
+						<Input
+							placeholder="Enter vendor's Algorand address"
+							value={address}
+							onChange={(e) => setAddress(e.target.value)}
+						/>
+						<Button
+							type="button"
+							variant="default"
+							disabled={address.length === 0}
+							asChild
+						>
+							<Link to={`/gateway/${address}/0.01/http%3A%2F%2Flocalhost%3A5173%2Fsample%3Ftxid%3DTRANSACTION_ID`}>
+								Pay 0.01 ALGO
+							</Link>
+						</Button>
+					</div>
 				)}
 			</div>
 		</section>
