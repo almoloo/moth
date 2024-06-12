@@ -1,5 +1,9 @@
 ![image](./banner.png)
 
+<center>
+<a href="https://www.figma.com/design/QP2FnJ2VAfFJkckN8X1YGZ/Moth?node-id=0-1&t=3Bd4sKiWEghEmXRi-1">UI Design on Figma</a>
+</center>
+
 # Moth
 
 A royalty point system
@@ -44,6 +48,18 @@ Each shop owner has their own customizable profile, allowing them to showcase th
    - After the payment is completed, the platform will redirect to the call_back URL you provided.
    - In the callback request, you will receive the transaction ID (txid) in your URL.
    - You can use the txid to verify the transaction on the Algorand blockchain and ensure that the payment was successful.
+
+# Environment Variables
+
+In order for your project to function, you need to add the following environment variables to your frontend project:
+
+- PINATA_API_KEY: obtained from [Pinata](https://www.pinata.cloud)
+- PINATA_API_SECRET: obtained from [Pinata](https://www.pinata.cloud)
+- VITE_PINATA_ACCESS_TOKEN: obtained from [Pinata](https://www.pinata.cloud)
+- VITE_PINATA_GATEWAY_KEY: obtained from [Pinata](https://www.pinata.cloud)
+- VITE_PINATA_GATEWAY_URL: obtained from [Pinata](https://www.pinata.cloud)
+- VITE_APP_ID: App ID of your contract deployed to your preferred network
+- VITE_APP_ADDRESS: App ID of your contract deployed to your preferred network
 
 # Contributing
 
